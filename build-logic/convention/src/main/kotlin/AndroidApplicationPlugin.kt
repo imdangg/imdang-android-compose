@@ -5,7 +5,6 @@ import info.imdang.build_logic.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
 
 /*
@@ -18,12 +17,12 @@ class AndroidApplicationPlugin : Plugin<Project> {
             apply(plugin = "org.jetbrains.kotlin.android")
             apply(plugin = "imdang.hilt")
 
-            extensions.configure<ApplicationExtension> {
+            val extension = extensions.getByType<ApplicationExtension>()
+            extension.apply {
                 configureKotlinAndroid(this)
+                configureAndroidCompose(this)
                 defaultConfig.targetSdk = Config.targetSdk
             }
-            val extension = extensions.getByType<ApplicationExtension>()
-            configureAndroidCompose(extension)
         }
     }
 }
