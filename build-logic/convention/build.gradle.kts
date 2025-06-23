@@ -16,3 +16,26 @@ kotlin {
         jvmTarget = JvmTarget.JVM_11
     }
 }
+dependencies {
+    compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.android.tools.common)
+    compileOnly(libs.compose.gradlePlugin)
+    compileOnly(libs.kotlin.gradlePlugin)
+}
+
+gradlePlugin {
+    plugins {
+        register("hilt") {
+            id = libs.plugins.imdang.hilt.get().pluginId
+            implementationClass = "HiltPlugin"
+        }
+        register("androidApplication") {
+            id = libs.plugins.imdang.android.application.get().pluginId
+            implementationClass = "AndroidApplicationPlugin"
+        }
+        register("androidLibrary") {
+            id = libs.plugins.imdang.android.library.get().pluginId
+            implementationClass = "AndroidLibraryPlugin"
+        }
+    }
+}
