@@ -1,6 +1,7 @@
 package info.imdang.build_logic
 
 import org.gradle.api.JavaVersion
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 object ApplicationId {
     val id = "info.imdang.imdang"
@@ -11,12 +12,12 @@ object Release {
     val versionName = "1.0.0"
 }
 
-object Config{
+object Config {
     const val compileSdk = 35
     const val targetSdk = 34
     const val minSdk = 29
 
-    const val jvmTarget ="17"
+    val jvmTarget = JvmTarget.JVM_17
     val javaVersion = JavaVersion.VERSION_17
 }
 
