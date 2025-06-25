@@ -30,3 +30,10 @@ rootProject.name = "ImdangAppNew"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
+include(":core:domain")
+include(":core:data")
+include(":core:datastore")
+include(":core:network")
+include(":core:ui")
+include(":core:common")
+include(":core:presentation")
