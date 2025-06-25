@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "info.imdang.core.ui"
+    namespace = "info.imdang.core.component"
 }
 
 dependencies {
