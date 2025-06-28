@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(projects.core.component)
+    implementation(projects.ui)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)

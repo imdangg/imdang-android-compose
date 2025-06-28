@@ -1,0 +1,131 @@
+package info.imdang.imdang
+
+import android.util.Log
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.WindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.currentBackStackEntryAsState
+import info.imdang.imdang.navigation.ImdangAppSate
+import info.imdang.imdang.navigation.ImdangNavHost
+import info.imdang.imdang.navigation.TopLevelDestination
+import kotlin.reflect.KClass
+
+
+@Composable
+fun ImdangApp(
+    appState: ImdangAppSate,
+    modifier: Modifier = Modifier,
+    windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    ImdangApp(
+        appState = appState,
+        snackbarHostState = snackbarHostState,
+        windowAdaptiveInfo = windowAdaptiveInfo
+    )
+}
+
+@Composable
+internal fun ImdangApp(
+    appState: ImdangAppSate,
+    snackbarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
+    windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
+) {
+    val navBackStackEntry by appState.navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    // 현재 destination이 TopLevelDestination의 baseRoute 중 하나에 속하면 BottomBar 표시, 내부 상세페이지 바텀바 x
+    val showBottomBar = TopLevelDestination.entries.any { destination ->
+        currentDestination.isRouteInHierarchy(destination.baseRoute)
+    }
+
+
+    //라우트 로그
+    val navController = appState.navController
+    CurrentRouteLogger(navController = navController)
+
+    Scaffold(
+        bottomBar = {
+            if (showBottomBar) {
+                ImdangBottomBar(
+                    appState = appState,
+                    onDestinationClick = appState::navigateToTopLevelDestination
+                )
+            }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        modifier = modifier
+    ) { innerPadding ->
+        ImdangNavHost(
+            appState = appState,
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
+
+}
+
+@Composable // 추후 component 내부 코드로 교체 예정
+fun ImdangBottomBar(
+    appState: ImdangAppSate,
+    onDestinationClick: (TopLevelDestination) -> Unit
+) {
+    val currentDestination = appState.currentDestination
+
+    NavigationBar {
+        TopLevelDestination.entries.forEach { destination ->
+            val selected = currentDestination.isRouteInHierarchy(destination.baseRoute)
+            NavigationBarItem(
+                selected = selected,
+                onClick = { onDestinationClick(destination) },
+                icon = {
+                    Icon(
+                        imageVector = if (selected) ImageVector.vectorResource(destination.selectedIconId)
+                        else ImageVector.vectorResource(destination.unselectedIconId),
+                        contentDescription = stringResource(id = destination.iconTextId)
+                    )
+                },
+                label = {
+                    if (destination != TopLevelDestination.WRITE) { Text(stringResource(id = destination.iconTextId)) }}
+            )
+        }
+    }
+}
+
+private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
+    this?.hierarchy?.any {
+        it.hasRoute(route)
+    } ?: false
+
+@Composable
+fun CurrentRouteLogger(navController: NavController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    LaunchedEffect(currentRoute) {
+        Log.d("NavDebug", "Current route: $currentRoute")
+        navBackStackEntry?.destination?.hierarchy?.forEach {
+            Log.d("NavDebug", "Hierarchy route: ${it.route}")
+        }
+    }
+}

@@ -40,6 +40,7 @@ espressoCore = "3.6.1"
 material = "1.12.0"
 turbine = "1.2.0"
 coil = "2.7.0"
+uiGraphics = "1.8.3"
 
 
 [libraries]
@@ -48,6 +49,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-core = { module = "androidx.test:core", version.ref = "core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "uiGraphics" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 
