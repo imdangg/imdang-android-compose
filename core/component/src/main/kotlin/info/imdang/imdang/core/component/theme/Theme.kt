@@ -60,5 +60,5 @@ fun ImdangAppNewTheme(
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
 fun supportsDynamicTheming() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Theme")
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Theme", showBackground = true)
 annotation class ImdangPreview

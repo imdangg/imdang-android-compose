@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.sp
 import info.imdang.imdang.core.component.theme.pretendardFont
 
 
-fun buttonShape(buttonSize: ButtonSize): RoundedCornerShape {
+internal fun buttonShape(buttonSize: ButtonSize): RoundedCornerShape {
     return when (buttonSize) {
         ButtonSize.W -> RoundedCornerShape(0.dp)
         ButtonSize.L -> RoundedCornerShape(8.dp)
@@ -20,7 +20,7 @@ fun buttonShape(buttonSize: ButtonSize): RoundedCornerShape {
     }
 }
 
-fun buttonContentPadding(buttonSize: ButtonSize): PaddingValues {
+internal fun buttonContentPadding(buttonSize: ButtonSize): PaddingValues {
     return when (buttonSize) {
         ButtonSize.W -> {
             PaddingValues(horizontal = 16.dp, vertical = 17.dp)
@@ -41,7 +41,7 @@ fun buttonContentPadding(buttonSize: ButtonSize): PaddingValues {
 }
 
 @Composable
-fun buttonTextStyle(buttonSize: ButtonSize): TextStyle {
+internal fun buttonTextStyle(buttonSize: ButtonSize): TextStyle {
     return when (buttonSize) {
         ButtonSize.W -> {
             TextStyle(
@@ -82,7 +82,7 @@ fun buttonTextStyle(buttonSize: ButtonSize): TextStyle {
 }
 
 @Composable
-fun determineButtonColors(
+internal fun determineButtonColors(
     isPressed: Boolean,
     defaultColors: ButtonColors,
     pressedColors: ButtonColors,
