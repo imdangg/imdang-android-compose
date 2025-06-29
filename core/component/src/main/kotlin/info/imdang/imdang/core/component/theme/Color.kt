@@ -35,3 +35,4 @@ val Gray25 = Color(0xFFFCFCFC)
 
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
+val Error = Color(0xFFE93528)
