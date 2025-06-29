@@ -1,4 +1,4 @@
-package info.imdang.imdang.navigation
+package info.imdang.imdang.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.navOptions
+import info.imdang.imdang.navigation.TopLevelDestination
 import info.imdang.imdang.navigation.navGraph.navigationToHome
 import info.imdang.imdang.navigation.navGraph.navigationToStorage
 import info.imdang.imdang.navigation.navGraph.navigationToWrite
@@ -21,7 +22,7 @@ import info.imdang.imdang.navigation.navGraph.navigationToWrite
 fun rememberImdangAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
-) :ImdangAppSate {
+) : ImdangAppSate {
     return remember(
         navController,
         coroutineScope,

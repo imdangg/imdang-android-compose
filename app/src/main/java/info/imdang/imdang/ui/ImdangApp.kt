@@ -1,4 +1,4 @@
-package info.imdang.imdang
+package info.imdang.imdang.ui
 
 import android.util.Log
 import androidx.compose.foundation.layout.padding
@@ -24,7 +24,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
-import info.imdang.imdang.navigation.ImdangAppSate
 import info.imdang.imdang.navigation.ImdangNavHost
 import info.imdang.imdang.navigation.TopLevelDestination
 import kotlin.reflect.KClass

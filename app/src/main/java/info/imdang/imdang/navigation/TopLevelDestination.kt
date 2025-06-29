@@ -2,9 +2,6 @@ package info.imdang.imdang.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.ui.graphics.vector.ImageVector
 import kotlin.reflect.KClass
 import info.imdang.ui.R as UiR
 import info.imdang.imdang.R
