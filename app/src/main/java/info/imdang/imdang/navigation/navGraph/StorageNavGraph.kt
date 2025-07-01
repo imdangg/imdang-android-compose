@@ -5,11 +5,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import info.imdang.ui.main.storage.StorageDetailScreen
 import info.imdang.ui.main.storage.StorageScreen
 import kotlinx.serialization.Serializable
 
 // Storage
+@Serializable
+data object StorageBaseRoute
 
 @Serializable
 data object StorageRoute
@@ -24,10 +27,14 @@ fun NavController.navigationToStorage(navOptions: NavOptions) =
 
 fun NavGraphBuilder.storageSection(
     onInsightClick: (String) -> Unit,
+    additionalDestination: NavGraphBuilder.() -> Unit,
 ) {
-    composable<StorageRoute> {
-        StorageScreen(onInsightClick)
+    navigation<StorageBaseRoute>(startDestination = StorageRoute) {
+        composable<StorageRoute> {
+            StorageScreen(onInsightClick)
+        }
     }
+    additionalDestination()
 }
 
 fun NavController.navigateToStorageDetail(

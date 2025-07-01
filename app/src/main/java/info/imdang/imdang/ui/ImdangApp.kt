@@ -55,10 +55,11 @@ internal fun ImdangApp(
     val currentDestination = navBackStackEntry?.destination
 
     // 현재 destination이 TopLevelDestination의 baseRoute 중 하나에 속하면 BottomBar 표시, 내부 상세페이지 바텀바 x
-    val showBottomBar = TopLevelDestination.entries.any { destination ->
-        currentDestination.isRouteInHierarchy(destination.baseRoute)
+    val showBottomBar = TopLevelDestination.entries.any { topLevel ->
+        currentDestination?.hierarchy?.any { destination->
+            destination.route?.contains(topLevel.baseRoute.simpleName ?:"") == true
+        } == true
     }
-
 
     //라우트 로그
     val navController = appState.navController
@@ -105,7 +106,10 @@ fun ImdangBottomBar(
                     )
                 },
                 label = {
-                    if (destination != TopLevelDestination.WRITE) { Text(stringResource(id = destination.iconTextId)) }}
+                    if (destination != TopLevelDestination.WRITE) {
+                        Text(stringResource(id = destination.iconTextId))
+                    }
+                }
             )
         }
     }
@@ -122,9 +126,9 @@ fun CurrentRouteLogger(navController: NavController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     LaunchedEffect(currentRoute) {
-        Log.d("NavDebug", "Current route: $currentRoute")
+        Log.e("NavDebug", "Current route: $currentRoute")
         navBackStackEntry?.destination?.hierarchy?.forEach {
-            Log.d("NavDebug", "Hierarchy route: ${it.route}")
+            Log.e("NavDebug", "Hierarchy route: ${it.route}")
         }
     }
 }

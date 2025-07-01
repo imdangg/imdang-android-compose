@@ -3,6 +3,7 @@ package info.imdang.imdang.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import info.imdang.imdang.navigation.navGraph.HomeBaseRoute
 import info.imdang.imdang.navigation.navGraph.HomeRoute
 import info.imdang.imdang.navigation.navGraph.homeSection
 import info.imdang.imdang.navigation.navGraph.insightScreen
@@ -29,7 +30,7 @@ fun ImdangNavHost(
     val navController = appState.navController
     NavHost(
         navController = navController,
-        startDestination = HomeRoute,
+        startDestination = HomeBaseRoute,
         modifier = modifier,
     ) {
 
@@ -38,40 +39,42 @@ fun ImdangNavHost(
             onInsightClick = navController::navigateToInsightDetail,
             onMyPageClick = navController::navigateToMyPage,
             onSearchClick = navController::navigateToSearch
-        )
+        ){
+            searchScreen(
+                onBackClick = navController::popBackStack
+            )
+            insightScreen(
+                onBackClick = navController::popBackStack
+            )
 
-        // -- home 내부 --
-        searchScreen(
-            onBackClick = navController::popBackStack
-        )
+            myPageScreen(
+                onBackClick = navController::popBackStack,
+                onServiceInfoClick = navController::navigateToServiceInfo,
+                onPolicyClick = navController::navigateToServicePolicy
+            )
 
-        insightScreen(
-            onBackClick = navController::popBackStack
-        )
+            serviceInfoScreen(
+                onBackClick = navController::popBackStack
+            )
+            servicePolicyScreen(
+                onBackClick = navController::popBackStack
+            )
 
-        myPageScreen(
-            onBackClick = navController::popBackStack,
-            onServiceInfoClick = navController::navigateToServiceInfo,
-            onPolicyClick = navController::navigateToServicePolicy
-        )
+        }
 
-        serviceInfoScreen(
-            onBackClick = navController::popBackStack
-        )
-        servicePolicyScreen(
-            onBackClick = navController::popBackStack
-        )
 
         //-- write --
         writeSection(
             onBackClick = navController::popBackStack,
-        )
+        ){
+
+        }
 
         //-- storage --
-        storageSection (onInsightClick = navController::navigateToStorageDetail)
-
-        storageDetailScreen(
-            onBackClick = navController::popBackStack,
-        )
+        storageSection (onInsightClick = navController::navigateToStorageDetail){
+            storageDetailScreen(
+                onBackClick = navController::popBackStack,
+            )
+        }
     }
 }

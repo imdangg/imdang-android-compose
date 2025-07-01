@@ -4,10 +4,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import info.imdang.ui.main.write.WriteScreen
 import kotlinx.serialization.Serializable
 
 //  Write
+@Serializable
+data object WriteBaseRoute
+
 @Serializable
 data object WriteRoute
 
@@ -17,8 +21,12 @@ fun NavController.navigationToWrite(navOptions: NavOptions) =
 fun NavGraphBuilder.writeSection(
     onBackClick: () -> Unit,
     //  onNextClick: (String) -> Unit,  작성 디자인 대기,
+    additionalDestination: NavGraphBuilder.() -> Unit,
 ) {
-    composable<WriteRoute> {
-        WriteScreen()
+    navigation<WriteBaseRoute>(startDestination = WriteRoute) {
+        composable<WriteRoute> {
+            WriteScreen(onBackClick)
+        }
     }
+    additionalDestination()
 }

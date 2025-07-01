@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavOptionsBuilder
 import kotlinx.serialization.Serializable
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import info.imdang.ui.main.home.insight.InsightDetailScreen
 import info.imdang.ui.main.home.HomeScreen
 import info.imdang.ui.main.home.mypage.MyPageScreen
@@ -15,6 +16,9 @@ import info.imdang.ui.main.home.mypage.ServicePolicyScreen
 
 
 // Home
+@Serializable
+data object HomeBaseRoute
+
 @Serializable
 data object HomeRoute
 
@@ -41,10 +45,14 @@ fun NavGraphBuilder.homeSection(
     onInsightClick: (String) -> Unit,
     onMyPageClick: () -> Unit,
     onSearchClick: () -> Unit,
+    additionalDestination: NavGraphBuilder.() -> Unit,
 ) {
-    composable<HomeRoute> {
-        HomeScreen(onInsightClick, onMyPageClick, onSearchClick)
+    navigation<HomeBaseRoute>(startDestination = HomeRoute) {
+        composable<HomeRoute> {
+            HomeScreen(onInsightClick, onMyPageClick, onSearchClick)
+        }
     }
+    additionalDestination()
 }
 
 
