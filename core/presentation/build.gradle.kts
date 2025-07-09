@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.imdang.android.library)
     alias(libs.plugins.imdang.hilt)
+    alias(libs.plugins.imdang.android.library.compose)
 }
 
 android {
@@ -16,4 +17,6 @@ dependencies {
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.gson)
+
 }
