@@ -1,6 +1,7 @@
 package info.imdang.imdang.core.component.top
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ fun TopTitleBar(
     @DrawableRes iconResId: Int,
     text: String,
     percent: Int? = null,
+    onClickedIcon: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -40,7 +42,9 @@ fun TopTitleBar(
                 painter = painterResource(id = iconResId),
                 contentDescription = null,
                 tint = Gray900,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { onClickedIcon() }
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
@@ -70,5 +74,6 @@ fun TopTitleBarPreview() {
         iconResId = R.drawable.back,
         text = "인사이트 작성",
         percent = 80,
+        onClickedIcon = {}
     )
 }
