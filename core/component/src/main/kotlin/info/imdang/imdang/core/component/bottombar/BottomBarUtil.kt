@@ -5,7 +5,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import info.imdang.imdang.core.component.theme.pretendardFont
 
-val bottomBarTextStyle = TextStyle(
+internal val bottomBarTextStyle = TextStyle(
     fontFamily = pretendardFont,
     fontWeight = FontWeight.SemiBold,
     fontSize = 12.sp,
