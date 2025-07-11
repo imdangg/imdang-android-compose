@@ -11,3 +11,10 @@ val topTitleBarTextStyle = TextStyle(
     fontSize = 18.sp,
     lineHeight = (18 * 1.4).sp,
 )
+
+val topBarNavigationTextStyle = TextStyle(
+    fontFamily = pretendardFont,
+    fontWeight = FontWeight.Bold,
+    fontSize = 24.sp,
+    lineHeight = (24 * 1.4).sp,
+)
