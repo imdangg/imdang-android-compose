@@ -1,4 +1,6 @@
 import info.imdang.build_logic.ApplicationId
+import info.imdang.build_logic.DevConfig
+import info.imdang.build_logic.ProductConfig
 import info.imdang.build_logic.Release
 
 plugins {
@@ -24,8 +26,15 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
+            isDebuggable = true
             isMinifyEnabled = false
+            isShrinkResources = false
+        }
+        release {
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -41,6 +50,79 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+        }
+    }
+
+    setFlavorDimensions(listOf("server"))
+
+    productFlavors {
+        create("dev") {
+            dimension = "server"
+            applicationIdSuffix = ".dev"
+            addManifestPlaceholders(mapOf("KAKAO_NATIVE_KEY" to DevConfig.KAKAO_NATIVE_KEY))
+            addManifestPlaceholders(mapOf("NAVER_CLIENT_ID" to DevConfig.NAVER_CLIENT_ID))
+            addManifestPlaceholders(mapOf("APP_SCHEME" to DevConfig.APP_SCHEME))
+            buildConfigField(
+                "String",
+                "KAKAO_NATIVE_KEY",
+                "\"${DevConfig.KAKAO_NATIVE_KEY}\""
+            )
+            buildConfigField(
+                "String",
+                "GOOGLE_WEB_CLIENT_ID",
+                "\"${DevConfig.GOOGLE_WEB_CLIENT_ID}\""
+            )
+            buildConfigField(
+                "String",
+                "NAVER_CLIENT_ID",
+                "\"${DevConfig.NAVER_CLIENT_ID}\""
+            )
+            buildConfigField(
+                "String",
+                "KAKAO_ADDRESS_SEARCH_SERVER",
+                "\"${DevConfig.KAKAO_ADDRESS_SEARCH_SERVER}\""
+            )
+            buildConfigField(
+                "String",
+                "APP_SCHEME",
+                "\"${DevConfig.APP_SCHEME}\""
+            )
+        }
+        create("product") {
+            dimension = "server"
+            addManifestPlaceholders(mapOf("KAKAO_NATIVE_KEY" to ProductConfig.KAKAO_NATIVE_KEY))
+            addManifestPlaceholders(mapOf("NAVER_CLIENT_ID" to ProductConfig.NAVER_CLIENT_ID))
+            addManifestPlaceholders(mapOf("APP_SCHEME" to ProductConfig.APP_SCHEME))
+            buildConfigField(
+                "String",
+                "KAKAO_NATIVE_KEY",
+                "\"${ProductConfig.KAKAO_NATIVE_KEY}\""
+            )
+            buildConfigField(
+                "String",
+                "GOOGLE_WEB_CLIENT_ID",
+                "\"${ProductConfig.GOOGLE_WEB_CLIENT_ID}\""
+            )
+            buildConfigField(
+                "String",
+                "NAVER_CLIENT_ID",
+                "\"${ProductConfig.NAVER_CLIENT_ID}\""
+            )
+            buildConfigField(
+                "String",
+                "KAKAO_ADDRESS_SEARCH_SERVER",
+                "\"${DevConfig.KAKAO_ADDRESS_SEARCH_SERVER}\""
+            )
+            buildConfigField(
+                "String",
+                "KAKAO_NATIVE_KEY",
+                "\"${ProductConfig.KAKAO_NATIVE_KEY}\""
+            )
+            buildConfigField(
+                "String",
+                "APP_SCHEME",
+                "\"${ProductConfig.APP_SCHEME}\""
+            )
         }
     }
 }
@@ -63,6 +145,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     ksp(libs.hilt.compiler)
+
+    implementation(libs.kakao.login)
+    implementation(libs.kakao.share)
+    implementation(libs.play.services.auth)
 
     debugImplementation(libs.androidx.compose.ui.testManifest)
     testImplementation(libs.kotlin.test)

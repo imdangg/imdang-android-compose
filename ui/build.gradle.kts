@@ -15,6 +15,10 @@ dependencies {
     implementation(libs.androidx.ui.test.junit4.android)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.kakao.login)
+    implementation(libs.kakao.share)
+    implementation(libs.play.services.auth)
+
     //implementation(libs.androidx.core.ktx)
     //androidTestImplementation(libs.androidx.core)
     androidTestImplementation(libs.androidx.runner)
