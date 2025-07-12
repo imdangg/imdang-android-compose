@@ -4,6 +4,9 @@
     <string name="top_write_title">작성</string>
     <string name="top_storage_title">보관함</string>
 
+    <string name="btn_kakao_login">카카오 로그인</string>
+    <string name="btn_google_login">구글 로그인</string>
+
     <string name="next_btn_label">다음</string>
 
 </resources>
