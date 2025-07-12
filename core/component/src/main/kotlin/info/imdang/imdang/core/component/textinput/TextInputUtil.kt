@@ -1,12 +1,14 @@
 package info.imdang.imdang.core.component.textinput
 
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import info.imdang.imdang.core.component.theme.Error
 import info.imdang.imdang.core.component.theme.Gray100
+import info.imdang.imdang.core.component.theme.Gray25
 import info.imdang.imdang.core.component.theme.Gray400
 import info.imdang.imdang.core.component.theme.Gray50
 import info.imdang.imdang.core.component.theme.Gray900
@@ -26,6 +28,13 @@ internal val descriptionTextInputStyle = TextStyle(
     fontWeight = FontWeight.Medium,
     fontSize = 12.sp,
     lineHeight = (12 * 1.4).sp,
+)
+
+internal val searchInputTopTextStyle = TextStyle(
+    fontFamily = pretendardFont,
+    fontWeight = FontWeight.Medium,
+    fontSize = 16.sp,
+    lineHeight = (16 * 1.4).sp,
 )
 
 @Composable
@@ -48,6 +57,19 @@ internal fun outlinedTextFieldColor() = OutlinedTextFieldDefaults.colors(
     unfocusedPlaceholderColor = Gray400, // 포커스가 맞춰져 있지 않은 상태에서 텍스트 필드의 플레이스홀더 색상입니다.
     disabledPlaceholderColor = Gray400, // 비활성화된 상태에서 텍스트 필드의 플레이스홀더 색상입니다.
     errorPlaceholderColor = Gray400, // 오류 상태에서 텍스트 필드의 플레이스홀더 색상입니다.
+)
+
+@Composable
+internal fun searchInputTopTextFieldColor() = TextFieldDefaults.colors(
+    focusedTextColor = Gray900,
+    unfocusedTextColor = Gray900,
+    cursorColor = Orange500,
+    focusedContainerColor = Gray25,
+    unfocusedContainerColor = Gray25,
+    focusedLeadingIconColor = Gray900,
+    unfocusedLeadingIconColor = Gray900,
+    focusedPlaceholderColor = Gray400,
+    unfocusedPlaceholderColor = Gray400,
 )
 
 enum class TextInputType {

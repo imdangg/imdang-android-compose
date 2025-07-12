@@ -5,7 +5,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import info.imdang.imdang.core.component.theme.pretendardFont
 
-val chipTextStyle = TextStyle(
+internal val chipTextStyle = TextStyle(
     fontFamily = pretendardFont,
     fontWeight = FontWeight.SemiBold,
     fontSize = 14.sp,

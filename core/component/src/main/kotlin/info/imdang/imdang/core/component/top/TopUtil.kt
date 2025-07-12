@@ -5,9 +5,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import info.imdang.imdang.core.component.theme.pretendardFont
 
-val topTitleBarTextStyle = TextStyle(
+internal val topTitleBarTextStyle = TextStyle(
     fontFamily = pretendardFont,
     fontWeight = FontWeight.SemiBold,
     fontSize = 18.sp,
     lineHeight = (18 * 1.4).sp,
+)
+
+internal val topBarNavigationTextStyle = TextStyle(
+    fontFamily = pretendardFont,
+    fontWeight = FontWeight.Bold,
+    fontSize = 24.sp,
+    lineHeight = (24 * 1.4).sp,
 )
