@@ -12,6 +12,8 @@ dependencies {
     implementation(libs.coil.kt.compose)
     implementation(projects.core.presentation)
     implementation(projects.core.component)
+    implementation(libs.androidx.ui.test.junit4.android)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
     //implementation(libs.androidx.core.ktx)
     //androidTestImplementation(libs.androidx.core)

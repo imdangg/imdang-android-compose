@@ -63,7 +63,7 @@ sealed class PreferenceCategory(
 
     )
     data object Environment : PreferenceCategory(
-        title = "인프라",
+        title = "환경",
         options = listOf("공원","하천","등산로","아파트 밀집","한강")
 
     )

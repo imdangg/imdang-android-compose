@@ -21,7 +21,6 @@ enum class TopLevelDestination(
     val route: KClass<*>,
     val baseRoute: KClass<*> = route
 ) {
-    //todo icon 수정
     HOME(
         selectedIconId = ComponentR.drawable.home,
         unselectedIconId = ComponentR.drawable.home,
