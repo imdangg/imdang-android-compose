@@ -130,6 +130,7 @@ android {
 dependencies {
     implementation(projects.core.component)
     implementation(projects.ui)
+    implementation(projects.core.presentation)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.imdang.android.library)
     alias(libs.plugins.imdang.android.library.compose)
+    alias(libs.plugins.imdang.hilt)
 }
 
 android {

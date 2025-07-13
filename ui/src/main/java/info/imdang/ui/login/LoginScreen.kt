@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,8 +36,24 @@ import info.imdang.ui.R
 fun LoginRoute(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     LoginScreen(
-        onClickedLogin = {}
+        onClickedLogin = { loginPlatform ->
+            when (loginPlatform) {
+                LoginPlatform.GOOGLE -> {
+
+                }
+
+                LoginPlatform.KAKAO -> {
+                    LoginUtil.startKakaoLogin(
+                        context = context,
+                        onSuccess = {},
+                        onFailure = {}
+                    )
+                }
+            }
+        }
     )
 }
 
@@ -70,7 +87,7 @@ internal fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     loginPlatform = it,
-                    onClicked = {},
+                    onClicked = onClickedLogin,
                 )
             }
         }
