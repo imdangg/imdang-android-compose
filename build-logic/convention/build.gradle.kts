@@ -65,6 +65,10 @@ gradlePlugin {
             id = libs.plugins.imdang.android.room.get().pluginId
             implementationClass = "AndroidRoomConventionPlugin"
         }
+        register("androidFlavors") {
+            id = libs.plugins.imdang.android.application.flavors.get().pluginId
+            implementationClass = "AndroidApplicationFlavorsConventionPlugin"
+        }
         register("jvmLibrary") {
             id = libs.plugins.imdang.jvm.library.get().pluginId
             implementationClass = "JvmLibraryConventionPlugin"

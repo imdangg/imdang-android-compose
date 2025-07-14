@@ -1,6 +1,6 @@
-import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import info.imdang.build_logic.Config
+import info.imdang.build_logic.configureFlavors
 import info.imdang.build_logic.configureKotlinAndroid
 import info.imdang.build_logic.libs
 import org.gradle.api.Plugin
@@ -20,6 +20,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 defaultConfig.targetSdk = Config.targetSdk
                 defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 testOptions.animationsDisabled = true
+                configureFlavors(this)
             }
             dependencies {
                 "androidTestImplementation"(libs.findLibrary("kotlin.test").get())
