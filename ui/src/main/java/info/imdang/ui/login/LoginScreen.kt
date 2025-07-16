@@ -40,19 +40,11 @@ fun LoginRoute(
 
     LoginScreen(
         onClickedLogin = { loginPlatform ->
-            when (loginPlatform) {
-                LoginPlatform.GOOGLE -> {
-
-                }
-
-                LoginPlatform.KAKAO -> {
-                    LoginUtil.startKakaoLogin(
-                        context = context,
-                        onSuccess = {},
-                        onFailure = {}
-                    )
-                }
-            }
+            LoginUtil.startKakaoLogin(
+                context = context,
+                onSuccess = { viewModel.getLogin(loginPlatform.name, token = it) },
+                onFailure = {}
+            )
         }
     )
 }

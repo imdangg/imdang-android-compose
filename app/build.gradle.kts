@@ -133,6 +133,9 @@ dependencies {
     implementation(projects.core.component)
     implementation(projects.ui)
     implementation(projects.core.presentation)
+    implementation(projects.core.domain)
+    implementation(projects.core.data)
+    implementation(projects.core.network)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)

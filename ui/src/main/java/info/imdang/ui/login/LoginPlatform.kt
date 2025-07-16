@@ -10,6 +10,7 @@ import info.imdang.imdang.core.component.theme.White
 import info.imdang.ui.R
 
 sealed class LoginPlatform(
+    val name: String,
     val backgroundColor: Color,
     val textColor: Color,
     val borderColor: Color? = null,
@@ -17,6 +18,7 @@ sealed class LoginPlatform(
     @StringRes val labelRes: Int
 ) {
     data object KAKAO : LoginPlatform(
+        name = "KAKAO",
         backgroundColor = KakaoYellow,
         textColor = Gray900,
         iconRes = R.drawable.ic_kakao,
@@ -24,6 +26,7 @@ sealed class LoginPlatform(
     )
 
     data object GOOGLE : LoginPlatform(
+        name = "GOOGLE",
         backgroundColor = White,
         textColor = Gray900,
         borderColor = Gray100,
