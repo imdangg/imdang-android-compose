@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface AuthRepository {
 
     fun getKakaoLogin(provider: String, token: String): Flow<DataResource<LoginData>>
+
+    fun getSavedLoginData(): Flow<LoginData?>
 }
