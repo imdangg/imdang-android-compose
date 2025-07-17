@@ -4,26 +4,19 @@ internal interface DataMapper<DomainModel> {
     fun toDomain(): DomainModel
 }
 
+@Suppress("UNCHECKED_CAST")
 internal fun <EntityModel, DomainModel> EntityModel.toDomainModel(): DomainModel {
-    @Suppress("UNCHECKED_CAST")
     return when (this) {
-        is DataMapper<*> -> toDomain()
-        is List<*> -> map {
-            val domainModel: DomainModel = it.toDomainModel()
-            domainModel
+        is DataMapper<*> -> (this as DataMapper<DomainModel>).toDomain()
+        is List<*> -> {
+            (this as List<*>).map {
+                it?.toDomainModel<Any, Any>() as DomainModel
+            } as DomainModel
         }
-        is Unit -> this
-        is Boolean -> this
-        is Int -> this
-        is String -> this
-        is Byte -> this
-        is Short -> this
-        is Long -> this
-        is Char -> this
-        else -> {
-            throw IllegalArgumentException("DataModel은 DataMapper<>, List<DataMapper<>>, Unit중 하나여야 함")
-        }
-    } as DomainModel
+
+        is Unit, is Boolean, is Int, is String, is Byte, is Short, is Long, is Char -> this as DomainModel
+        else -> throw IllegalArgumentException("DataModel은 DataMapper<>, List<DataMapper<>>, Unit 중 하나여야 함")
+    }
 }
 
 internal fun <EntityModel : DataMapper<DomainModel>, DomainModel> List<EntityModel>.toDomain(): List<DomainModel> {

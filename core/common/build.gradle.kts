@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.imdang.jvm.library)
-    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.imdang.hilt)
 }
 
-dependencies{
+dependencies {
     implementation(libs.kotlinx.coroutines.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)

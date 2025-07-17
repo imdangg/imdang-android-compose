@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option java_package = "info.imdang.imdang.core.datastore";
+option java_multiple_files = true;
+
+message AuthPreferences {
+  string member_id = 1;
+  bool is_joined = 2;
+  string access_token = 3;
+  string refresh_token = 4;
+}

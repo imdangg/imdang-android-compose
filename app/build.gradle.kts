@@ -136,6 +136,9 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.data)
     implementation(projects.core.network)
+    implementation(projects.core.datastore)
+    implementation(projects.core.datastoreProto)
+    implementation(projects.core.common)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)

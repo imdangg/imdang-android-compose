@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "info.imdang.core.datastore"
+    namespace = "info.imdang.core.datastore.proto"
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -14,6 +14,10 @@ android {
 
 dependencies {
     implementation(projects.core.data)
+    implementation(projects.core.datastoreProto)
     implementation(projects.core.common)
+
+    api(libs.androidx.dataStore)
+
     testImplementation(libs.kotlinx.coroutines.test)
 }
