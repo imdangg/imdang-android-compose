@@ -59,6 +59,8 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.common)
 
+    implementation(libs.snadwich.retrofit)
+
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.okhttp.logging)
     implementation(libs.retrofit.core)

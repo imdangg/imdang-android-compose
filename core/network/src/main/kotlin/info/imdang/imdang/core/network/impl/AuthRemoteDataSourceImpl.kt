@@ -1,8 +1,16 @@
 package info.imdang.imdang.core.network.impl
 
+import com.skydoves.sandwich.ApiResponse
+import com.skydoves.sandwich.mapSuccess
+import com.skydoves.sandwich.retrofit.adapters.ApiResponseCallAdapterFactory
 import info.imdang.core.network.BuildConfig
+import info.imdang.imdang.core.data.datasource.model.LoginEntity
+import info.imdang.imdang.core.data.datasource.model.LoginRequestEntity
 import info.imdang.imdang.core.data.datasource.remote.AuthRemoteDataSource
+import info.imdang.imdang.core.network.model.LoginRequest
 import info.imdang.imdang.core.network.model.LoginResponse
+import info.imdang.imdang.core.network.model.base.ApiResultResponse
+import info.imdang.imdang.core.network.model.toRemote
 import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
@@ -17,9 +25,8 @@ import javax.inject.Singleton
 private interface RetrofitAuthNetworkApi {
     @POST("login")
     suspend fun postLogin(
-        @Body provider: String,
-        @Body token: String,
-    ): LoginResponse
+        @Body loginRequest: LoginRequest,
+    ): ApiResponse<ApiResultResponse<LoginResponse>>
 }
 
 @Singleton
@@ -34,9 +41,11 @@ internal class AuthRemoteDataSourceImpl @Inject constructor(
             .addConverterFactory(
                 networkJson.asConverterFactory("application/json".toMediaType()),
             )
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
             .build()
             .create(RetrofitAuthNetworkApi::class.java)
 
-    override suspend fun getKakaoLogin(provider: String, token: String) =
-        networkApi.postLogin(provider, token).toData()
+    override suspend fun getLogin(loginRequestEntity: LoginRequestEntity): ApiResponse<LoginEntity> =
+        networkApi.postLogin(loginRequestEntity.toRemote())
+            .mapSuccess { data!!.toData() }
 }

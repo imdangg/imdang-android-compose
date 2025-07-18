@@ -43,6 +43,7 @@ coil = "2.7.0"
 uiGraphics = "1.8.3"
 gson = "2.10.1"
 uiTestJunit4Android = "1.8.3"
+sandwich = "2.1.2"
 
 
 [libraries]
@@ -148,6 +149,10 @@ naver-map = { group = "com.naver.maps", name = "map-sdk", version.ref = "naver-m
 #paging --> 사용안할 수 있음
 androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "pagingCommon" }
 androidx-paging-runtime-ktx = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
+
+#Sandwich -> Api Result Handling
+snadwich = { group = "com.github.skydoves", name = "sandwich", version.ref = "sandwich" }
+snadwich-retrofit = { group = "com.github.skydoves", name = "sandwich-retrofit", version.ref = "sandwich" }
 
 #build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }

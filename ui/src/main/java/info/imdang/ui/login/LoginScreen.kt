@@ -1,5 +1,6 @@
 package info.imdang.ui.login
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,7 +43,18 @@ fun LoginRoute(
         onClickedLogin = { loginPlatform ->
             LoginUtil.startKakaoLogin(
                 context = context,
-                onSuccess = { viewModel.getLogin(loginPlatform.name, token = it) },
+                onSuccess = {
+                    viewModel.getLogin(
+                        provider = loginPlatform.name,
+                        token = it,
+                        onSuccess = {
+                            Log.d("LoginScreen", "Login successful: $it")
+                        },
+                        onError = {
+                            Log.d("LoginScreen", "Login failed: $it")
+                        }
+                    )
+                },
                 onFailure = {}
             )
         }
