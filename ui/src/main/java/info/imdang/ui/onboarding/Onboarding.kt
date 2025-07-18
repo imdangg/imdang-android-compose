@@ -550,14 +550,5 @@ fun PreviewOPTStep5() {
     }
 }
 
-@Preview
-@Composable
-fun PreviewOPTText() {
-    ImdangAppNewTheme() {
-        Column {
-            OptText("강남구", false,{})
-            OptText("강남구", true,{})
-        }
-    }
-}
+
 

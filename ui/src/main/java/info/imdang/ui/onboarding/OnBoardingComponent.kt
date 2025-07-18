@@ -30,18 +30,22 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import info.imdang.core.presentation.onboarding.UserPurpose
 import info.imdang.imdang.core.component.radiobutton.ImdangRadioButton
 import info.imdang.imdang.core.component.theme.Black
 import info.imdang.imdang.core.component.theme.Gray100
 import info.imdang.imdang.core.component.theme.Gray700
 import info.imdang.imdang.core.component.theme.Gray80
 import info.imdang.imdang.core.component.theme.Gray900
+import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
 import info.imdang.imdang.core.component.theme.Orange300
 import info.imdang.imdang.core.component.theme.Orange450
 import info.imdang.imdang.core.component.theme.Orange50
 import info.imdang.imdang.core.component.theme.Orange500
 import info.imdang.imdang.core.component.theme.White
+import info.imdang.ui.R
 
 @Composable
 fun PurposeButton(iconId: Int, label: String, isSelected: Boolean, onClick: () -> Unit) {
@@ -130,4 +134,50 @@ fun OptText(
             )
             .wrapContentSize(Alignment.CenterStart)
     )
+}
+
+@Preview
+@Composable
+fun PreviewPurposeButton() {
+    ImdangAppNewTheme() {
+        Column {
+            PurposeButton(
+                iconId = R.drawable.ic_real_resident,
+                label = "Text",
+                isSelected = false,
+                onClick = {
+
+                }
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            PurposeButton(
+                iconId = R.drawable.ic_gap_investment,
+                label = "Text",
+                isSelected = true,
+                onClick = {
+
+                }
+            )
+        }
+    }
+}
+@Preview
+@Composable
+fun PreviewRadioButtonItem() {
+    ImdangAppNewTheme() {
+        Column {
+            RadioButtonItem(label = "Text", selected = false) { }
+            RadioButtonItem(label = "Text", selected = true) { }
+        }
+    }
+}
+@Preview
+@Composable
+fun PreviewOPTText() {
+    ImdangAppNewTheme() {
+        Column {
+            OptText("Text", false,{})
+            OptText("Text", true,{})
+        }
+    }
 }
