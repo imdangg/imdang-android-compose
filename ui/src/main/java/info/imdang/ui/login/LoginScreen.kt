@@ -119,7 +119,7 @@ internal fun LoginButton(
         ) {
             Text(
                 text = stringResource(loginPlatform.labelRes),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 color = loginPlatform.textColor
             )
 
