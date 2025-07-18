@@ -1,5 +1,6 @@
 package info.imdang.core.presentation.onboarding
 
+
 enum class OnboardingText(
     val step: OnboardingStep,
     val purpose: UserPurpose,
@@ -51,6 +52,19 @@ enum class OnboardingText(
             "3명"
         )
     ),
+    STEP5_1_REAL(
+        step = OnboardingStep.OPT_STEP5_1,
+        purpose = UserPurpose.REAL_RESIDENCE,
+        title = STEP5_1_TITLE,
+        subtitle = STEP5_1_SUBTITLE,
+        options = listOf(COMMUTE_AREA, TRAFFIC, SCHOOL, INFRA, ENVIRONMENT)
+    ),
+    STEP5_2_REAL(
+        step = OnboardingStep.OPT_STEP5_2,
+        purpose = UserPurpose.REAL_RESIDENCE,
+        title = STEP5_2_TITLE,
+        subtitle = STEP5_2_SUBTITLE
+    ),
 
     /*------------갭투자------------*/
 
@@ -101,6 +115,21 @@ enum class OnboardingText(
         )
     ),
 
+    STEP5_1_GAP(
+        step = OnboardingStep.OPT_STEP5_1,
+        purpose = UserPurpose.GAP_INVESTMENT,
+        title = STEP5_1_TITLE,
+        subtitle = STEP5_1_SUBTITLE,
+        options = listOf(
+            SQUARE_FOOTAGE, NUM_OF_HOUSEHOLDS, APT_CATEGORY, COMMUTE_AREA, INFRA, ENVIRONMENT
+        )
+    ),
+    STEP5_2_GAP(
+        step = OnboardingStep.OPT_STEP5_2,
+        purpose = UserPurpose.GAP_INVESTMENT,
+        title = STEP5_2_TITLE,
+        subtitle = STEP5_2_SUBTITLE
+    ),
 }
 
 private const val STEP1_TITLE = "예산은 어느 정도 고려중이신가요?"
@@ -121,3 +150,9 @@ private val STEP2_OPTIONS = listOf(
     "800만원 이하",
     "1,000만원 이상"
 )
+
+private const val STEP5_1_TITLE = "임장 우선순위를 골라주세요!"
+private const val STEP5_1_SUBTITLE = "1,2,3위를 기준으로 컨텐츠를 추천해드려요."
+
+private const val STEP5_2_TITLE = "관심 동네가 있으신가요?"
+private const val STEP5_2_SUBTITLE = "*최대 3개까지 고를 수 있어요"

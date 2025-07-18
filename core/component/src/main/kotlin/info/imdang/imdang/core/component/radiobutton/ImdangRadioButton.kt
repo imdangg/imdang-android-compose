@@ -39,7 +39,7 @@ fun ImdangRadioButton(
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawCircle(
-                color = Gray100,
+                color = innerColor,
                 style = Stroke(width = 2.dp.toPx())
             )
         }
