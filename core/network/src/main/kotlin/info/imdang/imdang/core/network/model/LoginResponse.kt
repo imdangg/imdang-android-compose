@@ -2,7 +2,9 @@ package info.imdang.imdang.core.network.model
 
 import info.imdang.imdang.core.data.datasource.model.LoginEntity
 import info.imdang.imdang.core.network.RemoteMapper
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class LoginResponse(
     val memberId: String,
     val isJoined: Boolean,

@@ -1,7 +1,9 @@
 package info.imdang.imdang.core.network.model
 
 import info.imdang.imdang.core.data.datasource.model.LoginRequestEntity
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class LoginRequest(
     val provider: String,
     val token: String
