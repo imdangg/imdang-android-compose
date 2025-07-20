@@ -454,7 +454,7 @@ fun OptStep6Screen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
-        Column {
+        Column(Modifier.padding(bottom = 130.dp)) {
             currentOnboardingText?.let { onboardingText ->
                 Icon(
                     painter = painterResource(info.imdang.core.component.R.drawable.back),
@@ -525,7 +525,7 @@ fun OptStep6Screen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 4.dp),
+                    .padding(bottom = 10.dp),
                 buttonSize = ButtonSize.L,
                 text = stringResource(R.string.next_btn_label),
                 enabled = selectedAreas.size == 3
@@ -764,18 +764,18 @@ fun PreviewOPTStep5() {
     }
 }
 
+
 @Preview
 @Composable
 fun PreviewOPTStep6() {
     val dummyPreferenceCategory = PreferenceCategory.CommuteArea(
         title = "출퇴근 지역",
-        subCategories = listOf(
-            PreferenceSubCategory("강남구", listOf("역삼동", "삼성동", "청담동")),
-            PreferenceSubCategory("종로구", listOf("종로1가", "종로2가", "종로3가")),
-            PreferenceSubCategory("성수동", listOf("성수1가", "성수2가")),
-            PreferenceSubCategory("광진구", listOf("성수1가", "성수2가"))
-
-        )
+        subCategories = List(50) { index ->
+            PreferenceSubCategory(
+                name = "구역 $index",
+                options = List(5) { optIndex -> "동 ${index + 1} - 동네 $optIndex" }
+            )
+        }
     )
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
         ImdangAppNewTheme() {
@@ -791,4 +791,13 @@ fun PreviewOPTStep6() {
 }
 
 
+@Preview
+@Composable
+fun PreviewFinishedScreen() {
+    Surface(modifier = Modifier.fillMaxSize(), color = White) {
+        ImdangAppNewTheme() {
+            FinishedScreen()
+        }
+    }
+}
 
