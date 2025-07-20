@@ -62,8 +62,7 @@ fun ScrollableTabRow(
         modifier = modifier
             .padding(top = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.Bottom,
-       contentPadding = PaddingValues(end = 20.dp)
+        verticalAlignment = Alignment.Bottom
     ) {
         items(
             items = tabs,

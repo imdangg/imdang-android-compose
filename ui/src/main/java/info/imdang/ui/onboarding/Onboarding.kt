@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
@@ -63,9 +64,11 @@ import info.imdang.imdang.core.component.buttons.MainButton
 import info.imdang.imdang.core.component.taps.ScrollableTabRow
 import info.imdang.imdang.core.component.theme.Black
 import info.imdang.imdang.core.component.theme.FontBlack
+import info.imdang.imdang.core.component.theme.Gray100
 import info.imdang.imdang.core.component.theme.Gray150
 import info.imdang.imdang.core.component.theme.Gray550
 import info.imdang.imdang.core.component.theme.Gray700
+import info.imdang.imdang.core.component.theme.Gray900
 import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
 import info.imdang.imdang.core.component.theme.White
 import info.imdang.ui.R
@@ -331,11 +334,13 @@ fun OptStep5Screen(
         },
         containerColor = White,
         content = {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp)
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     currentOnboardingText?.let { onboardingText ->
                         Icon(
@@ -384,8 +389,7 @@ fun OptStep5Screen(
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(horizontal = 20.dp, vertical = 24.dp),
-                    // horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(vertical = 4.dp),
                 ) {
                     MainButton(
                         onClick = {
@@ -441,18 +445,103 @@ fun OptStep6Screen(
     onSkip: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    Column(
+    val seoul = commuteArea?.subCategories?.map { it.name }.orEmpty()
+    val selectedAreasState = remember { mutableStateOf<List<String>>(emptyList()) }
+    val selectedAreas = selectedAreasState.value
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp)
     ) {
-        currentOnboardingText?.let {
-            Icon(
-                painter = painterResource(info.imdang.core.component.R.drawable.back),
-                contentDescription = null,
+        Column {
+            currentOnboardingText?.let { onboardingText ->
+                Icon(
+                    painter = painterResource(info.imdang.core.component.R.drawable.back),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { onBackClick() }
+                )
+                Text(
+                    modifier = Modifier.padding(top = 36.dp),
+                    text = onboardingText.title,
+                    style = MaterialTheme.typography.titleLarge.copy(FontBlack)
+                )
+                Text(
+                    modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
+                    text = onboardingText.subtitle,
+                    style = MaterialTheme.typography.labelMedium.copy(Gray550)
+                )
+
+                Text(
+                    "서울",
+                    modifier = Modifier
+                        .height(43.dp)
+                        .fillMaxWidth(),
+                    style = MaterialTheme.typography.labelMedium.copy(color = Gray900)
+                )
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp),
+                    color = Gray100
+                )
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                ) {
+                    items(seoul) { name ->
+                        val isSelected = name in selectedAreas
+                        OptText(
+                            text = name,
+                            isSelected = isSelected,
+                            onClick = {
+                                selectedAreasState.value = when {
+                                    isSelected -> selectedAreas - name
+                                    selectedAreas.size < 3 -> selectedAreas + name
+                                    else -> selectedAreas // 3개 넘으면 무시
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(vertical = 4.dp),
+        ) {
+            MainButton(
+                onClick = {
+                    onFinish(selectedAreas)
+                },
                 modifier = Modifier
-                    .size(24.dp)
-                    .clickable { onBackClick() }
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp),
+                buttonSize = ButtonSize.L,
+                text = stringResource(R.string.next_btn_label),
+                enabled = selectedAreas.size == 3
+            )
+            Text(
+                modifier = Modifier
+                    .clickable(
+                        onClick = onSkip,
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    )
+                    .fillMaxWidth()
+                    .padding(9.dp),
+                text = stringResource(R.string.skip_btn_label),
+                style = MaterialTheme.typography.titleSmall.copy(color = Gray700),
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -487,7 +576,14 @@ fun BottomSheetContent(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        Column(modifier = modifier.padding(20.dp, bottom = 96.dp)) {
+        Column(
+            modifier = modifier
+                .padding(
+                    horizontal = 20.dp,
+                    vertical = 20.dp
+                )
+                .padding(bottom = 76.dp) // bottom 버튼 공간
+        ) {
             Text(
                 text = "${priorityIndex}순위",
                 style = MaterialTheme.typography.titleMedium.copy(color = FontBlack)
@@ -658,12 +754,38 @@ fun PreviewOPTStep5() {
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
         ImdangAppNewTheme() {
             OptStep5Screen(
-                OnboardingText.STEP5_1_GAP,
+                OnboardingText.STEP5_GAP,
                 dummyPreferenceCategory,
                 rankList,
                 onNext = {},
                 onSkip = {}
             ) { }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewOPTStep6() {
+    val dummyPreferenceCategory = PreferenceCategory.CommuteArea(
+        title = "출퇴근 지역",
+        subCategories = listOf(
+            PreferenceSubCategory("강남구", listOf("역삼동", "삼성동", "청담동")),
+            PreferenceSubCategory("종로구", listOf("종로1가", "종로2가", "종로3가")),
+            PreferenceSubCategory("성수동", listOf("성수1가", "성수2가")),
+            PreferenceSubCategory("광진구", listOf("성수1가", "성수2가"))
+
+        )
+    )
+    Surface(modifier = Modifier.fillMaxSize(), color = White) {
+        ImdangAppNewTheme() {
+            OptStep6Screen(
+                OnboardingText.STEP6_GAP,
+                dummyPreferenceCategory,
+                onBackClick = {},
+                onFinish = {},
+                onSkip = {}
+            )
         }
     }
 }

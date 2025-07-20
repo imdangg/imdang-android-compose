@@ -52,18 +52,18 @@ enum class OnboardingText(
             "3명"
         )
     ),
-    STEP5_1_REAL(
+    STEP5_REAL(
         step = OnboardingStep.OPT_STEP5,
         purpose = UserPurpose.REAL_RESIDENCE,
-        title = STEP5_1_TITLE,
-        subtitle = STEP5_1_SUBTITLE,
+        title = STEP5_TITLE,
+        subtitle = STEP5_SUBTITLE,
         options = listOf(COMMUTE_AREA, TRAFFIC, SCHOOL, INFRA, ENVIRONMENT)
     ),
-    STEP5_2_REAL(
+    STEP6_REAL(
         step = OnboardingStep.OPT_STEP6,
         purpose = UserPurpose.REAL_RESIDENCE,
-        title = STEP5_2_TITLE,
-        subtitle = STEP5_2_SUBTITLE
+        title = STEP6_TITLE,
+        subtitle = STEP6_SUBTITLE
     ),
 
     /*------------갭투자------------*/
@@ -115,20 +115,20 @@ enum class OnboardingText(
         )
     ),
 
-    STEP5_1_GAP(
+    STEP5_GAP(
         step = OnboardingStep.OPT_STEP5,
         purpose = UserPurpose.GAP_INVESTMENT,
-        title = STEP5_1_TITLE,
-        subtitle = STEP5_1_SUBTITLE,
+        title = STEP5_TITLE,
+        subtitle = STEP5_SUBTITLE,
         options = listOf(
             SQUARE_FOOTAGE, NUM_OF_HOUSEHOLDS, APT_CATEGORY, COMMUTE_AREA, INFRA, ENVIRONMENT
         )
     ),
-    STEP5_2_GAP(
+    STEP6_GAP(
         step = OnboardingStep.OPT_STEP6,
         purpose = UserPurpose.GAP_INVESTMENT,
-        title = STEP5_2_TITLE,
-        subtitle = STEP5_2_SUBTITLE
+        title = STEP6_TITLE,
+        subtitle = STEP6_SUBTITLE
     ),
 }
 
@@ -151,8 +151,8 @@ private val STEP2_OPTIONS = listOf(
     "1,000만원 이상"
 )
 
-private const val STEP5_1_TITLE = "임장 우선순위를 골라주세요!"
-private const val STEP5_1_SUBTITLE = "1,2,3위를 기준으로 컨텐츠를 추천해드려요."
+private const val STEP5_TITLE = "임장 우선순위를 골라주세요!"
+private const val STEP5_SUBTITLE = "1,2,3위를 기준으로 컨텐츠를 추천해드려요."
 
-private const val STEP5_2_TITLE = "관심 동네가 있으신가요?"
-private const val STEP5_2_SUBTITLE = "*최대 3개까지 고를 수 있어요"
+private const val STEP6_TITLE = "관심 동네가 있으신가요?"
+private const val STEP6_SUBTITLE = "*최대 3개까지 고를 수 있어요"
