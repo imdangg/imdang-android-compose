@@ -23,6 +23,7 @@ class AuthRepositoryImpl @Inject constructor(
     ): Flow<LoginData> = flow {
         val response = authRemoteDataSource.getLogin(loginRequestData.toData())
         response.suspendOnSuccess {
+            authLocalDataSource.setLoginEntity(data)
             emit(data.toDomain())
         }.onError {
             TODO()
