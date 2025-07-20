@@ -2,6 +2,7 @@ package info.imdang.ui.onboarding
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -26,16 +27,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import info.imdang.core.presentation.onboarding.UserPurpose
+import androidx.compose.ui.unit.sp
 import info.imdang.imdang.core.component.radiobutton.ImdangRadioButton
 import info.imdang.imdang.core.component.theme.Black
+import info.imdang.imdang.core.component.theme.FontBlack
 import info.imdang.imdang.core.component.theme.Gray100
+import info.imdang.imdang.core.component.theme.Gray30
 import info.imdang.imdang.core.component.theme.Gray700
 import info.imdang.imdang.core.component.theme.Gray80
 import info.imdang.imdang.core.component.theme.Gray900
@@ -136,6 +141,38 @@ fun OptText(
     )
 }
 
+
+@Composable
+fun PriorityOptButton(text: String?, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val notSelected = text.isNullOrEmpty()
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(BorderStroke(1.dp, Gray30), RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(8.dp))
+            .background(Gray80)
+            .padding(12.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = text ?: stringResource(R.string.choose_btn_label),
+            style = if (notSelected) MaterialTheme.typography.titleSmall.copy(
+                fontSize = 14.sp,
+                color = FontBlack
+            )
+            else MaterialTheme.typography.titleSmall.copy(fontSize = 14.sp, color = Orange500),
+            textAlign = if (notSelected) TextAlign.Center else TextAlign.Start
+        )
+
+    }
+}
+
 @Preview
 @Composable
 fun PreviewPurposeButton() {
@@ -178,6 +215,18 @@ fun PreviewOPTText() {
         Column {
             OptText("Text", false,{})
             OptText("Text", true,{})
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewPriorityOptButton() {
+    ImdangAppNewTheme() {
+        Column {
+            PriorityOptButton("Text>text"){}
+            Spacer(Modifier.height(10.dp))
+            PriorityOptButton(null){}
         }
     }
 }

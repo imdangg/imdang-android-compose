@@ -8,6 +8,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
 import info.imdang.imdang.ui.rememberImdangAppState
 import info.imdang.imdang.ui.ImdangApp
+import info.imdang.ui.onboarding.Onboarding
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -19,7 +20,8 @@ class MainActivity : ComponentActivity() {
             val appState = rememberImdangAppState()
 
             ImdangAppNewTheme {
-                    ImdangApp(appState = appState)
+                Onboarding()
+                 //   ImdangApp(appState = appState)
                 }
             }
         }

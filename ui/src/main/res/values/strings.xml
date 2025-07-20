@@ -8,5 +8,9 @@
     <string name="btn_google_login">구글 로그인</string>
 
     <string name="next_btn_label">다음</string>
+    <string name="choose_btn_label">선택</string>
+    <string name="skip_btn_label">건너뛰기</string>
 
+    <string name="purpose_real_resident">실거주</string>
+    <string name="purpose_gap_investment">갭투자</string>
 </resources>

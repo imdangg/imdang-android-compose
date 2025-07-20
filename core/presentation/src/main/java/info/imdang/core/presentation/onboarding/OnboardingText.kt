@@ -53,14 +53,14 @@ enum class OnboardingText(
         )
     ),
     STEP5_1_REAL(
-        step = OnboardingStep.OPT_STEP5_1,
+        step = OnboardingStep.OPT_STEP5,
         purpose = UserPurpose.REAL_RESIDENCE,
         title = STEP5_1_TITLE,
         subtitle = STEP5_1_SUBTITLE,
         options = listOf(COMMUTE_AREA, TRAFFIC, SCHOOL, INFRA, ENVIRONMENT)
     ),
     STEP5_2_REAL(
-        step = OnboardingStep.OPT_STEP5_2,
+        step = OnboardingStep.OPT_STEP6,
         purpose = UserPurpose.REAL_RESIDENCE,
         title = STEP5_2_TITLE,
         subtitle = STEP5_2_SUBTITLE
@@ -116,7 +116,7 @@ enum class OnboardingText(
     ),
 
     STEP5_1_GAP(
-        step = OnboardingStep.OPT_STEP5_1,
+        step = OnboardingStep.OPT_STEP5,
         purpose = UserPurpose.GAP_INVESTMENT,
         title = STEP5_1_TITLE,
         subtitle = STEP5_1_SUBTITLE,
@@ -125,7 +125,7 @@ enum class OnboardingText(
         )
     ),
     STEP5_2_GAP(
-        step = OnboardingStep.OPT_STEP5_2,
+        step = OnboardingStep.OPT_STEP6,
         purpose = UserPurpose.GAP_INVESTMENT,
         title = STEP5_2_TITLE,
         subtitle = STEP5_2_SUBTITLE

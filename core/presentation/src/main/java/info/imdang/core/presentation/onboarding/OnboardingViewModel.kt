@@ -8,10 +8,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import info.imdang.core.presentation.model.RankedPriority
 import javax.inject.Inject
 
 enum class OnboardingStep {
-    STEP0, STEP1, STEP2, STEP3, STEP4, OPT_STEP5_1,OPT_STEP5_2, FINISHED
+    STEP0, STEP1, STEP2, STEP3, STEP4, OPT_STEP5, OPT_STEP6, FINISHED
 }
 
 enum class UserPurpose {
@@ -33,6 +34,14 @@ class OnboardingViewModel @Inject constructor(
     val onboardingSelections: Map<OnboardingStep, Int>
         get() = _onboardingSelections.value
 
+    private val _rankedPriorities = mutableStateOf<List<RankedPriority>>(emptyList())
+    val rankedPriorities: List<RankedPriority>
+        get() = _rankedPriorities.value
+
+    private val _preferredAreas = mutableStateOf<List<String>>(emptyList())
+    val preferredAreas: List<String>
+        get() = _preferredAreas.value
+
     init {
         loadData()  // purpose 상관없이 초기 로드
     }
@@ -46,13 +55,31 @@ class OnboardingViewModel @Inject constructor(
             this[targetStep] = selectedIndex
         }
     }
+
     fun getSelectionForStep(targetStep: OnboardingStep): Int? {
         return _onboardingSelections.value[targetStep]
     }
+
     fun clearSelectionForStep(targetStep: OnboardingStep) {
         _onboardingSelections.value = _onboardingSelections.value.toMutableMap().apply {
             remove(targetStep)
         }
+    }
+
+    fun updateRankedPriorities(rankedList: List<RankedPriority>) {
+        _rankedPriorities.value = rankedList.sortedBy { it.rank }
+    }
+
+    fun clearRankedPriorities() {
+        _rankedPriorities.value = emptyList()
+    }
+
+    fun updatePreferredAreas(areas : List<String>){
+        _preferredAreas.value = areas
+    }
+
+    fun clearPreferredAreas(){
+        _preferredAreas.value = emptyList()
     }
 
     fun nextStep() {
@@ -64,15 +91,17 @@ class OnboardingViewModel @Inject constructor(
                     step
                 }
             }
+
             OnboardingStep.STEP1 -> OnboardingStep.STEP2
             OnboardingStep.STEP2 -> OnboardingStep.STEP3
             OnboardingStep.STEP3 -> OnboardingStep.STEP4
-            OnboardingStep.STEP4 -> OnboardingStep.OPT_STEP5_1
-            OnboardingStep.OPT_STEP5_1 -> OnboardingStep.OPT_STEP5_2
-            OnboardingStep.OPT_STEP5_2 -> OnboardingStep.FINISHED
-            OnboardingStep.FINISHED ->OnboardingStep.FINISHED
+            OnboardingStep.STEP4 -> OnboardingStep.OPT_STEP5
+            OnboardingStep.OPT_STEP5 -> OnboardingStep.OPT_STEP6
+            OnboardingStep.OPT_STEP6 -> OnboardingStep.FINISHED
+            OnboardingStep.FINISHED -> OnboardingStep.FINISHED
         }
     }
+
     fun backStep() {
         step = when (step) {
             OnboardingStep.STEP0 -> OnboardingStep.STEP0
@@ -80,15 +109,15 @@ class OnboardingViewModel @Inject constructor(
             OnboardingStep.STEP2 -> OnboardingStep.STEP1
             OnboardingStep.STEP3 -> OnboardingStep.STEP2
             OnboardingStep.STEP4 -> OnboardingStep.STEP3
-            OnboardingStep.OPT_STEP5_1 -> OnboardingStep.STEP4
-            OnboardingStep.OPT_STEP5_2 -> OnboardingStep.OPT_STEP5_1
+            OnboardingStep.OPT_STEP5 -> OnboardingStep.STEP4
+            OnboardingStep.OPT_STEP6 -> OnboardingStep.OPT_STEP5
             OnboardingStep.FINISHED -> OnboardingStep.FINISHED
         }
     }
 
-    fun loadData(/*purpose: UserPurpose*/) {
+    private fun loadData(/*purpose: UserPurpose*/) {
         Log.d("ViewModel LoadData", "commuteArea load 호출 ")
-        commuteArea.value = PreferenceCategory.loadFromJson(context,/* purpose*/)
+        commuteArea.value = PreferenceCategory.loadFromJson(context/* purpose*/)
     }
 
 }

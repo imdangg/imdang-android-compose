@@ -3,6 +3,7 @@ package info.imdang.imdang.core.component.taps
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -61,7 +62,8 @@ fun ScrollableTabRow(
         modifier = modifier
             .padding(top = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.Bottom,
+       contentPadding = PaddingValues(end = 20.dp)
     ) {
         items(
             items = tabs,

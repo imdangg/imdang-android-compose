@@ -25,7 +25,7 @@ sealed class PreferenceCategory(
 
     data object Traffic : PreferenceCategory(
         title = TRAFFIC,
-        options = listOf("역세권", "버스정류장 인근", "주차 편리", "주차장 엘리베이터 연결", "자차 출퇵느 편리")
+        options = listOf("역세권", "버스정류장 인근", "주차 편리", "주차장 엘리베이터 연결", "자차 출퇴근 편리")
     )
 
     data object School : PreferenceCategory(
