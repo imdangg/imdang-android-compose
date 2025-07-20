@@ -53,7 +53,11 @@ fun LoginRoute(
                             provider = loginPlatform.name,
                             token = token,
                             onSuccess = {
-                                Log.d("Login", "로그인 성공: $it")
+                                if (it.isJoined) {
+
+                                } else {
+
+                                }
                             },
                             onError = {
                                 Log.e("Login", "로그인 실패: $it")
