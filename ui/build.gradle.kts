@@ -1,3 +1,8 @@
+import info.imdang.build_logic.DevConfig
+import info.imdang.build_logic.ImdangFlavor
+import info.imdang.build_logic.ProductConfig
+import info.imdang.build_logic.configureFlavorSettings
+
 plugins {
     alias(libs.plugins.imdang.android.library)
     alias(libs.plugins.imdang.android.library.compose)
@@ -6,6 +11,30 @@ plugins {
 
 android {
     namespace = "info.imdang.ui"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    configureFlavorSettings(this) { flavor ->
+        when (flavor) {
+            ImdangFlavor.dev -> {
+                buildConfigField(
+                    "String",
+                    "GOOGLE_WEB_CLIENT_ID",
+                    "\"${DevConfig.GOOGLE_WEB_CLIENT_ID}\""
+                )
+            }
+
+            ImdangFlavor.product -> {
+                buildConfigField(
+                    "String",
+                    "GOOGLE_WEB_CLIENT_ID",
+                    "\"${ProductConfig.GOOGLE_WEB_CLIENT_ID}\""
+                )
+            }
+        }
+    }
 }
 
 dependencies {
@@ -18,7 +47,10 @@ dependencies {
 
     implementation(libs.kakao.login)
     implementation(libs.kakao.share)
-    implementation(libs.play.services.auth)
+
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.auth)
+    implementation(libs.google.identity.googleid)
 
     //implementation(libs.androidx.core.ktx)
     //androidTestImplementation(libs.androidx.core)

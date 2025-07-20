@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "999413225080",
+    "project_id": "imdang",
+    "storage_bucket": "imdang.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999413225080:android:71742a3e44bd870c847f8d",
+        "android_client_info": {
+          "package_name": "info.imdang.imdang.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "999413225080-5etpel3ektjop2l3ogc6rtvakqe5v4us.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.imdang.imdang.dev",
+            "certificate_hash": "11c0156da1e066042b5c90493f65dacd9f3a9806"
+          }
+        },
+        {
+          "client_id": "999413225080-kkf39apefb0ke55igfv4qv4g4f7525gp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.imdang.imdang.dev",
+            "certificate_hash": "78661510239fc144c11d5c5255257504da2058f2"
+          }
+        },
+        {
+          "client_id": "999413225080-nvkv9ljg37q88oqdo03kp4u849mi6qjn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.imdang.imdang.dev",
+            "certificate_hash": "db3d9c9ce30f59a329545ce6f0bcb40f63183941"
+          }
+        },
+        {
+          "client_id": "999413225080-t71p7hrfc2giv0p4lqr2oa25ri3bp2tf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.imdang.imdang.dev",
+            "certificate_hash": "dc69454269f21c8caddb8c9f66dbad1d51f4ea74"
+          }
+        },
+        {
+          "client_id": "999413225080-unu20ml99brerv85kh30ks58dtbq3sqn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.imdang.imdang.dev",
+            "certificate_hash": "ccab8ea491ed290f394dbe0de232fcfefcf1d035"
+          }
+        },
+        {
+          "client_id": "999413225080-k2rugvbe1sn71gr8qka5n2jmuq7u692v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnM7n-5c2vtOg50r1oZQvazNeUmeh22gw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "999413225080-k2rugvbe1sn71gr8qka5n2jmuq7u692v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "999413225080-2rdbvkcgabcr5ugsn9fulf7tcuql843p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "info.apt.imdang"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

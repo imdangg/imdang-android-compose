@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,31 +33,38 @@ import info.imdang.imdang.core.component.theme.Gray25
 import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
 import info.imdang.imdang.core.component.theme.ImdangPreview
 import info.imdang.ui.R
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginRoute(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val lifecycleScope = rememberCoroutineScope()
 
     LoginScreen(
         onClickedLogin = { loginPlatform ->
-            LoginUtil.startKakaoLogin(
-                context = context,
-                onSuccess = {
-                    viewModel.getLogin(
-                        provider = loginPlatform.name,
-                        token = it,
-                        onSuccess = {
-                            Log.d("LoginScreen", "Login successful: $it")
-                        },
-                        onError = {
-                            Log.d("LoginScreen", "Login failed: $it")
-                        }
-                    )
-                },
-                onFailure = {}
-            )
+            lifecycleScope.launch {
+                LoginUtil.startLogin(
+                    platform = loginPlatform,
+                    context = context,
+                    onSuccess = { token ->
+                        viewModel.getLogin(
+                            provider = loginPlatform.name,
+                            token = token,
+                            onSuccess = {
+                                Log.d("Login", "로그인 성공: $it")
+                            },
+                            onError = {
+                                Log.e("Login", "로그인 실패: $it")
+                            }
+                        )
+                    },
+                    onFailure = { error ->
+                        Log.e("Login", "로그인 실패", error)
+                    }
+                )
+            }
         }
     )
 }
