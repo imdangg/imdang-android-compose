@@ -13,4 +13,15 @@
 
     <string name="purpose_real_resident">실거주</string>
     <string name="purpose_gap_investment">갭투자</string>
+
+    <string name="basic_profile_input_title">기본 정보 입력</string>
+    <string name="basic_profile_input_description">맞춤추천, 추후 이벤트를 위해 조사하고 있어요\n개인정보는 유출되지 않으니 걱정 마세요</string>
+
+    <string name="basic_profile_nickname">닉네임</string>
+    <string name="nickname_length_hint">최소 2자-최대 10자</string>
+    <string name="basic_profile_birth">생년월일</string>
+    <string name="basic_profile_gender">성별</string>
+    <string name="basic_profile_gender_male">남자</string>
+    <string name="basic_profile_gender_female">여자</string>
+    <string name="btn_complete">완료</string>
 </resources>
