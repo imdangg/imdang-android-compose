@@ -37,7 +37,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LoginRoute(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    navigateToBasicProfileInput: () -> Unit,
+    navigateToHome: () -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycleScope = rememberCoroutineScope()
@@ -54,9 +56,9 @@ fun LoginRoute(
                             token = token,
                             onSuccess = {
                                 if (it.isJoined) {
-
+                                    navigateToHome()
                                 } else {
-
+                                    navigateToBasicProfileInput()
                                 }
                             },
                             onError = {

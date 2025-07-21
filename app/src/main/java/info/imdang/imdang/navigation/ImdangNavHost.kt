@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import info.imdang.imdang.navigation.navGraph.HomeBaseRoute
-import info.imdang.imdang.navigation.navGraph.HomeRoute
 import info.imdang.imdang.navigation.navGraph.homeSection
 import info.imdang.imdang.navigation.navGraph.insightScreen
 import info.imdang.imdang.navigation.navGraph.loginSection
@@ -15,6 +14,7 @@ import info.imdang.imdang.navigation.navGraph.navigateToSearch
 import info.imdang.imdang.navigation.navGraph.navigateToServiceInfo
 import info.imdang.imdang.navigation.navGraph.navigateToServicePolicy
 import info.imdang.imdang.navigation.navGraph.navigateToStorageDetail
+import info.imdang.imdang.navigation.navGraph.navigationToBasicProfileInput
 import info.imdang.imdang.navigation.navGraph.navigationToHome
 import info.imdang.imdang.navigation.navGraph.onboardingScreen
 import info.imdang.imdang.navigation.navGraph.searchScreen
@@ -37,8 +37,11 @@ fun ImdangNavHost(
         modifier = modifier,
     ) {
         // -- login --
-        loginSection(){
-            onboardingScreen (onBoardingFinished = navController::navigationToHome)
+        loginSection(
+            navigateToHome = navController::navigationToHome,
+            navigateToBasicProfileInput = navController::navigationToBasicProfileInput
+        ) {
+            onboardingScreen(onBoardingFinished = navController::navigationToHome)
         }
 
         // -- home --
@@ -46,7 +49,7 @@ fun ImdangNavHost(
             onInsightClick = navController::navigateToInsightDetail,
             onMyPageClick = navController::navigateToMyPage,
             onSearchClick = navController::navigateToSearch
-        ){
+        ) {
             searchScreen(
                 onBackClick = navController::popBackStack
             )
@@ -73,12 +76,12 @@ fun ImdangNavHost(
         //-- write --
         writeSection(
             onBackClick = navController::popBackStack,
-        ){
+        ) {
 
         }
 
         //-- storage --
-        storageSection (onInsightClick = navController::navigateToStorageDetail){
+        storageSection(onInsightClick = navController::navigateToStorageDetail) {
             storageDetailScreen(
                 onBackClick = navController::popBackStack,
             )

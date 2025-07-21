@@ -26,12 +26,23 @@ data object OnboardingRoute
 fun NavController.navigationToLogin(navOptions: NavOptions) =
     navigate(route = LoginRoute, navOptions)
 
+fun NavController.navigationToBasicProfileInput(
+    navOptions: NavOptionsBuilder.() -> Unit = {}
+) {
+    navigate(BasicProfileInputRoute, navOptions)
+}
+
 fun NavGraphBuilder.loginSection(
+    navigateToHome: () -> Unit,
+    navigateToBasicProfileInput: () -> Unit,
     additionalDestination: NavGraphBuilder.() -> Unit,
 ) {
     navigation<LoginBaseRoute>(startDestination = LoginRoute) {
         composable<LoginRoute> {
-            LoginRoute()
+            LoginRoute(
+                navigateToHome = navigateToHome,
+                navigateToBasicProfileInput = navigateToBasicProfileInput
+            )
         }
 
         composable<BasicProfileInputRoute> {

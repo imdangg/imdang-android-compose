@@ -1,5 +1,7 @@
 package info.imdang.ui.login
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,12 +12,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,6 +41,7 @@ import info.imdang.imdang.core.component.buttons.InputButton
 import info.imdang.imdang.core.component.buttons.MainButton
 import info.imdang.imdang.core.component.textinput.TextInput
 import info.imdang.imdang.core.component.textinput.TextInputType
+import info.imdang.imdang.core.component.theme.Gray50
 import info.imdang.imdang.core.component.theme.Gray700
 import info.imdang.imdang.core.component.theme.Gray900
 import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
@@ -41,6 +49,7 @@ import info.imdang.imdang.core.component.theme.ImdangPreview
 import info.imdang.ui.R
 import info.imdang.core.component.R as ComponentR
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicProfileInputRoute(
     viewModel: BasicProfileInputViewModel = hiltViewModel(),
@@ -50,6 +59,9 @@ fun BasicProfileInputRoute(
     var birthDay by remember { mutableStateOf("") }
     var gender by remember { mutableStateOf<Gender?>(null) }
 
+    val sheetState = rememberModalBottomSheetState()
+    var isSheetVisible by remember { mutableStateOf(false) }
+
     BasicProfileInputScreen(
         onBackClick = onBackClick,
         nickName = nickName,
@@ -58,8 +70,25 @@ fun BasicProfileInputRoute(
         onBirthDayChange = { birthDay = it },
         gender = gender,
         onGenderChange = { gender = it },
-        onClickedComplete = {}
+        onClickedComplete = { isSheetVisible = true }
     )
+
+    if (isSheetVisible) {
+        ModalBottomSheet(
+            onDismissRequest = { isSheetVisible = false },
+            sheetState = sheetState
+        ) {
+            ServiceAgreementSheetContent(
+                onAgreeClick = { marketingAgreed ->
+                    isSheetVisible = false
+                },
+                onDismiss = { isSheetVisible = false },
+                onClickUrl = { url ->
+
+                }
+            )
+        }
+    }
 }
 
 @Composable
@@ -218,6 +247,164 @@ internal fun BasicProfileInputScreen(
     }
 }
 
+@Composable
+fun ServiceAgreementSheetContent(
+    onAgreeClick: (marketingAgreed: Boolean) -> Unit,
+    onDismiss: () -> Unit,
+    onClickUrl: (String) -> Unit,
+) {
+    val agreementStates = remember {
+        mutableStateMapOf<AgreementItem, Boolean>().apply {
+            AgreementItem.all.forEach { put(it, false) }
+        }
+    }
+
+    val allAgreed = AgreementItem.all.all { agreementStates[it] == true }
+    val requiredAgreed =
+        AgreementItem.all.filter { it.required }.all { agreementStates[it] == true }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.basic_profile_input_title),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontSize = 20.sp,
+                    lineHeight = 24.sp,
+                    color = Gray900
+                )
+            )
+
+            Icon(
+                modifier = Modifier
+                    .size(20.dp)
+                    .clickable { onDismiss() },
+                painter = painterResource(ComponentR.drawable.cancle),
+                contentDescription = "Back Button",
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Gray50, RoundedCornerShape(8.dp))
+                    .clickable {
+                        val newState = !allAgreed
+                        AgreementItem.all.forEach {
+                            agreementStates[it] = newState
+                        }
+                    }
+                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(id = ComponentR.drawable.circle_check),
+                    contentDescription = "circle_check",
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "전체 동의",
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        color = Gray900
+                    )
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                AgreementItem.all.forEach { item ->
+                    val isChecked = agreementStates[item] == true
+                    val prefix = stringResource(
+                        if (item.required) R.string.agreement_essential else R.string.agreement_selection
+                    )
+                    AgreementItemRow(
+                        text = "$prefix ${stringResource(id = item.labelRes)}",
+                        isChecked = isChecked,
+                        onClick = {
+                            agreementStates[item] = !isChecked
+                        },
+                        onClickTerms = {
+                            onClickUrl(item.url)
+                        }
+                    )
+                }
+            }
+        }
+
+        MainButton(
+            onClick = {
+                val marketingAgreed = agreementStates[AgreementItem.MarketingConsent] == true
+                onAgreeClick(marketingAgreed)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp, bottom = 40.dp),
+            buttonSize = ButtonSize.L,
+            text = "동의하고 계속하기",
+            enabled = requiredAgreed
+        )
+    }
+}
+
+@Composable
+private fun AgreementItemRow(
+    text: String,
+    isChecked: Boolean,
+    onClick: () -> Unit,
+    onClickTerms: () -> Unit,
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(24.dp)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(
+                id = if (isChecked) ComponentR.drawable.circle_check_fill else ComponentR.drawable.circle_check
+            ),
+            contentDescription = null,
+            modifier = Modifier.size(20.dp),
+            tint = Color.Unspecified
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleSmall.copy(
+                color = Gray900
+            )
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Icon(
+            painter = painterResource(id = ComponentR.drawable.right),
+            contentDescription = null,
+            modifier = Modifier
+                .size(12.dp)
+                .clickable { onClickTerms() },
+        )
+    }
+}
+
 @ImdangPreview
 @Composable
 private fun BasicProfileInputScreenPreview() {
@@ -235,6 +422,18 @@ private fun BasicProfileInputScreenPreview() {
             gender = gender,
             onGenderChange = { gender = it },
             onClickedComplete = {}
+        )
+    }
+}
+
+@ImdangPreview
+@Composable
+private fun ServiceAgreementSheetContentPreview() {
+    ImdangAppNewTheme {
+        ServiceAgreementSheetContent(
+            onAgreeClick = {},
+            onDismiss = {},
+            onClickUrl = {}
         )
     }
 }
