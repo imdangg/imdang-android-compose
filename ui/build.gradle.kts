@@ -52,11 +52,10 @@ dependencies {
     implementation(libs.androidx.credentials.auth)
     implementation(libs.google.identity.googleid)
 
-    //implementation(libs.androidx.core.ktx)
-    //androidTestImplementation(libs.androidx.core)
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    implementation(libs.lottie.compose)
 }

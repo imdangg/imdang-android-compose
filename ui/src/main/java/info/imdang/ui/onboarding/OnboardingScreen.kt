@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -46,12 +47,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import info.imdang.core.presentation.model.RankedPriority
 import info.imdang.core.presentation.onboarding.OnboardingStep
 import info.imdang.core.presentation.onboarding.OnboardingText
@@ -75,9 +80,12 @@ import info.imdang.ui.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
+
 @Composable
-fun Onboarding(
-    viewModel: OnboardingViewModel = hiltViewModel()
+fun OnboardingRoute(
+    viewModel: OnboardingViewModel = hiltViewModel(),
+    onOnboardingFinished : () -> Unit
 ) {
     val currentStep = viewModel.step
     val currentPurpose = viewModel.purpose
@@ -87,6 +95,12 @@ fun Onboarding(
                 it.step == currentStep && it.purpose == currentPurpose
             }
         )
+    }
+    if(currentStep == OnboardingStep.FINISHED){
+        LaunchedEffect(Unit){
+            delay(1500) //1.5초 대기
+            onOnboardingFinished()
+        }
     }
     Surface(
         modifier = Modifier
@@ -147,10 +161,14 @@ fun Onboarding(
                 }
             )
 
-            OnboardingStep.FINISHED -> FinishedScreen()
+            OnboardingStep.FINISHED -> {
+                FinishedScreen()
+
+            }
         }
     }
 }
+
 
 @Composable
 fun Step0Screen(onPurposeSelected: (UserPurpose) -> Unit) {
@@ -334,13 +352,9 @@ fun OptStep5Screen(
         },
         containerColor = White,
         content = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp)
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 Column(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize().padding(20.dp)
                 ) {
                     currentOnboardingText?.let { onboardingText ->
                         Icon(
@@ -389,7 +403,8 @@ fun OptStep5Screen(
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = 4.dp)
+                        .padding(20.dp),
                 ) {
                     MainButton(
                         onClick = {
@@ -549,7 +564,46 @@ fun OptStep6Screen(
 
 @Composable
 fun FinishedScreen() {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_onboarding))
+    Box(Modifier
+        .fillMaxSize()
+        .padding(horizontal = 20.dp)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(top = 195.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
+            Icon(
+                painter = painterResource(info.imdang.core.component.R.drawable.circle_check_orange),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(59.4.dp),
+                tint = Color.Unspecified,
+            )
+            Text(
+                modifier = Modifier.padding(top = 24.dp),
+                text = "내 취향설정 완료!",
+                style = MaterialTheme.typography.titleLarge.copy(color = Gray900)
+            )
+            Text(
+                modifier = Modifier.padding(top = 8.dp),
+                text = "아파트임당이 취향에 맞는 정보를\n" +
+                        "큐레이션 해드릴게요!",
+                style = MaterialTheme.typography.labelSmall.copy(color = Gray700),
+                textAlign = TextAlign.Center
+            )
+        }
+        LottieAnimation(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.6f)
+                .padding(top = 60.dp),
+            composition = composition,
+            iterations = Int.MAX_VALUE
+        )
+    }
 }
 
 

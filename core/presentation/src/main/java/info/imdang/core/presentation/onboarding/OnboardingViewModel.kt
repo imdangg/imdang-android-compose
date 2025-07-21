@@ -30,6 +30,7 @@ class OnboardingViewModel @Inject constructor(
 
     val commuteArea = mutableStateOf<PreferenceCategory?>(null)
 
+    //todo request model 생성되면 Int 에서 data class 로 변경 예정
     private val _onboardingSelections = mutableStateOf<Map<OnboardingStep, Int>>(emptyMap())
     val onboardingSelections: Map<OnboardingStep, Int>
         get() = _onboardingSelections.value
@@ -115,6 +116,7 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
+    //todo 추후 다른 곳에서도 사용될 수 있어 repository로 끌어올려야 함
     private fun loadData(/*purpose: UserPurpose*/) {
         Log.d("ViewModel LoadData", "commuteArea load 호출 ")
         commuteArea.value = PreferenceCategory.loadFromJson(context/* purpose*/)

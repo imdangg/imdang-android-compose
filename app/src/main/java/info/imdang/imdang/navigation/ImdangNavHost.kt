@@ -7,6 +7,7 @@ import info.imdang.imdang.navigation.navGraph.HomeBaseRoute
 import info.imdang.imdang.navigation.navGraph.HomeRoute
 import info.imdang.imdang.navigation.navGraph.homeSection
 import info.imdang.imdang.navigation.navGraph.insightScreen
+import info.imdang.imdang.navigation.navGraph.loginSection
 import info.imdang.imdang.navigation.navGraph.myPageScreen
 import info.imdang.imdang.navigation.navGraph.navigateToInsightDetail
 import info.imdang.imdang.navigation.navGraph.navigateToMyPage
@@ -14,6 +15,8 @@ import info.imdang.imdang.navigation.navGraph.navigateToSearch
 import info.imdang.imdang.navigation.navGraph.navigateToServiceInfo
 import info.imdang.imdang.navigation.navGraph.navigateToServicePolicy
 import info.imdang.imdang.navigation.navGraph.navigateToStorageDetail
+import info.imdang.imdang.navigation.navGraph.navigationToHome
+import info.imdang.imdang.navigation.navGraph.onboardingScreen
 import info.imdang.imdang.navigation.navGraph.searchScreen
 import info.imdang.imdang.navigation.navGraph.serviceInfoScreen
 import info.imdang.imdang.navigation.navGraph.servicePolicyScreen
@@ -33,6 +36,10 @@ fun ImdangNavHost(
         startDestination = HomeBaseRoute,
         modifier = modifier,
     ) {
+        // -- login --
+        loginSection(){
+            onboardingScreen (onBoardingFinished = navController::navigationToHome)
+        }
 
         // -- home --
         homeSection(

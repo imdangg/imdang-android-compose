@@ -37,9 +37,13 @@ object ServicePolicyRoute
 @Serializable
 data object SearchRoute
 
-fun NavController.navigationToHome(navOptions: NavOptions) =
-    navigate(route = HomeRoute, navOptions)
+fun NavController.navigationToHome(navOptions: NavOptions) = navigate(route = HomeRoute, navOptions)
 
+fun NavController.navigationToHome(
+    navOptions: NavOptionsBuilder.() -> Unit = {}
+) {
+    navigate(HomeRoute, navOptions)
+}
 
 fun NavGraphBuilder.homeSection(
     onInsightClick: (String) -> Unit,
