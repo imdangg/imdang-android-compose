@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import info.imdang.imdang.core.network.service.AuthService
 import info.imdang.imdang.core.network.service.MemberService
+import info.imdang.imdang.core.network.service.TermService
 import retrofit2.Retrofit
 import retrofit2.create
 import javax.inject.Named
@@ -25,4 +26,10 @@ internal object ServiceModule {
     fun bindMemberService(
         @Named("imdang") retrofit: Retrofit
     ): MemberService = retrofit.create()
+
+    @Provides
+    @Singleton
+    fun bindTermService(
+        @Named("imdang") retrofit: Retrofit
+    ): TermService = retrofit.create()
 }

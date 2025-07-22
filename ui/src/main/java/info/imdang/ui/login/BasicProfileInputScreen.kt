@@ -21,6 +21,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.messaging.FirebaseMessaging
 import info.imdang.core.presentation.login.BasicProfileInputViewModel
 import info.imdang.core.presentation.login.Gender
@@ -67,6 +69,11 @@ fun BasicProfileInputRoute(
     var isSheetVisible by remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState()
+
+    val terms by viewModel.terms.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.getTerms()
+    }
 
     BasicProfileInputScreen(
         onBackClick = onBackClick,

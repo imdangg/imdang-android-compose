@@ -6,8 +6,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import info.imdang.imdang.core.data.datasource.impl.AuthRepositoryImpl
 import info.imdang.imdang.core.data.datasource.impl.MemberRepositoryImpl
+import info.imdang.imdang.core.data.datasource.impl.TermRepositoryImpl
 import info.imdang.imdang.core.domain.repository.AuthRepository
 import info.imdang.imdang.core.domain.repository.MemberRepository
+import info.imdang.imdang.core.domain.repository.TermRepository
 import javax.inject.Singleton
 
 @Module
@@ -21,4 +23,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindMemberRepository(memberRepositoryImpl: MemberRepositoryImpl): MemberRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTermRepository(termRepositoryImpl: TermRepositoryImpl): TermRepository
 }
