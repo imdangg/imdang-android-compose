@@ -33,4 +33,9 @@
     <string name="agreement_terms">이용약관</string>
     <string name="agreement_privacy">개인 정보 수집 이용</string>
     <string name="agreement_marketing">마케팅 수신 및 앱 알림 동의</string>
+
+    <string name="join_completed_title">아파트임당 가입 완료</string>
+    <string name="join_completed_description">조건/우선순위를 알려주시면,\n비슷한 사람들의 임장 인사이트를 보여드릴게요</string>
+    <string name="join_completed_hint">금방 끝나요, 30초면 충분!</string>
+    <string name="go_to_preference_setting">조건/우선순위 설정하러 가기</string>
 </resources>

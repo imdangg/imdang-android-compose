@@ -3,13 +3,14 @@ package info.imdang.imdang.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import info.imdang.imdang.navigation.navGraph.HomeBaseRoute
+import info.imdang.imdang.navigation.navGraph.LoginBaseRoute
 import info.imdang.imdang.navigation.navGraph.homeSection
 import info.imdang.imdang.navigation.navGraph.insightScreen
 import info.imdang.imdang.navigation.navGraph.loginSection
 import info.imdang.imdang.navigation.navGraph.myPageScreen
 import info.imdang.imdang.navigation.navGraph.navigateToInsightDetail
 import info.imdang.imdang.navigation.navGraph.navigateToMyPage
+import info.imdang.imdang.navigation.navGraph.navigateToOnboarding
 import info.imdang.imdang.navigation.navGraph.navigateToSearch
 import info.imdang.imdang.navigation.navGraph.navigateToServiceInfo
 import info.imdang.imdang.navigation.navGraph.navigateToServicePolicy
@@ -34,7 +35,7 @@ fun ImdangNavHost(
     val navController = appState.navController
     NavHost(
         navController = navController,
-        startDestination = HomeBaseRoute,
+        startDestination = LoginBaseRoute,
         modifier = modifier,
     ) {
         // -- login --
@@ -42,6 +43,7 @@ fun ImdangNavHost(
             navigateToHome = navController::navigationToHome,
             navigateToBasicProfileInput = navController::navigationToBasicProfileInput,
             onAgreeClick = navController::navigationToJoinCompleted,
+            onClickPreferenceButton = navController::navigateToOnboarding,
             onBackClick = navController::popBackStack,
         ) {
             onboardingScreen(onBoardingFinished = navController::navigationToHome)

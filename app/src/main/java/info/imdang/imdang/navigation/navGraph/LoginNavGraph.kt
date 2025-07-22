@@ -46,6 +46,7 @@ fun NavGraphBuilder.loginSection(
     navigateToHome: () -> Unit,
     navigateToBasicProfileInput: () -> Unit,
     onAgreeClick: () -> Unit,
+    onClickPreferenceButton: () -> Unit,
     onBackClick: () -> Unit,
     additionalDestination: NavGraphBuilder.() -> Unit,
 ) {
@@ -65,7 +66,9 @@ fun NavGraphBuilder.loginSection(
         }
 
         composable<JoinCompletedRoute> {
-            JoinCompletedRoute()
+            JoinCompletedRoute(
+                onClickPreferenceButton = onClickPreferenceButton
+            )
         }
     }
 }

@@ -44,11 +44,13 @@ import info.imdang.imdang.core.component.buttons.InputButton
 import info.imdang.imdang.core.component.buttons.MainButton
 import info.imdang.imdang.core.component.textinput.TextInput
 import info.imdang.imdang.core.component.textinput.TextInputType
+import info.imdang.imdang.core.component.theme.Gray25
 import info.imdang.imdang.core.component.theme.Gray50
 import info.imdang.imdang.core.component.theme.Gray700
 import info.imdang.imdang.core.component.theme.Gray900
 import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
 import info.imdang.imdang.core.component.theme.ImdangPreview
+import info.imdang.imdang.core.component.theme.White
 import info.imdang.ui.R
 import info.imdang.core.component.R as ComponentR
 
@@ -124,6 +126,7 @@ internal fun BasicProfileInputScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Gray25)
             .padding(horizontal = 20.dp)
     ) {
         Column(
@@ -284,6 +287,7 @@ fun ServiceAgreementSheetContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(White)
             .padding(horizontal = 20.dp),
     ) {
         Row(
