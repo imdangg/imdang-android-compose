@@ -25,6 +25,9 @@
     <string name="basic_profile_gender_female">여자</string>
     <string name="btn_complete">완료</string>
 
+    <string name="agree_all">전체 동의</string>
+    <string name="agree_and_continue">동의하고 계속하기</string>
+
     <string name="agreement_essential">[필수]</string>
     <string name="agreement_selection">[선택]</string>
     <string name="agreement_terms">이용약관</string>

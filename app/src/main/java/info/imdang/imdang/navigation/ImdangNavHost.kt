@@ -16,6 +16,7 @@ import info.imdang.imdang.navigation.navGraph.navigateToServicePolicy
 import info.imdang.imdang.navigation.navGraph.navigateToStorageDetail
 import info.imdang.imdang.navigation.navGraph.navigationToBasicProfileInput
 import info.imdang.imdang.navigation.navGraph.navigationToHome
+import info.imdang.imdang.navigation.navGraph.navigationToJoinCompleted
 import info.imdang.imdang.navigation.navGraph.onboardingScreen
 import info.imdang.imdang.navigation.navGraph.searchScreen
 import info.imdang.imdang.navigation.navGraph.serviceInfoScreen
@@ -40,6 +41,7 @@ fun ImdangNavHost(
         loginSection(
             navigateToHome = navController::navigationToHome,
             navigateToBasicProfileInput = navController::navigationToBasicProfileInput,
+            onAgreeClick = navController::navigationToJoinCompleted,
             onBackClick = navController::popBackStack,
         ) {
             onboardingScreen(onBoardingFinished = navController::navigationToHome)

@@ -7,6 +7,7 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import info.imdang.ui.login.BasicProfileInputRoute
+import info.imdang.ui.login.JoinCompletedRoute
 import info.imdang.ui.login.LoginRoute
 import info.imdang.ui.onboarding.OnboardingRoute
 import kotlinx.serialization.Serializable
@@ -23,6 +24,9 @@ data object BasicProfileInputRoute
 @Serializable
 data object OnboardingRoute
 
+@Serializable
+data object JoinCompletedRoute
+
 fun NavController.navigationToLogin(navOptions: NavOptions) =
     navigate(route = LoginRoute, navOptions)
 
@@ -32,9 +36,16 @@ fun NavController.navigationToBasicProfileInput(
     navigate(BasicProfileInputRoute, navOptions)
 }
 
+fun NavController.navigationToJoinCompleted(
+    navOptions: NavOptionsBuilder.() -> Unit = {}
+) {
+    navigate(JoinCompletedRoute, navOptions)
+}
+
 fun NavGraphBuilder.loginSection(
     navigateToHome: () -> Unit,
     navigateToBasicProfileInput: () -> Unit,
+    onAgreeClick: () -> Unit,
     onBackClick: () -> Unit,
     additionalDestination: NavGraphBuilder.() -> Unit,
 ) {
@@ -48,8 +59,13 @@ fun NavGraphBuilder.loginSection(
 
         composable<BasicProfileInputRoute> {
             BasicProfileInputRoute(
-                onBackClick = onBackClick
+                onAgreeClick = onAgreeClick,
+                onBackClick = onBackClick,
             )
+        }
+
+        composable<JoinCompletedRoute> {
+            JoinCompletedRoute()
         }
     }
 }

@@ -56,14 +56,15 @@ import info.imdang.core.component.R as ComponentR
 @Composable
 fun BasicProfileInputRoute(
     viewModel: BasicProfileInputViewModel = hiltViewModel(),
+    onAgreeClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     var nickName by remember { mutableStateOf("") }
     var birthDayField by remember { mutableStateOf(TextFieldValue("")) }
     var gender by remember { mutableStateOf<Gender?>(null) }
+    var isSheetVisible by remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState()
-    var isSheetVisible by remember { mutableStateOf(false) }
 
     BasicProfileInputScreen(
         onBackClick = onBackClick,
@@ -87,12 +88,18 @@ fun BasicProfileInputRoute(
                     FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val deviceToken = task.result
+                            viewModel.postJoin(
+                                nickname = nickName,
+                                birthDate = birthDayField.text,
+                                gender = gender!!.name,
+                                deviceToken = deviceToken,
+                                onSuccess = onAgreeClick
+                            )
                         }
                     }
                 },
                 onDismiss = { isSheetVisible = false },
                 onClickUrl = { url ->
-
                 }
             )
         }
@@ -329,7 +336,7 @@ fun ServiceAgreementSheetContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "전체 동의",
+                    text = stringResource(R.string.agree_all),
                     style = MaterialTheme.typography.titleSmall.copy(
                         color = Gray900
                     )
@@ -370,7 +377,7 @@ fun ServiceAgreementSheetContent(
                 .fillMaxWidth()
                 .padding(top = 32.dp, bottom = 40.dp),
             buttonSize = ButtonSize.L,
-            text = "동의하고 계속하기",
+            text = stringResource(R.string.agree_and_continue),
             enabled = requiredAgreed
         )
     }
