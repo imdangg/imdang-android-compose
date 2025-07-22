@@ -7,9 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import info.imdang.imdang.core.component.theme.ImdangPreview
 
+/**
+ * Composable function for TextInput that accepts String value.
+ * This is useful for cases where you don't need to handle cursor position and selection.
+ */
 @Composable
 fun TextInput(
     modifier: Modifier = Modifier,
@@ -31,6 +36,58 @@ fun TextInput(
         TextInputHeader(
             inputType = inputType,
             value = value,
+            label = label,
+            labelDescription = labelDescription,
+            maxLength = maxLength,
+            enabled = enabled,
+            isError = isError,
+            isSuccess = isSuccess,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        TextInputBody(
+            inputType = inputType,
+            value = value,
+            onValueChanged = onValueChanged,
+            placeHolderText = placeHolder,
+            enabled = enabled,
+            isError = isError,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        if (enabled && isError) {
+            errorMessage?.let {
+                TextInputFooter(errorMessage = it)
+            }
+        }
+    }
+}
+
+/**
+ * Composable function for TextInput that accepts TextFieldValue.
+ * This is useful for cases where you need to handle cursor position and selection.
+ */
+@Composable
+fun TextInput(
+    modifier: Modifier = Modifier,
+    inputType: TextInputType,
+    value: TextFieldValue,
+    onValueChanged: (TextFieldValue) -> Unit,
+    label: String,
+    labelDescription: String,
+    placeHolder: String,
+    maxLength: Int,
+    enabled: Boolean = true,
+    isError: Boolean,
+    errorMessage: String? = null,
+    isSuccess: Boolean,
+) {
+    Column(modifier = modifier) {
+        TextInputHeader(
+            inputType = inputType,
+            value = value.text,
             label = label,
             labelDescription = labelDescription,
             maxLength = maxLength,

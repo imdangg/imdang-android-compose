@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,7 +58,7 @@ fun BasicProfileInputRoute(
     onBackClick: () -> Unit
 ) {
     var nickName by remember { mutableStateOf("") }
-    var birthDay by remember { mutableStateOf("") }
+    var birthDayField by remember { mutableStateOf(TextFieldValue("")) }
     var gender by remember { mutableStateOf<Gender?>(null) }
 
     val sheetState = rememberModalBottomSheetState()
@@ -66,8 +68,8 @@ fun BasicProfileInputRoute(
         onBackClick = onBackClick,
         nickName = nickName,
         onNicknameChange = { nickName = it },
-        birthDay = birthDay,
-        onBirthDayChange = { birthDay = it },
+        birthDayField = birthDayField,
+        onBirthDayChange = { birthDayField = it },
         gender = gender,
         onGenderChange = { gender = it },
         onClickedComplete = { isSheetVisible = true }
@@ -96,19 +98,14 @@ internal fun BasicProfileInputScreen(
     onBackClick: () -> Unit,
     nickName: String,
     onNicknameChange: (String) -> Unit,
-    birthDay: String,
-    onBirthDayChange: (String) -> Unit,
+    birthDayField: TextFieldValue,
+    onBirthDayChange: (TextFieldValue) -> Unit,
     gender: Gender?,
     onGenderChange: (Gender) -> Unit,
     onClickedComplete: () -> Unit,
 ) {
-    val nicknameIsError = nickName.isNotEmpty() && (nickName.length < 2 || nickName.length > 10)
     val nicknameIsSuccess = nickName.length in 2..10
-
-    val birthDayRegex = Regex("^\\d{4}\\.\\d{2}\\.\\d{2}$")
-    val birthDayIsError = birthDay.isNotEmpty() && !birthDayRegex.matches(birthDay)
-    val birthDayIsSuccess = birthDayRegex.matches(birthDay)
-
+    val birthDayIsSuccess = BirthDateValidator.validate(birthDayField.text)
     val isButtonEnabled = nicknameIsSuccess && birthDayIsSuccess && gender != null
 
     Column(
@@ -161,7 +158,7 @@ internal fun BasicProfileInputScreen(
                 labelDescription = stringResource(R.string.nickname_length_hint),
                 placeHolder = "",
                 maxLength = 10,
-                isError = nicknameIsError,
+                isError = nickName.isNotEmpty() && !nicknameIsSuccess,
                 errorMessage = "",
                 isSuccess = nicknameIsSuccess
             )
@@ -170,13 +167,21 @@ internal fun BasicProfileInputScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 inputType = TextInputType.INPUT,
-                value = birthDay,
-                onValueChanged = onBirthDayChange,
+                value = birthDayField,
+                onValueChanged = {
+                    val formatted = BirthDateValidator.format(it.text)
+                    onBirthDayChange(
+                        TextFieldValue(
+                            text = formatted,
+                            selection = TextRange(formatted.length)
+                        )
+                    )
+                },
                 label = stringResource(R.string.basic_profile_birth),
                 labelDescription = "",
                 placeHolder = "YYYY.MM.DD",
                 maxLength = 10,
-                isError = birthDayIsError,
+                isError = birthDayField.text.isNotEmpty() && !birthDayIsSuccess,
                 errorMessage = "",
                 isSuccess = birthDayIsSuccess
             )
@@ -410,15 +415,15 @@ private fun AgreementItemRow(
 private fun BasicProfileInputScreenPreview() {
     ImdangAppNewTheme {
         var nickName by remember { mutableStateOf("입력한 정보") }
-        var birthDay by remember { mutableStateOf("1997.05.05") }
+        var birthDayField by remember { mutableStateOf(TextFieldValue("1997.05.05")) }
         var gender by remember { mutableStateOf<Gender?>(Gender.FEMALE) }
 
         BasicProfileInputScreen(
             onBackClick = { },
             nickName = nickName,
             onNicknameChange = { nickName = it },
-            birthDay = birthDay,
-            onBirthDayChange = { birthDay = it },
+            birthDayField = birthDayField,
+            onBirthDayChange = { birthDayField = it },
             gender = gender,
             onGenderChange = { gender = it },
             onClickedComplete = {}
