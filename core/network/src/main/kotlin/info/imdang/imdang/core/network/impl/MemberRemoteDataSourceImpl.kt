@@ -12,7 +12,7 @@ internal class MemberRemoteDataSourceImpl @Inject constructor(
     private val memberService: MemberService
 ) : MemberRemoteDataSource {
 
-    override suspend fun postJoin(joinRequestEntity: JoinRequestEntity): ApiResponse<Boolean> =
-        memberService.postJoin(joinRequestEntity.toRemote())
+    override suspend fun putJoin(joinRequestEntity: JoinRequestEntity): ApiResponse<Boolean> =
+        memberService.putJoin(joinRequestEntity.toRemote())
             .mapSuccess { data!! }
 }

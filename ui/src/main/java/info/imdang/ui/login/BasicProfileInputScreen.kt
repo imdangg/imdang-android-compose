@@ -97,7 +97,7 @@ fun BasicProfileInputRoute(
                     FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val deviceToken = task.result
-                            viewModel.postJoin(
+                            viewModel.putJoin(
                                 nickname = nickName,
                                 birthDate = birthDayField.text,
                                 gender = gender!!.name,

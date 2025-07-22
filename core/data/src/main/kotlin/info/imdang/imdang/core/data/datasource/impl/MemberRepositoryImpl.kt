@@ -15,14 +15,14 @@ class MemberRepositoryImpl @Inject constructor(
     private val memberRemoteDataSource: MemberRemoteDataSource
 ) : MemberRepository {
 
-    override fun postLogin(joinRequestData: JoinRequestData): Flow<Boolean> = flow {
-        val response = memberRemoteDataSource.postJoin(joinRequestData.toData())
+    override fun putJoin(joinRequestData: JoinRequestData): Flow<Boolean> = flow {
+        val response = memberRemoteDataSource.putJoin(joinRequestData.toData())
         response.suspendOnSuccess {
             emit(data)
         }.onError {
-            TODO()
+
         }.onFailure {
-            TODO()
+
         }
     }
 }

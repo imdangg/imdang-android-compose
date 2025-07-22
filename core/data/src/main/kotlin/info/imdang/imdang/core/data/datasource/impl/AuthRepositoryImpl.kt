@@ -18,6 +18,9 @@ class AuthRepositoryImpl @Inject constructor(
     private val authRemoteDataSource: AuthRemoteDataSource,
     private val authLocalDataSource: AuthLocalDataSource,
 ) : AuthRepository {
+
+    private val tag = AuthRepositoryImpl::class.simpleName
+
     override fun getLogin(
         loginRequestData: LoginRequestData,
     ): Flow<LoginData> = flow {
@@ -26,9 +29,9 @@ class AuthRepositoryImpl @Inject constructor(
             authLocalDataSource.setLoginEntity(data)
             emit(data.toDomain())
         }.onError {
-            TODO()
+
         }.onFailure {
-            TODO()
+
         }
     }
 

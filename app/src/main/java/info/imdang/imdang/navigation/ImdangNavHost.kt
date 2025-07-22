@@ -43,7 +43,12 @@ fun ImdangNavHost(
             navigateToHome = navController::navigationToHome,
             navigateToBasicProfileInput = navController::navigationToBasicProfileInput,
             onAgreeClick = navController::navigationToJoinCompleted,
-            onClickPreferenceButton = navController::navigateToOnboarding,
+            onClickPreferenceButton = {
+                navController.navigateToOnboarding {
+                    popUpTo(0) { inclusive = true }
+                    launchSingleTop = true
+                }
+            },
             onBackClick = navController::popBackStack,
         ) {
             onboardingScreen(onBoardingFinished = navController::navigationToHome)

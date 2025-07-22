@@ -2,7 +2,9 @@ package info.imdang.imdang.core.network.model
 
 import info.imdang.imdang.core.data.datasource.model.TermEntity
 import info.imdang.imdang.core.network.RemoteMapper
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TermResponse(
     val termsId: Int,
     val title: String,

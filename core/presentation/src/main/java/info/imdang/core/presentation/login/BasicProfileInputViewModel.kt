@@ -1,5 +1,6 @@
 package info.imdang.core.presentation.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,7 +9,7 @@ import info.imdang.core.presentation.model.TermModel
 import info.imdang.core.presentation.model.toDomain
 import info.imdang.core.presentation.model.toPresentation
 import info.imdang.imdang.core.domain.usecase.GetTermUseCase
-import info.imdang.imdang.core.domain.usecase.PostJoinUseCase
+import info.imdang.imdang.core.domain.usecase.PutJoinUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,16 +20,18 @@ import javax.inject.Inject
 @HiltViewModel
 class BasicProfileInputViewModel @Inject constructor(
     private val getTermUseCase: GetTermUseCase,
-    private val postJoinUseCase: PostJoinUseCase,
+    private val putJoinUseCase: PutJoinUseCase,
 ) : ViewModel() {
+    private val tag = BasicProfileInputViewModel::class.simpleName
+
     private val _terms = MutableStateFlow<List<TermModel>>(emptyList())
     val terms: StateFlow<List<TermModel>> = _terms.asStateFlow()
 
     fun getTerms() {
         viewModelScope.launch {
             getTermUseCase()
-                .catch {
-                    TODO()
+                .catch { e ->
+                    Log.e(tag, "getTerms 실패: ${e.message}", e)
                 }
                 .collect { termList ->
                     _terms.value = termList.map { it.toPresentation() }
@@ -36,7 +39,7 @@ class BasicProfileInputViewModel @Inject constructor(
         }
     }
 
-    fun postJoin(
+    fun putJoin(
         nickname: String,
         birthDate: String,
         gender: String,
@@ -45,21 +48,15 @@ class BasicProfileInputViewModel @Inject constructor(
     ) {
         val request = JoinRequestModel(nickname, birthDate, gender, deviceToken)
         viewModelScope.launch {
-            postJoinUseCase(request.toDomain())
-                .catch {
-                    TODO()
+            putJoinUseCase(request.toDomain())
+                .catch { e ->
+                    Log.e(tag, "postJoin 실패: ${e.message}", e)
                 }
                 .collect {
                     onSuccess()
                 }
         }
     }
-}
-
-sealed interface TermsUiState {
-    object Loading : TermsUiState
-    data class Success(val terms: List<Term>) : TermsUiState
-    data class Error(val message: String) : TermsUiState
 }
 
 enum class Gender {

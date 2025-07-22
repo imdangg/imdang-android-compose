@@ -19,9 +19,9 @@ class TermRepositoryImpl @Inject constructor(
         response.suspendOnSuccess {
             emit(data.map { it.toDomain() })
         }.onError {
-            TODO()
+
         }.onFailure {
-            TODO()
+
         }
     }
 

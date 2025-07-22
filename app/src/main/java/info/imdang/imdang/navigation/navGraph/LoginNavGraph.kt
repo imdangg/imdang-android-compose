@@ -70,6 +70,8 @@ fun NavGraphBuilder.loginSection(
                 onClickPreferenceButton = onClickPreferenceButton
             )
         }
+
+        additionalDestination()
     }
 }
 

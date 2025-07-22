@@ -5,10 +5,11 @@ import info.imdang.imdang.core.network.model.JoinRequest
 import info.imdang.imdang.core.network.model.base.ApiResultResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 internal interface MemberService {
-    @POST("members/join")
-    suspend fun postJoin(
+    @PUT("members/join")
+    suspend fun putJoin(
         @Body joinRequest: JoinRequest,
     ): ApiResponse<ApiResultResponse<Boolean>>
 }
