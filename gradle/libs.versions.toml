@@ -30,7 +30,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 kakao = "2.21.5"
 google-services = "4.4.3"
-firebase = "33.5.1"
+firebase = "34.0.0"
 google-credentials = "1.5.0"
 google-identity-googleid = "1.1.1"
 naver-map = "3.20.0"
@@ -194,6 +194,7 @@ imdang-android-feature = { id = "imdang.android.feature" }
 imdang-android-library = { id = "imdang.android.library" }
 imdang-android-library-compose = { id = "imdang.android.library.compose" }
 imdang-android-room = { id = "imdang.android.room" }
+imdang-android-firebase = { id = "imdang.android.firebase" }
 imdang-android-test = { id = "imdang.android.test" }
 imdang-hilt = { id = "imdang.hilt" }
 imdang-jvm-library = { id = "imdang.jvm.library" }

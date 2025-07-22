@@ -39,7 +39,8 @@ fun ImdangNavHost(
         // -- login --
         loginSection(
             navigateToHome = navController::navigationToHome,
-            navigateToBasicProfileInput = navController::navigationToBasicProfileInput
+            navigateToBasicProfileInput = navController::navigationToBasicProfileInput,
+            onBackClick = navController::popBackStack,
         ) {
             onboardingScreen(onBoardingFinished = navController::navigationToHome)
         }

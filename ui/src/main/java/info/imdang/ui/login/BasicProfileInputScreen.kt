@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 import info.imdang.core.presentation.login.BasicProfileInputViewModel
 import info.imdang.core.presentation.login.Gender
 import info.imdang.imdang.core.component.buttons.ButtonSize
@@ -83,6 +84,11 @@ fun BasicProfileInputRoute(
             ServiceAgreementSheetContent(
                 onAgreeClick = { marketingAgreed ->
                     isSheetVisible = false
+                    FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val deviceToken = task.result
+                        }
+                    }
                 },
                 onDismiss = { isSheetVisible = false },
                 onClickUrl = { url ->

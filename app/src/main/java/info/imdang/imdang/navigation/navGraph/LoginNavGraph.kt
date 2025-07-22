@@ -35,6 +35,7 @@ fun NavController.navigationToBasicProfileInput(
 fun NavGraphBuilder.loginSection(
     navigateToHome: () -> Unit,
     navigateToBasicProfileInput: () -> Unit,
+    onBackClick: () -> Unit,
     additionalDestination: NavGraphBuilder.() -> Unit,
 ) {
     navigation<LoginBaseRoute>(startDestination = LoginRoute) {
@@ -47,7 +48,7 @@ fun NavGraphBuilder.loginSection(
 
         composable<BasicProfileInputRoute> {
             BasicProfileInputRoute(
-                onBackClick = {}
+                onBackClick = onBackClick
             )
         }
     }

@@ -11,7 +11,7 @@ plugins {
     alias(libs.plugins.imdang.android.application.flavors)
     alias(libs.plugins.imdang.hilt)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.google.services)
+    alias(libs.plugins.imdang.android.firebase)
 }
 
 android {
@@ -153,11 +153,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.window.core)
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.messaging)
 
     ksp(libs.hilt.compiler)
 

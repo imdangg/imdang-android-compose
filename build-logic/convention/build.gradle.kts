@@ -65,6 +65,10 @@ gradlePlugin {
             id = libs.plugins.imdang.android.room.get().pluginId
             implementationClass = "AndroidRoomConventionPlugin"
         }
+        register("androidFirebase") {
+            id = libs.plugins.imdang.android.firebase.get().pluginId
+            implementationClass = "AndroidApplicationFirebaseConventionPlugin"
+        }
         register("androidFlavors") {
             id = libs.plugins.imdang.android.application.flavors.get().pluginId
             implementationClass = "AndroidApplicationFlavorsConventionPlugin"
