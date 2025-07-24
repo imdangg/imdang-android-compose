@@ -8,6 +8,8 @@ import info.imdang.imdang.core.data.datasource.model.toData
 import info.imdang.imdang.core.data.datasource.remote.AuthRemoteDataSource
 import info.imdang.imdang.core.domain.model.LoginData
 import info.imdang.imdang.core.domain.model.LoginRequestData
+import info.imdang.imdang.core.domain.model.ReissueData
+import info.imdang.imdang.core.domain.model.ReissueRequestData
 import info.imdang.imdang.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -27,6 +29,19 @@ class AuthRepositoryImpl @Inject constructor(
         val response = authRemoteDataSource.getLogin(loginRequestData.toData())
         response.suspendOnSuccess {
             authLocalDataSource.setLoginEntity(data)
+            emit(data.toDomain())
+        }.onError {
+
+        }.onFailure {
+
+        }
+    }
+
+    override fun postReissue(
+        reissueRequestData: ReissueRequestData
+    ): Flow<ReissueData> = flow {
+        val response = authRemoteDataSource.postReissue(reissueRequestData.toData())
+        response.suspendOnSuccess {
             emit(data.toDomain())
         }.onError {
 

@@ -3,6 +3,8 @@ package info.imdang.imdang.core.network.service
 import com.skydoves.sandwich.ApiResponse
 import info.imdang.imdang.core.network.model.LoginRequest
 import info.imdang.imdang.core.network.model.LoginResponse
+import info.imdang.imdang.core.network.model.ReissueRequest
+import info.imdang.imdang.core.network.model.ReissueResponse
 import info.imdang.imdang.core.network.model.base.ApiResultResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -12,4 +14,9 @@ internal interface AuthService {
     suspend fun postLogin(
         @Body loginRequest: LoginRequest,
     ): ApiResponse<ApiResultResponse<LoginResponse>>
+
+    @POST("reissue")
+    suspend fun postReissue(
+        @Body reissueRequest: ReissueRequest,
+    ): ApiResponse<ApiResultResponse<ReissueResponse>>
 }
