@@ -25,5 +25,14 @@ class TermRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun postTermsAgree(termsIds: List<Int>): Flow<Unit> = flow {
+        val response = termRemoteDataSource.postTermsAgree(termsIds)
+        response.suspendOnSuccess {
+            emit(data)
+        }.onError {
 
+        }.onFailure {
+
+        }
+    }
 }

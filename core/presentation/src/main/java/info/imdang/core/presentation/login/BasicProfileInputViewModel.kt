@@ -9,32 +9,43 @@ import info.imdang.core.presentation.model.TermModel
 import info.imdang.core.presentation.model.toDomain
 import info.imdang.core.presentation.model.toPresentation
 import info.imdang.imdang.core.domain.usecase.GetTermUseCase
+import info.imdang.imdang.core.domain.usecase.PostTermsAgreeUseCase
 import info.imdang.imdang.core.domain.usecase.PutJoinUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BasicProfileInputViewModel @Inject constructor(
     private val getTermUseCase: GetTermUseCase,
+    private val postTermsAgreeUseCase: PostTermsAgreeUseCase,
     private val putJoinUseCase: PutJoinUseCase,
 ) : ViewModel() {
     private val tag = BasicProfileInputViewModel::class.simpleName
 
-    private val _terms = MutableStateFlow<List<TermModel>>(emptyList())
-    val terms: StateFlow<List<TermModel>> = _terms.asStateFlow()
+    val terms: StateFlow<List<TermModel>> = getTermUseCase()
+        .catch { e ->
+            Log.e(tag, "getTerms 실패: ${e.message}", e)
+        }
+        .map { termList -> termList.map { it.toPresentation() } }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 
-    fun getTerms() {
+    fun postTermsAgree(termsIds: List<Int>) {
         viewModelScope.launch {
-            getTermUseCase()
+            postTermsAgreeUseCase(termsIds)
                 .catch { e ->
-                    Log.e(tag, "getTerms 실패: ${e.message}", e)
+                    Log.e(tag, "postTermsAgree 실패: ${e.message}", e)
                 }
-                .collect { termList ->
-                    _terms.value = termList.map { it.toPresentation() }
+                .collect {
+                    Log.d(tag, "postTermsAgree 성공")
                 }
         }
     }

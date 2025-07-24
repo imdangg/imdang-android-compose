@@ -21,7 +21,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.firebase.messaging.FirebaseMessaging
 import info.imdang.core.presentation.login.BasicProfileInputViewModel
 import info.imdang.core.presentation.login.Gender
+import info.imdang.core.presentation.model.TermModel
 import info.imdang.imdang.core.component.buttons.ButtonSize
 import info.imdang.imdang.core.component.buttons.InputButton
 import info.imdang.imdang.core.component.buttons.MainButton
@@ -63,17 +63,12 @@ fun BasicProfileInputRoute(
     onAgreeClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
+    val terms by viewModel.terms.collectAsStateWithLifecycle()
     var nickName by remember { mutableStateOf("") }
     var birthDayField by remember { mutableStateOf(TextFieldValue("")) }
     var gender by remember { mutableStateOf<Gender?>(null) }
     var isSheetVisible by remember { mutableStateOf(false) }
-
     val sheetState = rememberModalBottomSheetState()
-
-    val terms by viewModel.terms.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
-        viewModel.getTerms()
-    }
 
     BasicProfileInputScreen(
         onBackClick = onBackClick,
@@ -92,8 +87,11 @@ fun BasicProfileInputRoute(
             sheetState = sheetState
         ) {
             ServiceAgreementSheetContent(
-                onAgreeClick = { marketingAgreed ->
+                terms = terms,
+                onAgreeClick = { agreedIds ->
                     isSheetVisible = false
+                    viewModel.postTermsAgree(agreedIds)
+
                     FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val deviceToken = task.result
@@ -277,19 +275,20 @@ internal fun BasicProfileInputScreen(
 
 @Composable
 fun ServiceAgreementSheetContent(
-    onAgreeClick: (marketingAgreed: Boolean) -> Unit,
+    terms: List<TermModel>,
+    onAgreeClick: (List<Int>) -> Unit,
     onDismiss: () -> Unit,
     onClickUrl: (String) -> Unit,
 ) {
-    val agreementStates = remember {
-        mutableStateMapOf<AgreementItem, Boolean>().apply {
-            AgreementItem.all.forEach { put(it, false) }
+    val agreementStates = remember(terms) {
+        mutableStateMapOf<Int, Boolean>().apply {
+            terms.forEach { put(it.termsId, false) }
         }
     }
 
-    val allAgreed = AgreementItem.all.all { agreementStates[it] == true }
-    val requiredAgreed =
-        AgreementItem.all.filter { it.required }.all { agreementStates[it] == true }
+    val allAgreed = terms.all { agreementStates[it.termsId] == true }
+    val requiredAgreed = terms.filter { it.isEssential }
+        .all { agreementStates[it.termsId] == true }
 
     Column(
         modifier = Modifier
@@ -333,9 +332,7 @@ fun ServiceAgreementSheetContent(
                     .background(Gray50, RoundedCornerShape(8.dp))
                     .clickable {
                         val newState = !allAgreed
-                        AgreementItem.all.forEach {
-                            agreementStates[it] = newState
-                        }
+                        terms.forEach { agreementStates[it.termsId] = newState }
                     }
                     .padding(horizontal = 16.dp, vertical = 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -360,20 +357,16 @@ fun ServiceAgreementSheetContent(
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                AgreementItem.all.forEach { item ->
-                    val isChecked = agreementStates[item] == true
+                terms.forEach { term ->
+                    val isChecked = agreementStates[term.termsId] == true
                     val prefix = stringResource(
-                        if (item.required) R.string.agreement_essential else R.string.agreement_selection
+                        if (term.isEssential) R.string.agreement_essential else R.string.agreement_selection
                     )
                     AgreementItemRow(
-                        text = "$prefix ${stringResource(id = item.labelRes)}",
+                        text = "$prefix ${term.title}",
                         isChecked = isChecked,
-                        onClick = {
-                            agreementStates[item] = !isChecked
-                        },
-                        onClickTerms = {
-                            onClickUrl(item.url)
-                        }
+                        onClick = { agreementStates[term.termsId] = !isChecked },
+                        onClickTerms = { onClickUrl(term.url) }
                     )
                 }
             }
@@ -381,8 +374,8 @@ fun ServiceAgreementSheetContent(
 
         MainButton(
             onClick = {
-                val marketingAgreed = agreementStates[AgreementItem.MarketingConsent] == true
-                onAgreeClick(marketingAgreed)
+                val agreedTermIds = agreementStates.filterValues { it }.keys.toList()
+                onAgreeClick(agreedTermIds)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -459,7 +452,14 @@ private fun BasicProfileInputScreenPreview() {
 @Composable
 private fun ServiceAgreementSheetContentPreview() {
     ImdangAppNewTheme {
+        val terms = listOf(
+            TermModel(1, "이용약관", "https://example.com/terms", true),
+            TermModel(2, "개인 정보 수집 이용", "https://example.com/privacy", true),
+            TermModel(3, "마케팅 수신 및 앱 알림 동의", "https://example.com/marketing", false)
+        )
+
         ServiceAgreementSheetContent(
+            terms = terms,
             onAgreeClick = {},
             onDismiss = {},
             onClickUrl = {}

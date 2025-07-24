@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface TermRepository {
     fun getTerms(): Flow<List<TermData>>
+
+    fun postTermsAgree(termsIds: List<Int>): Flow<Unit>
 }
