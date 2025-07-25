@@ -38,4 +38,14 @@
     <string name="join_completed_description">조건/우선순위를 알려주시면,\n비슷한 사람들의 임장 인사이트를 보여드릴게요</string>
     <string name="join_completed_hint">금방 끝나요, 30초면 충분!</string>
     <string name="go_to_preference_setting">조건/우선순위 설정하러 가기</string>
+
+
+    <string name="pref_commute_area">출퇴근 지역</string>
+    <string name="pref_traffic">교통</string>
+    <string name="pref_school">학군</string>
+    <string name="pref_infra">인프라</string>
+    <string name="pref_environment">환경</string>
+    <string name="pref_square_footage">아파트 형수</string>
+    <string name="pref_num_of_households">세대수</string>
+    <string name="pref_apt_category">유형</string>
 </resources>

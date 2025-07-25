@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_package = "info.imdang.imdang.core.datastore";
+option java_multiple_files = true;
+
+message SeoulDistrict {
+    string district = 1;
+    repeated string dong = 2;
+}
+
+message SeoulDistrictPreferences {
+    repeated SeoulDistrict districts = 1;
+}

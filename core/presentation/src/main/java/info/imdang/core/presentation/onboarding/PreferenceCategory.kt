@@ -1,15 +1,5 @@
 package info.imdang.core.presentation.onboarding
 
-import android.content.Context
-import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import info.imdang.core.presentation.R
-
-data class DistrictJson(
-    val district: String,
-    val dong: List<String>
-)
 
 sealed class PreferenceCategory(
     open val title: String,
@@ -17,7 +7,6 @@ sealed class PreferenceCategory(
     open val options: List<String> = emptyList()
 ) {
     data class CommuteArea(
-        //val purpose: UserPurpose,
         override val title: String,
         override val subCategories: List<PreferenceSubCategory>
     ) : PreferenceCategory(title, subCategories)
@@ -74,33 +63,6 @@ sealed class PreferenceCategory(
         val statics: List<PreferenceCategory> = listOf(
             Traffic, School, Infra, Environment, SquareFootage, NumOfHouseHolds, AptCategory
         )
-
-        fun loadFromJson(context: Context/* purpose: UserPurpose*/): PreferenceCategory {
-            try {
-                val inputStream = context.resources.openRawResource(R.raw.seoul_dong)
-                val jsonStr = inputStream.bufferedReader().use { it.readText() }
-                Log.d("loadFromJson", "JSON string length: ${jsonStr.length}")
-                val gson = Gson()
-                val type = object : TypeToken<List<DistrictJson>>() {}.type
-                val districts: List<DistrictJson> = gson.fromJson(jsonStr, type)
-                Log.d("loadFromJson", "Parsed districts count: ${districts.size}")
-
-
-                val subCategories = districts.map {
-                    PreferenceSubCategory(it.district, it.dong)
-                }
-
-                return CommuteArea(
-                    //purpose = purpose,
-                    title = COMMUTE_AREA,
-                    subCategories = subCategories
-                )
-            } catch (e: Exception) {
-                Log.e("loadFromJson", "Error loading json", e)
-                throw e
-            }
-        }
-
     }
 
 }
@@ -109,6 +71,7 @@ data class PreferenceSubCategory(
     val name: String,
     val options: List<String> = emptyList()
 )
+
 
 
 const val COMMUTE_AREA = "출퇴근 지역"

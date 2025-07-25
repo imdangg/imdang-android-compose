@@ -14,6 +14,8 @@ import info.imdang.imdang.core.common.network.ImdangDispatchers.IO
 import info.imdang.imdang.core.common.network.di.ApplicationScope
 import info.imdang.imdang.core.datastore.AuthPreferences
 import info.imdang.imdang.core.datastore.AuthPreferencesSerializer
+import info.imdang.imdang.core.datastore.SeoulAreaPreferencesSerializer
+import info.imdang.imdang.core.datastore.SeoulDistrictPreferences
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
@@ -35,5 +37,20 @@ internal object DataStoreModule {
             scope = CoroutineScope(scope.coroutineContext + ioDispatcher),
         ) {
             context.dataStoreFile("auth_preferences.pb")
+        }
+
+    @Provides
+    @Singleton
+    fun provideSeoulDistrictPreferencesDataStore(
+        @ApplicationContext context: Context,
+        @Dispatcher(IO) ioDispatcher: CoroutineDispatcher,
+        @ApplicationScope scope: CoroutineScope,
+        seoulAreaPreferencesSerializer: SeoulAreaPreferencesSerializer,
+    ): DataStore<SeoulDistrictPreferences> =
+        DataStoreFactory.create(
+            serializer = seoulAreaPreferencesSerializer,
+            scope = CoroutineScope(scope.coroutineContext + ioDispatcher)
+        ) {
+            context.dataStoreFile("seoul_district_preferences.pb")
         }
 }

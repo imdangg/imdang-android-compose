@@ -1,14 +1,15 @@
 package info.imdang.core.presentation.onboarding
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import info.imdang.core.presentation.model.RankedPriority
+import info.imdang.imdang.core.domain.usecase.GetSavedSeoulAreaDataUseCase
+import info.imdang.imdang.core.domain.usecase.LoadSeoulAreaFromJsonUseCase
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 enum class OnboardingStep {
@@ -21,7 +22,9 @@ enum class UserPurpose {
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val loadSeoulAreaFromJsonUseCase: LoadSeoulAreaFromJsonUseCase,
+    private val getSavedSeoulAreaDataUseCase: GetSavedSeoulAreaDataUseCase
+
 ) : ViewModel() {
     var step by mutableStateOf(OnboardingStep.STEP0)
         private set
@@ -44,7 +47,10 @@ class OnboardingViewModel @Inject constructor(
         get() = _preferredAreas.value
 
     init {
-        loadData()  // purpose 상관없이 초기 로드
+        viewModelScope.launch {
+            loadSeoulAreaData()
+            setCommuteData()
+        }
     }
 
     fun updatePurpose(selectedPurpose: UserPurpose) {
@@ -75,11 +81,11 @@ class OnboardingViewModel @Inject constructor(
         _rankedPriorities.value = emptyList()
     }
 
-    fun updatePreferredAreas(areas : List<String>){
+    fun updatePreferredAreas(areas: List<String>) {
         _preferredAreas.value = areas
     }
 
-    fun clearPreferredAreas(){
+    fun clearPreferredAreas() {
         _preferredAreas.value = emptyList()
     }
 
@@ -116,10 +122,20 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
-    //todo 추후 다른 곳에서도 사용될 수 있어 repository로 끌어올려야 함
-    private fun loadData(/*purpose: UserPurpose*/) {
-        Log.d("ViewModel LoadData", "commuteArea load 호출 ")
-        commuteArea.value = PreferenceCategory.loadFromJson(context/* purpose*/)
+    private fun loadSeoulAreaData() {
+        loadSeoulAreaFromJsonUseCase.invoke()
     }
 
+    private suspend fun setCommuteData() {
+        val seoulDistricts = getSavedSeoulAreaDataUseCase.invoke()
+        seoulDistricts.collect {list ->
+            val subCategories = list.map {
+                PreferenceSubCategory(it.district, it.dong)
+            }
+            commuteArea.value = PreferenceCategory.CommuteArea(
+                title = COMMUTE_AREA,
+                subCategories = subCategories
+            )
+        }
+    }
 }

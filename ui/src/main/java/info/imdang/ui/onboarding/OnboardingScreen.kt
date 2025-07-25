@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -81,11 +81,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-
 @Composable
 fun OnboardingRoute(
     viewModel: OnboardingViewModel = hiltViewModel(),
-    onOnboardingFinished : () -> Unit
+    onOnboardingFinished: () -> Unit
 ) {
     val currentStep = viewModel.step
     val currentPurpose = viewModel.purpose
@@ -96,19 +95,21 @@ fun OnboardingRoute(
             }
         )
     }
-    if(currentStep == OnboardingStep.FINISHED){
-        LaunchedEffect(Unit){
+    if (currentStep == OnboardingStep.FINISHED) {
+        LaunchedEffect(Unit) {
             delay(1500) //1.5초 대기
             onOnboardingFinished()
         }
     }
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding(), color = White
-    ) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = White,
+    ) { innerPadding ->
+        val modifier = Modifier.padding(innerPadding)
+
         when (currentStep) {
             OnboardingStep.STEP0 -> Step0Screen(
+                modifier = modifier,
                 onPurposeSelected = { selectedPurpose ->
                     viewModel.updatePurpose(selectedPurpose)
                     viewModel.nextStep()
@@ -117,6 +118,7 @@ fun OnboardingRoute(
 
             OnboardingStep.STEP1, OnboardingStep.STEP2, OnboardingStep.STEP3, OnboardingStep.STEP4 -> {
                 Step1To4Screen(
+                    modifier = modifier,
                     currentStep, currentOnboardingText, viewModel.onboardingSelections,
                     onOptionSelected = { index ->
                         viewModel.updateSelectionForStep(
@@ -133,7 +135,8 @@ fun OnboardingRoute(
             }
 
             OnboardingStep.OPT_STEP5 -> OptStep5Screen(
-                currentOnboardingText,
+                modifier = modifier,
+                currentOnboardingText = currentOnboardingText,
                 commuteArea = viewModel.commuteArea.value,
                 initialRankedList = viewModel.rankedPriorities,
                 onSkip = { viewModel.nextStep() },
@@ -148,7 +151,8 @@ fun OnboardingRoute(
             )
 
             OnboardingStep.OPT_STEP6 -> OptStep6Screen(
-                currentOnboardingText,
+                modifier = modifier,
+                currentOnboardingText = currentOnboardingText,
                 commuteArea = viewModel.commuteArea.value,
                 onSkip = { viewModel.nextStep() },
                 onBackClick = {
@@ -162,7 +166,9 @@ fun OnboardingRoute(
             )
 
             OnboardingStep.FINISHED -> {
-                FinishedScreen()
+                FinishedScreen(
+                    modifier = modifier,
+                )
 
             }
         }
@@ -171,16 +177,18 @@ fun OnboardingRoute(
 
 
 @Composable
-fun Step0Screen(onPurposeSelected: (UserPurpose) -> Unit) {
+fun Step0Screen(
+    modifier: Modifier = Modifier,
+    onPurposeSelected: (UserPurpose) -> Unit
+) {
 
     var selectedPurpose by remember { mutableStateOf<UserPurpose?>(null) }
-    Log.e("STEP0_Purpose", "${selectedPurpose?.name}")
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.padding(horizontal = 20.dp)
     ) {
 
         Text(
-            modifier = Modifier.padding(start = 20.dp, top = 80.dp),
+            modifier = Modifier.padding(top = 80.dp),
             text = "어떤 분야에\n관심 있으신가요?",
             style = MaterialTheme.typography.titleLarge.copy(FontBlack)
         )
@@ -219,7 +227,7 @@ fun Step0Screen(onPurposeSelected: (UserPurpose) -> Unit) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 24.dp),
+                .padding(/*horizontal = 20.dp,*/ vertical = 24.dp),
             buttonSize = ButtonSize.L,
             text = stringResource(R.string.next_btn_label),
             enabled = true
@@ -230,6 +238,7 @@ fun Step0Screen(onPurposeSelected: (UserPurpose) -> Unit) {
 
 @Composable
 fun Step1To4Screen(
+    modifier: Modifier = Modifier,
     currentStep: OnboardingStep,
     currentOnboardingText: OnboardingText?,
     onboardingSelections: Map<OnboardingStep, Int>,
@@ -241,9 +250,7 @@ fun Step1To4Screen(
     val coroutineScope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
+        modifier = modifier.padding(20.dp)
     ) {
         currentOnboardingText?.let {
             Icon(
@@ -283,6 +290,7 @@ fun Step1To4Screen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OptStep5Screen(
+    modifier: Modifier = Modifier,
     currentOnboardingText: OnboardingText?,
     commuteArea: PreferenceCategory?,
     initialRankedList: List<RankedPriority>?,
@@ -354,7 +362,7 @@ fun OptStep5Screen(
         content = {
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(20.dp)
+                    modifier = modifier.padding(20.dp)
                 ) {
                     currentOnboardingText?.let { onboardingText ->
                         Icon(
@@ -454,6 +462,7 @@ fun OptStep5Screen(
 
 @Composable
 fun OptStep6Screen(
+    modifier: Modifier = Modifier,
     currentOnboardingText: OnboardingText?,
     commuteArea: PreferenceCategory?,
     onFinish: (List<String>) -> Unit,
@@ -469,7 +478,7 @@ fun OptStep6Screen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
-        Column(Modifier.padding(bottom = 130.dp)) {
+        Column(modifier.padding(bottom = 130.dp)) {
             currentOnboardingText?.let { onboardingText ->
                 Icon(
                     painter = painterResource(info.imdang.core.component.R.drawable.back),
@@ -563,11 +572,11 @@ fun OptStep6Screen(
 }
 
 @Composable
-fun FinishedScreen() {
+fun FinishedScreen(
+    modifier: Modifier = Modifier
+) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lottie_onboarding))
-    Box(Modifier
-        .fillMaxSize()
-        .padding(horizontal = 20.dp)) {
+    Box(modifier.padding(horizontal = 20.dp)) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -787,6 +796,7 @@ fun PreviewStep1To4() {
 
         ImdangAppNewTheme() {
             Step1To4Screen(
+                Modifier,
                 OnboardingStep.STEP1, OnboardingText.STEP1_GAP,
                 mapOf(OnboardingStep.OPT_STEP5 to 1), {}, {}) { }
         }
@@ -808,6 +818,7 @@ fun PreviewOPTStep5() {
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
         ImdangAppNewTheme() {
             OptStep5Screen(
+                Modifier,
                 OnboardingText.STEP5_GAP,
                 dummyPreferenceCategory,
                 rankList,
@@ -834,6 +845,7 @@ fun PreviewOPTStep6() {
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
         ImdangAppNewTheme() {
             OptStep6Screen(
+                Modifier,
                 OnboardingText.STEP6_GAP,
                 dummyPreferenceCategory,
                 onBackClick = {},
