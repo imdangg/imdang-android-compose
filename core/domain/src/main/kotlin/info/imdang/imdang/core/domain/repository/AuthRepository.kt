@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-    fun getLogin(loginRequestData: LoginRequestData): Flow<LoginData>
+    fun postLogin(loginRequestData: LoginRequestData): Flow<LoginData>
 
     fun postReissue(reissueRequestData: ReissueRequestData): Flow<ReissueData>
 

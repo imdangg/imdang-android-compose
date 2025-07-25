@@ -6,9 +6,9 @@ import info.imdang.imdang.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetLoginUseCase @Inject constructor(
+class PostLoginUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     operator fun invoke(loginRequestData: LoginRequestData): Flow<LoginData> =
-        authRepository.getLogin(loginRequestData)
+        authRepository.postLogin(loginRequestData)
 }

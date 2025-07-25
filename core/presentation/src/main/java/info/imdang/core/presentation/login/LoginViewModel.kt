@@ -7,17 +7,17 @@ import info.imdang.core.presentation.model.LoginModel
 import info.imdang.core.presentation.model.LoginRequestModel
 import info.imdang.core.presentation.model.toDomain
 import info.imdang.core.presentation.model.toPresentation
-import info.imdang.imdang.core.domain.usecase.GetLoginUseCase
+import info.imdang.imdang.core.domain.usecase.PostLoginUseCase
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val getLoginUseCase: GetLoginUseCase
+    private val postLoginUseCase: PostLoginUseCase
 ) : ViewModel() {
 
-    fun getLogin(
+    fun postLogin(
         provider: String,
         token: String,
         onSuccess: (LoginModel) -> Unit,
@@ -25,7 +25,7 @@ class LoginViewModel @Inject constructor(
     ) {
         val request = LoginRequestModel(provider, token)
         viewModelScope.launch {
-            getLoginUseCase(request.toDomain())
+            postLoginUseCase(request.toDomain())
                 .catch {
                     onError(it)
                 }

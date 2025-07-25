@@ -7,7 +7,7 @@ import info.imdang.imdang.core.data.datasource.model.ReissueEntity
 import info.imdang.imdang.core.data.datasource.model.ReissueRequestEntity
 
 interface AuthRemoteDataSource {
-    suspend fun getLogin(loginRequestEntity: LoginRequestEntity): ApiResponse<LoginEntity>
+    suspend fun postLogin(loginRequestEntity: LoginRequestEntity): ApiResponse<LoginEntity>
 
     suspend fun postReissue(reissueRequestEntity: ReissueRequestEntity): ApiResponse<ReissueEntity>
 }

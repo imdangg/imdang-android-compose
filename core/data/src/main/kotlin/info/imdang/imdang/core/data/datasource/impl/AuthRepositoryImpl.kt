@@ -23,10 +23,10 @@ class AuthRepositoryImpl @Inject constructor(
 
     private val tag = AuthRepositoryImpl::class.simpleName
 
-    override fun getLogin(
+    override fun postLogin(
         loginRequestData: LoginRequestData,
     ): Flow<LoginData> = flow {
-        val response = authRemoteDataSource.getLogin(loginRequestData.toData())
+        val response = authRemoteDataSource.postLogin(loginRequestData.toData())
         response.suspendOnSuccess {
             authLocalDataSource.setLoginEntity(data)
             emit(data.toDomain())

@@ -15,7 +15,7 @@ internal class AuthRemoteDataSourceImpl @Inject constructor(
     private val authService: AuthService
 ) : AuthRemoteDataSource {
 
-    override suspend fun getLogin(loginRequestEntity: LoginRequestEntity): ApiResponse<LoginEntity> =
+    override suspend fun postLogin(loginRequestEntity: LoginRequestEntity): ApiResponse<LoginEntity> =
         authService.postLogin(loginRequestEntity.toRemote())
             .mapSuccess { data!!.toData() }
 

@@ -51,7 +51,7 @@ fun LoginRoute(
                     platform = loginPlatform,
                     context = context,
                     onSuccess = { token ->
-                        viewModel.getLogin(
+                        viewModel.postLogin(
                             provider = loginPlatform.name,
                             token = token,
                             onSuccess = {
