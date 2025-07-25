@@ -7,18 +7,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.imdang.core.presentation.model.RankedPriority
+import info.imdang.core.presentation.onboarding.enums.OnboardingStep
+import info.imdang.core.presentation.onboarding.enums.PreferenceCategory
+import info.imdang.core.presentation.onboarding.enums.PreferenceCategoryType
+import info.imdang.core.presentation.onboarding.enums.PreferenceSubCategory
+import info.imdang.core.presentation.onboarding.enums.UserPurpose
 import info.imdang.imdang.core.domain.usecase.GetSavedSeoulAreaDataUseCase
 import info.imdang.imdang.core.domain.usecase.LoadSeoulAreaFromJsonUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class OnboardingStep {
-    STEP0, STEP1, STEP2, STEP3, STEP4, OPT_STEP5, OPT_STEP6, FINISHED
-}
 
-enum class UserPurpose {
-    REAL_RESIDENCE, GAP_INVESTMENT
-}
+
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
@@ -31,7 +32,7 @@ class OnboardingViewModel @Inject constructor(
     var purpose by mutableStateOf<UserPurpose?>(null)
         private set
 
-    val commuteArea = mutableStateOf<PreferenceCategory?>(null)
+    val commuteArea: MutableStateFlow<PreferenceCategory.CommuteArea?> = MutableStateFlow(null)
 
     //todo request model 생성되면 Int 에서 data class 로 변경 예정
     private val _onboardingSelections = mutableStateOf<Map<OnboardingStep, Int>>(emptyMap())
@@ -133,7 +134,7 @@ class OnboardingViewModel @Inject constructor(
                 PreferenceSubCategory(it.district, it.dong)
             }
             commuteArea.value = PreferenceCategory.CommuteArea(
-                title = COMMUTE_AREA,
+                type = PreferenceCategoryType.COMMUTE_AREA,
                 subCategories = subCategories
             )
         }

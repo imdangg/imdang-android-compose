@@ -1,8 +1,9 @@
 package info.imdang.ui.onboarding
 
-import android.util.Log
+import info.imdang.core.presentation.onboarding.enums.OnboardingText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -37,7 +39,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -58,12 +61,12 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import info.imdang.core.presentation.model.RankedPriority
-import info.imdang.core.presentation.onboarding.OnboardingStep
-import info.imdang.core.presentation.onboarding.OnboardingText
 import info.imdang.core.presentation.onboarding.OnboardingViewModel
-import info.imdang.core.presentation.onboarding.PreferenceCategory
-import info.imdang.core.presentation.onboarding.PreferenceSubCategory
-import info.imdang.core.presentation.onboarding.UserPurpose
+import info.imdang.core.presentation.onboarding.enums.OnboardingStep
+import info.imdang.core.presentation.onboarding.enums.PreferenceCategory
+import info.imdang.core.presentation.onboarding.enums.PreferenceCategoryType
+import info.imdang.core.presentation.onboarding.enums.PreferenceSubCategory
+import info.imdang.core.presentation.onboarding.enums.UserPurpose
 import info.imdang.imdang.core.component.buttons.ButtonSize
 import info.imdang.imdang.core.component.buttons.MainButton
 import info.imdang.imdang.core.component.taps.ScrollableTabRow
@@ -88,6 +91,8 @@ fun OnboardingRoute(
 ) {
     val currentStep = viewModel.step
     val currentPurpose = viewModel.purpose
+    val commuteArea by viewModel.commuteArea.collectAsState()
+
     val currentOnboardingText by remember(currentStep, currentPurpose) {
         mutableStateOf(
             OnboardingText.entries.find {
@@ -137,7 +142,7 @@ fun OnboardingRoute(
             OnboardingStep.OPT_STEP5 -> OptStep5Screen(
                 modifier = modifier,
                 currentOnboardingText = currentOnboardingText,
-                commuteArea = viewModel.commuteArea.value,
+                commuteArea = commuteArea,
                 initialRankedList = viewModel.rankedPriorities,
                 onSkip = { viewModel.nextStep() },
                 onBackClick = {
@@ -153,7 +158,7 @@ fun OnboardingRoute(
             OnboardingStep.OPT_STEP6 -> OptStep6Screen(
                 modifier = modifier,
                 currentOnboardingText = currentOnboardingText,
-                commuteArea = viewModel.commuteArea.value,
+                commuteArea = commuteArea,
                 onSkip = { viewModel.nextStep() },
                 onBackClick = {
                     viewModel.clearPreferredAreas()
@@ -189,7 +194,7 @@ fun Step0Screen(
 
         Text(
             modifier = Modifier.padding(top = 80.dp),
-            text = "어떤 분야에\n관심 있으신가요?",
+            text = stringResource(R.string.step0_title),
             style = MaterialTheme.typography.titleLarge.copy(FontBlack)
         )
 
@@ -227,7 +232,7 @@ fun Step0Screen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(/*horizontal = 20.dp,*/ vertical = 24.dp),
+                .padding(vertical = 24.dp),
             buttonSize = ButtonSize.L,
             text = stringResource(R.string.next_btn_label),
             enabled = true
@@ -262,23 +267,25 @@ fun Step1To4Screen(
             )
             Text(
                 modifier = Modifier.padding(top = 36.dp),
-                text = it.title,
+                text = it.title.asString(),
                 style = MaterialTheme.typography.titleLarge.copy(FontBlack)
             )
             Text(
                 modifier = Modifier.padding(top = 8.dp, bottom = 40.dp),
-                text = it.subtitle,
+                text = it.subtitle.asString(),
                 style = MaterialTheme.typography.labelMedium.copy(Gray550)
             )
-            it.options.forEachIndexed { index, label ->
-                RadioButtonItem(
-                    label = label,
-                    selected = selectedIndex == index
-                ) {
-                    onOptionSelected(index)
-                    coroutineScope.launch {
-                        delay(150)
-                        onNext()
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                it.options.forEachIndexed { index, label ->
+                    RadioButtonItem(
+                        label = label.asString(),
+                        selected = selectedIndex == index
+                    ) {
+                        onOptionSelected(index)
+                        coroutineScope.launch {
+                            delay(150)
+                            onNext()
+                        }
                     }
                 }
             }
@@ -292,28 +299,28 @@ fun Step1To4Screen(
 fun OptStep5Screen(
     modifier: Modifier = Modifier,
     currentOnboardingText: OnboardingText?,
-    commuteArea: PreferenceCategory?,
+    commuteArea: PreferenceCategory<Nothing>?,
     initialRankedList: List<RankedPriority>?,
     onNext: (List<RankedPriority>) -> Unit,
     onSkip: () -> Unit,
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
-
-    val tab by remember(currentOnboardingText) {
-        derivedStateOf {
-            currentOnboardingText?.options.orEmpty()
-        }
-    }
     val sheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Hidden,
         skipHiddenState = false
     )
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState)
 
-    var selectedPriorityIndex by remember { mutableStateOf<Int?>(null) }
+    val tabEnums =
+        currentOnboardingText?.options?.filterIsInstance<PreferenceCategoryType>() ?: emptyList()
+    val tabLabels = remember(tabEnums) {
+        tabEnums.map { context.getString(it.labelResId()) }
+    }
 
+    var selectedPriorityIndex by remember { mutableStateOf<Int?>(null) }
     var selectedPriorityList by remember {
         mutableStateOf(initialRankedList ?: emptyList())
     }
@@ -336,12 +343,12 @@ fun OptStep5Screen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.6f),
+                    .fillMaxHeight(0.58f),
             ) {
                 if (showBottomSheet && commuteArea != null && selectedPriorityIndex != null) {
                     BottomSheetContent(
                         commuteArea = commuteArea,
-                        tab = tab,
+                        tab = tabLabels,
                         priorityIndex = selectedPriorityIndex!!,
                         onFinish = { rank, category, priority ->
                             coroutineScope.launch { sheetState.hide() }
@@ -376,12 +383,12 @@ fun OptStep5Screen(
                         )
                         Text(
                             modifier = Modifier.padding(top = 36.dp),
-                            text = onboardingText.title,
+                            text = onboardingText.title.asString(),
                             style = MaterialTheme.typography.titleLarge.copy(FontBlack)
                         )
                         Text(
                             modifier = Modifier.padding(top = 8.dp, bottom = 40.dp),
-                            text = onboardingText.subtitle,
+                            text = onboardingText.subtitle.asString(),
                             style = MaterialTheme.typography.labelMedium.copy(Gray550)
                         )
 
@@ -464,7 +471,7 @@ fun OptStep5Screen(
 fun OptStep6Screen(
     modifier: Modifier = Modifier,
     currentOnboardingText: OnboardingText?,
-    commuteArea: PreferenceCategory?,
+    commuteArea: PreferenceCategory<Nothing>?,
     onFinish: (List<String>) -> Unit,
     onSkip: () -> Unit,
     onBackClick: () -> Unit
@@ -489,17 +496,17 @@ fun OptStep6Screen(
                 )
                 Text(
                     modifier = Modifier.padding(top = 36.dp),
-                    text = onboardingText.title,
+                    text = onboardingText.title.asString(),
                     style = MaterialTheme.typography.titleLarge.copy(FontBlack)
                 )
                 Text(
                     modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
-                    text = onboardingText.subtitle,
+                    text = onboardingText.subtitle.asString(),
                     style = MaterialTheme.typography.labelMedium.copy(Gray550)
                 )
 
                 Text(
-                    "서울",
+                    stringResource(R.string.seoul),
                     modifier = Modifier
                         .height(43.dp)
                         .fillMaxWidth(),
@@ -593,13 +600,12 @@ fun FinishedScreen(
             )
             Text(
                 modifier = Modifier.padding(top = 24.dp),
-                text = "내 취향설정 완료!",
+                text = stringResource(R.string.step_finished_title),
                 style = MaterialTheme.typography.titleLarge.copy(color = Gray900)
             )
             Text(
                 modifier = Modifier.padding(top = 8.dp),
-                text = "아파트임당이 취향에 맞는 정보를\n" +
-                        "큐레이션 해드릴게요!",
+                text = stringResource(R.string.step_finished_subtitle),
                 style = MaterialTheme.typography.labelSmall.copy(color = Gray700),
                 textAlign = TextAlign.Center
             )
@@ -621,17 +627,25 @@ fun BottomSheetContent(
     modifier: Modifier = Modifier,
     priorityIndex: Int,
     tab: List<String>,
-    commuteArea: PreferenceCategory,
+    commuteArea: PreferenceCategory<Nothing>?,
     onFinish: (Int, String, String) -> Unit
 ) {
+    val context = LocalContext.current
+
     val allCategories = remember {
         PreferenceCategory.statics + commuteArea
     }
-    val mappedTabCategories: List<PreferenceCategory?> = remember(tab, allCategories) {
-        tab.map { tabTitle ->
-            allCategories.find { it.title == tabTitle }
+    val categoryMap = remember(allCategories, context) {
+        allCategories.filterNotNull().associateBy { category ->
+            context.getString(category.type.labelResId())
         }
     }
+    val mappedTabCategories: List<PreferenceCategory<*>?> = remember(tab, categoryMap) {
+        tab.map { tabTitle ->
+            categoryMap[tabTitle]
+        }
+    }
+
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { tab.size })
     val coroutineScope = rememberCoroutineScope()
     var selectedOption by remember { mutableStateOf<String?>(null) }
@@ -645,10 +659,10 @@ fun BottomSheetContent(
                     horizontal = 20.dp,
                     vertical = 20.dp
                 )
-                .padding(bottom = 76.dp) // bottom 버튼 공간
+                .padding(bottom = 80.dp) // bottom 버튼 공간
         ) {
             Text(
-                text = "${priorityIndex}순위",
+                text = stringResource(R.string.priority_rank, priorityIndex),
                 style = MaterialTheme.typography.titleMedium.copy(color = FontBlack)
             )
 
@@ -668,7 +682,7 @@ fun BottomSheetContent(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth()
             ) { page ->
-                val currentCategory: PreferenceCategory? = mappedTabCategories.getOrNull(page)
+                val currentCategory: PreferenceCategory<*>? = mappedTabCategories.getOrNull(page)
 
                 if (currentCategory != null) {
                     when (currentCategory) {
@@ -732,10 +746,14 @@ fun BottomSheetContent(
                                     verticalArrangement = Arrangement.spacedBy(24.dp),
                                 ) {
                                     items(currentCategory.options) { option ->
+                                        val optionName = stringResource(
+                                            currentCategory.type.getOptionResId(option)
+                                        )
+
                                         OptText(
-                                            text = option,
-                                            isSelected = selectedOption == option,
-                                            onClick = { selectedOption = option },
+                                            text = optionName,
+                                            isSelected = selectedOption == optionName,
+                                            onClick = { selectedOption = optionName },
                                             modifier = Modifier.fillMaxWidth()
                                         )
                                     }
@@ -746,7 +764,7 @@ fun BottomSheetContent(
                 } else {
                     // 매칭되는 카테고리가 없는 경우 (tab 리스트 데이터 누락)
                     Text(
-                        "데이터를 찾을 수 없습니다: ${tab.getOrNull(page)}",
+                        stringResource(R.string.category_error_msg),
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -781,7 +799,7 @@ fun BottomSheetContent(
 @Composable
 fun PreviewStep0() {
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
-        ImdangAppNewTheme() {
+        ImdangAppNewTheme {
             Step0Screen {
             }
         }
@@ -794,7 +812,7 @@ fun PreviewStep0() {
 fun PreviewStep1To4() {
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
 
-        ImdangAppNewTheme() {
+        ImdangAppNewTheme {
             Step1To4Screen(
                 Modifier,
                 OnboardingStep.STEP1, OnboardingText.STEP1_GAP,
@@ -808,7 +826,7 @@ fun PreviewStep1To4() {
 fun PreviewOPTStep5() {
     val rankList: List<RankedPriority> = listOf(RankedPriority(1, "유형", "신축"))
     val dummyPreferenceCategory = PreferenceCategory.CommuteArea(
-        title = "출퇴근 지역",
+        type = PreferenceCategoryType.COMMUTE_AREA,
         subCategories = listOf(
             PreferenceSubCategory("강남구", listOf("역삼동", "삼성동", "청담동")),
             PreferenceSubCategory("광화문", listOf("종로1가", "종로2가", "종로3가")),
@@ -816,7 +834,7 @@ fun PreviewOPTStep5() {
         )
     )
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
-        ImdangAppNewTheme() {
+        ImdangAppNewTheme {
             OptStep5Screen(
                 Modifier,
                 OnboardingText.STEP5_GAP,
@@ -834,7 +852,7 @@ fun PreviewOPTStep5() {
 @Composable
 fun PreviewOPTStep6() {
     val dummyPreferenceCategory = PreferenceCategory.CommuteArea(
-        title = "출퇴근 지역",
+        type = PreferenceCategoryType.COMMUTE_AREA,
         subCategories = List(50) { index ->
             PreferenceSubCategory(
                 name = "구역 $index",
@@ -843,7 +861,7 @@ fun PreviewOPTStep6() {
         }
     )
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
-        ImdangAppNewTheme() {
+        ImdangAppNewTheme {
             OptStep6Screen(
                 Modifier,
                 OnboardingText.STEP6_GAP,
@@ -861,7 +879,7 @@ fun PreviewOPTStep6() {
 @Composable
 fun PreviewFinishedScreen() {
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
-        ImdangAppNewTheme() {
+        ImdangAppNewTheme {
             FinishedScreen()
         }
     }
