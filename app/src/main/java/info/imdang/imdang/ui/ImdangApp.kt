@@ -41,6 +41,7 @@ import kotlin.reflect.KClass
 @Composable
 fun ImdangApp(
     appState: ImdangAppSate,
+    startDestination: KClass<*>,
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()
 ) {
@@ -48,6 +49,7 @@ fun ImdangApp(
 
     ImdangApp(
         appState = appState,
+        startDestination = startDestination,
         snackbarHostState = snackbarHostState,
         windowAdaptiveInfo = windowAdaptiveInfo
     )
@@ -56,6 +58,7 @@ fun ImdangApp(
 @Composable
 internal fun ImdangApp(
     appState: ImdangAppSate,
+    startDestination: KClass<*>,
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
@@ -91,6 +94,7 @@ internal fun ImdangApp(
 
         ImdangNavHost(
             appState = appState,
+            startDestination = startDestination,
             modifier = Modifier
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues)

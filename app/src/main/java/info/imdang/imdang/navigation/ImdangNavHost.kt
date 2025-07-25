@@ -3,7 +3,6 @@ package info.imdang.imdang.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import info.imdang.imdang.navigation.navGraph.LoginBaseRoute
 import info.imdang.imdang.navigation.navGraph.homeSection
 import info.imdang.imdang.navigation.navGraph.insightScreen
 import info.imdang.imdang.navigation.navGraph.loginSection
@@ -26,16 +25,18 @@ import info.imdang.imdang.navigation.navGraph.storageDetailScreen
 import info.imdang.imdang.navigation.navGraph.storageSection
 import info.imdang.imdang.navigation.navGraph.writeSection
 import info.imdang.imdang.ui.ImdangAppSate
+import kotlin.reflect.KClass
 
 @Composable
 fun ImdangNavHost(
     appState: ImdangAppSate,
+    startDestination: KClass<*>,
     modifier: Modifier = Modifier
 ) {
     val navController = appState.navController
     NavHost(
         navController = navController,
-        startDestination = LoginBaseRoute,
+        startDestination = startDestination,
         modifier = modifier,
     ) {
         // -- login --
