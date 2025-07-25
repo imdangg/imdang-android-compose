@@ -11,12 +11,16 @@ class AuthLocalDataSourceImpl @Inject constructor(
 ) : AuthLocalDataSource {
     override val loginEntity = authPreferences.data
         .map { preferences ->
-            LoginEntity(
-                memberId = preferences.memberId,
-                isJoined = preferences.isJoined,
-                accessToken = preferences.accessToken,
-                refreshToken = preferences.refreshToken,
-            )
+            if (preferences.accessToken.isBlank() || preferences.refreshToken.isBlank()) {
+                null
+            } else {
+                LoginEntity(
+                    memberId = preferences.memberId,
+                    isJoined = preferences.isJoined,
+                    accessToken = preferences.accessToken,
+                    refreshToken = preferences.refreshToken,
+                )
+            }
         }
 
     override suspend fun setLoginEntity(loginEntity: LoginEntity) {
