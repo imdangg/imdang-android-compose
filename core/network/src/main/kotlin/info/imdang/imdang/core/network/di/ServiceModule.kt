@@ -18,7 +18,7 @@ internal object ServiceModule {
     @Provides
     @Singleton
     fun bindAuthService(
-        @Named("imdang") retrofit: Retrofit
+        @Named("default") retrofit: Retrofit
     ): AuthService = retrofit.create()
 
     @Provides

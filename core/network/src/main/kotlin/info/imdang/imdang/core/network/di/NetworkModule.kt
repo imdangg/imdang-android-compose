@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import info.imdang.core.network.BuildConfig
 import info.imdang.imdang.core.network.interceptor.AccessTokenInterceptor
+import info.imdang.imdang.core.network.interceptor.TokenRefreshInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
@@ -29,12 +30,14 @@ internal object NetworkModule {
 
     @Provides
     @Singleton
-    @Named("imdang")
-    fun okHttpCallFactory(
+    @Named("default")
+    fun defaultOkHttpCallFactory(
         accessTokenInterceptor: AccessTokenInterceptor,
+        tokenRefreshInterceptor: TokenRefreshInterceptor,
     ): Call.Factory =
         OkHttpClient.Builder()
             .addInterceptor(accessTokenInterceptor)
+            .authenticator(tokenRefreshInterceptor)
             .addInterceptor(
                 HttpLoggingInterceptor()
                     .apply {
@@ -43,6 +46,43 @@ internal object NetworkModule {
                         }
                     },
             )
+            .build()
+
+    @Provides
+    @Singleton
+    @Named("imdang")
+    fun okHttpCallFactory(
+        accessTokenInterceptor: AccessTokenInterceptor,
+        tokenRefreshInterceptor: TokenRefreshInterceptor,
+    ): Call.Factory =
+        OkHttpClient.Builder()
+            .addInterceptor(accessTokenInterceptor)
+            .authenticator(tokenRefreshInterceptor)
+            .addInterceptor(
+                HttpLoggingInterceptor()
+                    .apply {
+                        if (BuildConfig.DEBUG) {
+                            setLevel(HttpLoggingInterceptor.Level.BODY)
+                        }
+                    },
+            )
+            .build()
+
+    @Provides
+    @Singleton
+    @Named("default")
+    fun providesDefaultRetrofit(
+        networkJson: Json,
+        @Named("default") okhttpCallFactory: dagger.Lazy<Call.Factory>,
+    ): Retrofit =
+        Retrofit
+            .Builder()
+            .baseUrl(BuildConfig.API_SERVER)
+            .callFactory(okhttpCallFactory.get())
+            .addConverterFactory(
+                networkJson.asConverterFactory("application/json".toMediaType()),
+            )
+            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
             .build()
 
     @Provides
