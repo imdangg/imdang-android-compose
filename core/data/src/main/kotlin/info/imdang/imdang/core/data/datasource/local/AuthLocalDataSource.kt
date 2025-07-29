@@ -7,4 +7,6 @@ interface AuthLocalDataSource {
     val loginEntity: Flow<LoginEntity?>
 
     suspend fun setLoginEntity(loginEntity: LoginEntity)
+
+    suspend fun clearLoginEntity()
 }

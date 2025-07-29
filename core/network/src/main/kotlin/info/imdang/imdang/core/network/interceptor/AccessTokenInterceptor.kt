@@ -7,7 +7,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
-internal class TokenInterceptor @Inject constructor(
+internal class AccessTokenInterceptor @Inject constructor(
     private val authLocalDataSource: AuthLocalDataSource,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response = runBlocking {

@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import info.imdang.core.network.BuildConfig
-import info.imdang.imdang.core.network.interceptor.TokenInterceptor
+import info.imdang.imdang.core.network.interceptor.AccessTokenInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
@@ -31,10 +31,10 @@ internal object NetworkModule {
     @Singleton
     @Named("imdang")
     fun okHttpCallFactory(
-        tokenInterceptor: TokenInterceptor
+        accessTokenInterceptor: AccessTokenInterceptor,
     ): Call.Factory =
         OkHttpClient.Builder()
-            .addInterceptor(tokenInterceptor)
+            .addInterceptor(accessTokenInterceptor)
             .addInterceptor(
                 HttpLoggingInterceptor()
                     .apply {

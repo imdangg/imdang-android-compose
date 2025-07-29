@@ -34,4 +34,14 @@ class AuthLocalDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun clearLoginEntity() {
+        authPreferences.updateData { preferences ->
+            preferences.toBuilder()
+                .clearMemberId()
+                .clearIsJoined()
+                .clearAccessToken()
+                .clearRefreshToken()
+                .build()
+        }
+    }
 }
