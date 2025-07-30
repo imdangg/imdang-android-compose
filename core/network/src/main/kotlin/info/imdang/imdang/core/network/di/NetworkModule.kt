@@ -31,13 +31,8 @@ internal object NetworkModule {
     @Provides
     @Singleton
     @Named("default")
-    fun defaultOkHttpCallFactory(
-        accessTokenInterceptor: AccessTokenInterceptor,
-        tokenRefreshInterceptor: TokenRefreshInterceptor,
-    ): Call.Factory =
+    fun defaultOkHttpCallFactory(): Call.Factory =
         OkHttpClient.Builder()
-            .addInterceptor(accessTokenInterceptor)
-            .authenticator(tokenRefreshInterceptor)
             .addInterceptor(
                 HttpLoggingInterceptor()
                     .apply {
