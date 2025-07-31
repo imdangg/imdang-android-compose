@@ -1,8 +1,10 @@
 package info.imdang.imdang.core.data.datasource.impl
 
+import com.skydoves.sandwich.map
 import com.skydoves.sandwich.onError
-import com.skydoves.sandwich.onFailure
+import com.skydoves.sandwich.onException
 import com.skydoves.sandwich.suspendOnSuccess
+import info.imdang.imdang.core.data.datasource.model.mapper.ErrorResponseMapper
 import info.imdang.imdang.core.data.datasource.remote.TermRemoteDataSource
 import info.imdang.imdang.core.domain.model.TermData
 import info.imdang.imdang.core.domain.repository.TermRepository
@@ -19,9 +21,9 @@ class TermRepositoryImpl @Inject constructor(
         response.suspendOnSuccess {
             emit(data.map { it.toDomain() })
         }.onError {
-
-        }.onFailure {
-
+            throw map(ErrorResponseMapper)
+        }.onException {
+            throw throwable
         }
     }
 
@@ -30,9 +32,9 @@ class TermRepositoryImpl @Inject constructor(
         response.suspendOnSuccess {
             emit(data)
         }.onError {
-
-        }.onFailure {
-
+            throw map(ErrorResponseMapper)
+        }.onException {
+            throw throwable
         }
     }
 }

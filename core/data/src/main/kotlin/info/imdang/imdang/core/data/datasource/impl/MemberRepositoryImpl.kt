@@ -1,8 +1,10 @@
 package info.imdang.imdang.core.data.datasource.impl
 
+import com.skydoves.sandwich.map
 import com.skydoves.sandwich.onError
-import com.skydoves.sandwich.onFailure
+import com.skydoves.sandwich.onException
 import com.skydoves.sandwich.suspendOnSuccess
+import info.imdang.imdang.core.data.datasource.model.mapper.ErrorResponseMapper
 import info.imdang.imdang.core.data.datasource.model.toData
 import info.imdang.imdang.core.data.datasource.remote.MemberRemoteDataSource
 import info.imdang.imdang.core.domain.model.JoinRequestData
@@ -20,9 +22,9 @@ class MemberRepositoryImpl @Inject constructor(
         response.suspendOnSuccess {
             emit(data)
         }.onError {
-
-        }.onFailure {
-
+            throw map(ErrorResponseMapper)
+        }.onException {
+            throw throwable
         }
     }
 }

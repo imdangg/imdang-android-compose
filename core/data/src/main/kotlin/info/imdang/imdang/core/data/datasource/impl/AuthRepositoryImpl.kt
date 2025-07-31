@@ -1,9 +1,11 @@
 package info.imdang.imdang.core.data.datasource.impl
 
+import com.skydoves.sandwich.map
 import com.skydoves.sandwich.onError
-import com.skydoves.sandwich.onFailure
+import com.skydoves.sandwich.onException
 import com.skydoves.sandwich.suspendOnSuccess
 import info.imdang.imdang.core.data.datasource.local.AuthLocalDataSource
+import info.imdang.imdang.core.data.datasource.model.mapper.ErrorResponseMapper
 import info.imdang.imdang.core.data.datasource.model.toData
 import info.imdang.imdang.core.data.datasource.remote.AuthRemoteDataSource
 import info.imdang.imdang.core.domain.model.LoginData
@@ -31,9 +33,9 @@ class AuthRepositoryImpl @Inject constructor(
             authLocalDataSource.setLoginEntity(data)
             emit(data.toDomain())
         }.onError {
-
-        }.onFailure {
-
+            throw map(ErrorResponseMapper)
+        }.onException {
+            throw throwable
         }
     }
 
@@ -44,9 +46,9 @@ class AuthRepositoryImpl @Inject constructor(
         response.suspendOnSuccess {
             emit(data.toDomain())
         }.onError {
-
-        }.onFailure {
-
+            throw map(ErrorResponseMapper)
+        }.onException {
+            throw throwable
         }
     }
 

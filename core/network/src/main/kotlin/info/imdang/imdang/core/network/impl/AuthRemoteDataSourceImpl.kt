@@ -17,7 +17,9 @@ internal class AuthRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun postLogin(loginRequestEntity: LoginRequestEntity): ApiResponse<LoginEntity> =
         authService.postLogin(loginRequestEntity.toRemote())
-            .mapSuccess { data!!.toData() }
+            .mapSuccess {
+                data!!.toData()
+            }
 
     override suspend fun postReissue(reissueRequestEntity: ReissueRequestEntity): ApiResponse<ReissueEntity> =
         authService.postReissue(reissueRequestEntity.toRemote())
