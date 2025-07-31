@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.imdang.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.imdang.android.firebase)
+    alias(libs.plugins.google.services)
 }
 
 android {
