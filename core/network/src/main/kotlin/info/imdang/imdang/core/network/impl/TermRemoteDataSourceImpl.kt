@@ -17,5 +17,5 @@ internal class TermRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun postTermsAgree(termsIds: List<Int>): ApiResponse<Unit> =
         termService.postTermsAgree(termsIds)
-            .mapSuccess { data!! }
+            .mapSuccess { data ?: Unit }
 }
