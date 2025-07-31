@@ -5,7 +5,7 @@ import info.imdang.imdang.core.domain.model.ReissueData
 data class ReissueModel(
     val accessToken: String,
     val refreshToken: String,
-    val expiresIn: Int,
+    val expiresIn: Int?,
 )
 
 fun ReissueData.toPresentation(): ReissueModel = ReissueModel(

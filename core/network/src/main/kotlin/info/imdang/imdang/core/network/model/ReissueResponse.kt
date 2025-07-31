@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class ReissueResponse(
     val accessToken: String,
     val refreshToken: String,
-    val expiresIn: Int,
+    val expiresIn: Int?,
 ) : RemoteMapper<ReissueEntity> {
     override fun toData(): ReissueEntity =
         ReissueEntity(

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,12 +42,15 @@ class SplashViewModel @Inject constructor(
 
             postReissueUseCase(reissueRequestModel.toDomain())
                 .asResult()
-                .collect { loginResult ->
+                .map { loginResult ->
                     when (loginResult) {
                         Result.Loading -> SplashUiState.Loading
                         is Result.Error -> SplashUiState.NavigateToLogin
                         is Result.Success -> SplashUiState.NavigateToHome
                     }
+                }
+                .collect {
+                    _uiState.value = it
                 }
         }
     }

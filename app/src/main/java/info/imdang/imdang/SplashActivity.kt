@@ -30,8 +30,13 @@ class SplashActivity : ComponentActivity() {
                 LaunchedEffect(uiState) {
                     when (uiState) {
                         SplashUiState.Loading -> {}
-                        SplashUiState.NavigateToHome -> { navigateTo("home") }
-                        SplashUiState.NavigateToLogin -> { navigateTo("login") }
+                        SplashUiState.NavigateToHome -> {
+                            navigateTo("home")
+                        }
+
+                        SplashUiState.NavigateToLogin -> {
+                            navigateTo("login")
+                        }
                     }
                 }
 
