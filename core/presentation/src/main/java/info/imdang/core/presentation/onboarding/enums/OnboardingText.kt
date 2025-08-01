@@ -203,3 +203,4 @@ enum class OptionText : OptionEnumType {
     RATE_90, RATE_80, RATE_70, RATE_60, RATE_50, NO_PREFERENCE,
     Y1, Y2, Y3, Y5, Y10, Y20, UNKNOWN
 }
+

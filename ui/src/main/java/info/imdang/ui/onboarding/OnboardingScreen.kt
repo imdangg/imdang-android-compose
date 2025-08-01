@@ -125,10 +125,11 @@ fun OnboardingRoute(
                 Step1To4Screen(
                     modifier = modifier,
                     currentStep, currentOnboardingText, viewModel.onboardingSelections,
-                    onOptionSelected = { index ->
+                    onOptionSelected = { index, value ->
                         viewModel.updateSelectionForStep(
                             currentStep,
-                            index
+                            index,
+                            value
                         )
                     },
                     onNext = { viewModel.nextStep() },
@@ -166,6 +167,7 @@ fun OnboardingRoute(
                 },
                 onFinish = { areas -> // todo api 개발 완료시 전송 메소드 호출
                     viewModel.updatePreferredAreas(areas)
+                    viewModel.postOnboardingData()
                     viewModel.nextStep()
                 }
             )
@@ -246,13 +248,14 @@ fun Step1To4Screen(
     modifier: Modifier = Modifier,
     currentStep: OnboardingStep,
     currentOnboardingText: OnboardingText?,
-    onboardingSelections: Map<OnboardingStep, Int>,
-    onOptionSelected: (Int) -> Unit,
+    onboardingSelections: Map<OnboardingStep, Pair<Int, String>>,
+    onOptionSelected: (Int, String) -> Unit,
     onNext: () -> Unit,
     onBackClick: () -> Unit
 ) {
     val selectedIndex = onboardingSelections[currentStep] ?: -1
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Column(
         modifier = modifier.padding(20.dp)
@@ -278,10 +281,10 @@ fun Step1To4Screen(
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 it.options.forEachIndexed { index, label ->
                     RadioButtonItem(
-                        label = label.asString(),
+                        label = label.asString(context),
                         selected = selectedIndex == index
                     ) {
-                        onOptionSelected(index)
+                        onOptionSelected(index, label.asString(context))
                         coroutineScope.launch {
                             delay(150)
                             onNext()
@@ -816,7 +819,7 @@ fun PreviewStep1To4() {
             Step1To4Screen(
                 Modifier,
                 OnboardingStep.STEP1, OnboardingText.STEP1_GAP,
-                mapOf(OnboardingStep.OPT_STEP5 to 1), {}, {}) { }
+                mapOf(OnboardingStep.OPT_STEP5 to (1 to "")), { _, _ -> }, {}) { }
         }
     }
 }

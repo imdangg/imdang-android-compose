@@ -1,5 +1,6 @@
 package info.imdang.ui.onboarding
 
+import android.content.Context
 import info.imdang.core.presentation.onboarding.enums.OnboardingTextKey
 import info.imdang.core.presentation.onboarding.enums.OptionEnumType
 import info.imdang.core.presentation.onboarding.enums.OptionText
@@ -94,7 +95,7 @@ fun AptCategoryOption.labelResId(): Int = when (this) {
 
 
 //온보딩 STEP1TO4 UI 의 선택 options
-@Composable
+/*@Composable
 fun OptionEnumType.asString(): String {
     return when (this) {
         is OptionText -> stringResource(
@@ -147,8 +148,57 @@ fun OptionEnumType.asString(): String {
         )
         else -> error("Unhandled OptionEnumType")
     }
-}
+}*/
+fun OptionEnumType.asString(context: Context): String {
+    val resId = when (this) {
+        OptionText.RANGE_1 -> R.string.range_1
+        OptionText.RANGE_3 -> R.string.range_3
+        OptionText.RANGE_7 -> R.string.range_7
+        OptionText.RANGE_9 -> R.string.range_9
+        OptionText.RANGE_15 -> R.string.range_15
+        OptionText.RANGE_20 -> R.string.range_20
+        OptionText.RANGE_30 -> R.string.range_30
+        OptionText.RANGE_50 -> R.string.range_50
 
+        OptionText.NO_INCOME -> R.string.no_income
+        OptionText.INCOME_200 -> R.string.income_200
+        OptionText.INCOME_300 -> R.string.income_300
+        OptionText.INCOME_400 -> R.string.income_400
+        OptionText.INCOME_500 -> R.string.income_500
+        OptionText.INCOME_600 -> R.string.income_600
+        OptionText.INCOME_700 -> R.string.income_700
+        OptionText.INCOME_800 -> R.string.income_800
+        OptionText.INCOME_1000 -> R.string.income_1000
+
+        OptionText.NEWLYWEDS -> R.string.newlyweds
+        OptionText.FAMILY_3_PLUS -> R.string.family_3_plus
+        OptionText.MID_AGE -> R.string.mid_age
+        OptionText.SINGLE -> R.string.single
+
+        OptionText.NO_CHILD -> R.string.no_child
+        OptionText.PLAN_CHILD -> R.string.plan_child
+        OptionText.CHILD_1 -> R.string.child_1
+        OptionText.CHILD_2 -> R.string.child_2
+        OptionText.CHILD_3 -> R.string.child_3
+
+        OptionText.RATE_90 -> R.string.rate_90
+        OptionText.RATE_80 -> R.string.rate_80
+        OptionText.RATE_70 -> R.string.rate_70
+        OptionText.RATE_60 -> R.string.rate_60
+        OptionText.RATE_50 -> R.string.rate_50
+        OptionText.NO_PREFERENCE -> R.string.no_preference
+
+        OptionText.Y1 -> R.string.y1
+        OptionText.Y2 -> R.string.y2
+        OptionText.Y3 -> R.string.y3
+        OptionText.Y5 -> R.string.y5
+        OptionText.Y10 -> R.string.y10
+        OptionText.Y20 -> R.string.y20
+        OptionText.UNKNOWN -> R.string.unknown
+        else -> error("Unhandled OptionEnumType")
+    }
+    return context.getString(resId)
+}
 //온보딩 UI 의 title/subtitle
 @Composable
 fun OnboardingTextKey.asString(): String {

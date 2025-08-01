@@ -1,11 +1,14 @@
 package info.imdang.core.presentation.onboarding
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import info.imdang.core.presentation.model.OnboardingRequestModel
 import info.imdang.core.presentation.model.RankedPriority
 import info.imdang.core.presentation.onboarding.enums.OnboardingStep
 import info.imdang.core.presentation.onboarding.enums.PreferenceCategory
@@ -17,8 +20,6 @@ import info.imdang.imdang.core.domain.usecase.LoadSeoulAreaFromJsonUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-
 
 
 @HiltViewModel
@@ -35,8 +36,8 @@ class OnboardingViewModel @Inject constructor(
     val commuteArea: MutableStateFlow<PreferenceCategory.CommuteArea?> = MutableStateFlow(null)
 
     //todo request model 생성되면 Int 에서 data class 로 변경 예정
-    private val _onboardingSelections = mutableStateOf<Map<OnboardingStep, Int>>(emptyMap())
-    val onboardingSelections: Map<OnboardingStep, Int>
+    private val _onboardingSelections = mutableStateOf<Map<OnboardingStep, Pair<Int, String>>>(emptyMap())
+    val onboardingSelections: Map<OnboardingStep, Pair<Int, String>>
         get() = _onboardingSelections.value
 
     private val _rankedPriorities = mutableStateOf<List<RankedPriority>>(emptyList())
@@ -58,14 +59,14 @@ class OnboardingViewModel @Inject constructor(
         purpose = selectedPurpose
     }
 
-    fun updateSelectionForStep(targetStep: OnboardingStep, selectedIndex: Int) {
+    fun updateSelectionForStep(targetStep: OnboardingStep, selectedIndex: Int , selectedValue : String) {
         _onboardingSelections.value = _onboardingSelections.value.toMutableMap().apply {
-            this[targetStep] = selectedIndex
+            this[targetStep] = selectedIndex to selectedValue
         }
     }
 
     fun getSelectionForStep(targetStep: OnboardingStep): Int? {
-        return _onboardingSelections.value[targetStep]
+        return _onboardingSelections.value[targetStep]?.first
     }
 
     fun clearSelectionForStep(targetStep: OnboardingStep) {
@@ -129,7 +130,7 @@ class OnboardingViewModel @Inject constructor(
 
     private suspend fun setCommuteData() {
         val seoulDistricts = getSavedSeoulAreaDataUseCase.invoke()
-        seoulDistricts.collect {list ->
+        seoulDistricts.collect { list ->
             val subCategories = list.map {
                 PreferenceSubCategory(it.district, it.dong)
             }
@@ -139,4 +140,75 @@ class OnboardingViewModel @Inject constructor(
             )
         }
     }
+
+
+    private val stepKeyMappings: List<Triple<OnboardingStep, UserPurpose?, String>> = listOf(
+        Triple(OnboardingStep.STEP1, null, "budget"),
+        Triple(OnboardingStep.STEP2, null, "monthIncome"),
+        Triple(OnboardingStep.STEP3, UserPurpose.REAL_RESIDENCE, "livingPerson"),
+        Triple(OnboardingStep.STEP3, UserPurpose.GAP_INVESTMENT, "hopeGap"),
+        Triple(OnboardingStep.STEP4, UserPurpose.REAL_RESIDENCE, "childrenPlan"),
+        Triple(OnboardingStep.STEP4, UserPurpose.GAP_INVESTMENT, "investmentPeriod")
+    )
+
+    //todo api 연결
+    fun postOnboardingData(){
+        val result = toOnboardingRequest()
+        Log.d("ONBOARDING_RESULT",result.toString())
+
+
+    }
+
+
+    private fun toOnboardingRequest(): OnboardingRequestModel {
+        // STEP1TO4 옵션
+        val valueMap = mutableMapOf<String, String?>()
+        stepKeyMappings
+            .filter { (_, p, _) -> p == null || p == purpose }
+            .forEach { (step, _, key) ->
+                val selectedValue =  onboardingSelections.values.map { it.second }.getOrNull(step.ordinal)
+                valueMap[key] = selectedValue
+
+            }
+
+        // 우선순위 (STEP5)
+        val priorityStringsByRank = rankedPriorities.associateBy { it.rank }
+        val firstPriorityStr = priorityStringsByRank[1]?.let { "${it.category},${it.priority}" }
+        val secondPriorityStr = priorityStringsByRank[2]?.let { "${it.category},${it.priority}" }
+        val thirdPriorityStr = priorityStringsByRank[3]?.let { "${it.category},${it.priority}" }
+        //관심동네 3개(STEP6)
+        val interestDistrictStr = preferredAreas.joinToString(separator = ",").takeIf { it.isNotBlank() }
+
+
+        fun getPriorityForCategory(category: String): String? {
+            return priorityStringsByRank.values
+                .filter { it.category == category }.minByOrNull { it.rank }
+                ?.priority
+        }
+
+        return OnboardingRequestModel(
+            purpose = purpose!!.displayName,
+            budget = valueMap["budget"],
+            monthIncome = valueMap["monthIncome"],
+            livingPerson = valueMap["livingPerson"],
+            hopeGap = valueMap["hopeGap"],
+            childrenPlan = valueMap["childrenPlan"],
+            investmentPlan = valueMap["investmentPeriod"],
+            traffic = getPriorityForCategory("교통"),
+            schoolDistrict = getPriorityForCategory("학군"),
+            apartmentSquare = getPriorityForCategory("아파트 평수"),
+            household = getPriorityForCategory("세대수"),
+            houseType = getPriorityForCategory("유형"),
+            commutingArea = getPriorityForCategory("출퇴근 지역"),
+            infra = getPriorityForCategory("인프라"),
+            environment = getPriorityForCategory("환경"),
+            firstPriority = firstPriorityStr,
+            secondPriority = secondPriorityStr,
+            thirdPriority = thirdPriorityStr,
+            interestDistrict = interestDistrictStr
+        )
+    }
+
+
 }
+
