@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import info.imdang.core.presentation.model.OnboardingRequestModel
 import info.imdang.core.presentation.model.RankedPriority
 import info.imdang.core.presentation.onboarding.enums.OnboardingStep
@@ -45,7 +44,7 @@ class OnboardingViewModel @Inject constructor(
         get() = _rankedPriorities.value
 
     private val _preferredAreas = mutableStateOf<List<String>>(emptyList())
-    val preferredAreas: List<String>
+    private val preferredAreas: List<String>
         get() = _preferredAreas.value
 
     init {
@@ -63,10 +62,6 @@ class OnboardingViewModel @Inject constructor(
         _onboardingSelections.value = _onboardingSelections.value.toMutableMap().apply {
             this[targetStep] = selectedIndex to selectedValue
         }
-    }
-
-    fun getSelectionForStep(targetStep: OnboardingStep): Int? {
-        return _onboardingSelections.value[targetStep]?.first
     }
 
     fun clearSelectionForStep(targetStep: OnboardingStep) {

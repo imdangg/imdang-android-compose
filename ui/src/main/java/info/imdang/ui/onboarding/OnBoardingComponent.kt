@@ -178,7 +178,7 @@ fun PriorityOptButton(text: String?, modifier: Modifier = Modifier, onClick: () 
 @Preview
 @Composable
 fun PreviewPurposeButton() {
-    ImdangAppNewTheme() {
+    ImdangAppNewTheme {
         Column {
             PurposeButton(
                 iconId = R.drawable.ic_real_resident,
@@ -203,7 +203,7 @@ fun PreviewPurposeButton() {
 @Preview
 @Composable
 fun PreviewRadioButtonItem() {
-    ImdangAppNewTheme() {
+    ImdangAppNewTheme {
         Column {
             RadioButtonItem(label = "Text", selected = false) { }
             RadioButtonItem(label = "Text", selected = true) { }
@@ -213,7 +213,7 @@ fun PreviewRadioButtonItem() {
 @Preview
 @Composable
 fun PreviewOPTText() {
-    ImdangAppNewTheme() {
+    ImdangAppNewTheme {
         Column {
             OptText("Text", false,{})
             OptText("Text", true,{})
@@ -224,7 +224,7 @@ fun PreviewOPTText() {
 @Preview
 @Composable
 fun PreviewPriorityOptButton() {
-    ImdangAppNewTheme() {
+    ImdangAppNewTheme {
         Column {
             PriorityOptButton("Text>text"){}
             Spacer(Modifier.height(10.dp))
