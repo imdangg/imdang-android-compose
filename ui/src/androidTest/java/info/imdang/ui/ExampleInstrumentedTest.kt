@@ -5,9 +5,8 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import info.imdang.core.presentation.onboarding.UserPurpose
+import info.imdang.core.presentation.onboarding.enums.UserPurpose
 import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
 import info.imdang.ui.onboarding.Step0Screen
 

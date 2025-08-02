@@ -1,6 +1,5 @@
 package info.imdang.imdang.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -18,14 +17,12 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -72,10 +69,6 @@ internal fun ImdangApp(
             destination.route?.contains(topLevel.baseRoute.simpleName ?: "") == true
         } == true
     }
-
-    //라우트 로그
-    val navController = appState.navController
-    CurrentRouteLogger(navController = navController)
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -150,15 +143,4 @@ private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
         it.hasRoute(route)
     } ?: false
 
-@Composable
-fun CurrentRouteLogger(navController: NavController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
 
-    LaunchedEffect(currentRoute) {
-        Log.e("NavDebug", "Current route: $currentRoute")
-        navBackStackEntry?.destination?.hierarchy?.forEach {
-            Log.e("NavDebug", "Hierarchy route: ${it.route}")
-        }
-    }
-}
