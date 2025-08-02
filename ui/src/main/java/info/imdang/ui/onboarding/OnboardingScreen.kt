@@ -252,7 +252,7 @@ fun Step1To4Screen(
     onNext: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    val selectedIndex = onboardingSelections[currentStep] ?: -1
+    val selectedIndex = onboardingSelections[currentStep]?.first ?: -1
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 

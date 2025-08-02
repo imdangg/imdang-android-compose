@@ -45,6 +45,7 @@ class OnboardingViewModel @Inject constructor(
     val onboardingSelections: Map<OnboardingStep, Pair<Int, String>>
         get() = _onboardingSelections.value
 
+
     private val _rankedPriorities = mutableStateOf<List<RankedPriority>>(emptyList())
     val rankedPriorities: List<RankedPriority>
         get() = _rankedPriorities.value
@@ -179,8 +180,7 @@ class OnboardingViewModel @Inject constructor(
         stepKeyMappings
             .filter { (_, p, _) -> p == null || p == purpose }
             .forEach { (step, _, key) ->
-                val selectedValue =
-                    onboardingSelections.values.map { it.second }.getOrNull(step.ordinal)
+                val selectedValue = onboardingSelections[step]?.second
                 valueMap[key] = selectedValue
 
             }
