@@ -40,7 +40,6 @@ class OnboardingViewModel @Inject constructor(
 
     val commuteArea: MutableStateFlow<PreferenceCategory.CommuteArea?> = MutableStateFlow(null)
 
-    //todo request model 생성되면 Int 에서 data class 로 변경 예정
     private val _onboardingSelections =
         mutableStateOf<Map<OnboardingStep, Pair<Int, String>>>(emptyMap())
     val onboardingSelections: Map<OnboardingStep, Pair<Int, String>>
