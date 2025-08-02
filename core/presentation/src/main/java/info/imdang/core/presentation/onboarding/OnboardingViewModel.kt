@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import info.imdang.core.presentation.model.OnboardingRequestModel
 import info.imdang.core.presentation.model.RankedPriority
+import info.imdang.core.presentation.model.toDomain
 import info.imdang.core.presentation.onboarding.enums.OnboardingStep
 import info.imdang.core.presentation.onboarding.enums.PreferenceCategory
 import info.imdang.core.presentation.onboarding.enums.PreferenceCategoryType
@@ -16,7 +17,9 @@ import info.imdang.core.presentation.onboarding.enums.PreferenceSubCategory
 import info.imdang.core.presentation.onboarding.enums.UserPurpose
 import info.imdang.imdang.core.domain.usecase.GetSavedSeoulAreaDataUseCase
 import info.imdang.imdang.core.domain.usecase.LoadSeoulAreaFromJsonUseCase
+import info.imdang.imdang.core.domain.usecase.PostOnboardingUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,9 +27,12 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
     private val loadSeoulAreaFromJsonUseCase: LoadSeoulAreaFromJsonUseCase,
-    private val getSavedSeoulAreaDataUseCase: GetSavedSeoulAreaDataUseCase
+    private val getSavedSeoulAreaDataUseCase: GetSavedSeoulAreaDataUseCase,
+    private val postOnboardingUseCase: PostOnboardingUseCase
 
 ) : ViewModel() {
+    private val tag = OnboardingViewModel::class.simpleName
+
     var step by mutableStateOf(OnboardingStep.STEP0)
         private set
     var purpose by mutableStateOf<UserPurpose?>(null)
@@ -35,7 +41,8 @@ class OnboardingViewModel @Inject constructor(
     val commuteArea: MutableStateFlow<PreferenceCategory.CommuteArea?> = MutableStateFlow(null)
 
     //todo request model 생성되면 Int 에서 data class 로 변경 예정
-    private val _onboardingSelections = mutableStateOf<Map<OnboardingStep, Pair<Int, String>>>(emptyMap())
+    private val _onboardingSelections =
+        mutableStateOf<Map<OnboardingStep, Pair<Int, String>>>(emptyMap())
     val onboardingSelections: Map<OnboardingStep, Pair<Int, String>>
         get() = _onboardingSelections.value
 
@@ -54,11 +61,31 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
+    fun postOnboardingData(
+        onSuccess: () -> Unit
+    ) {
+        val request = toOnboardingRequestModel()
+        //데이터 수집 결과 확인용 로그 - 추후 제거 필요
+        Log.d("ONBOARDING_RESULT", request.toString())
+        viewModelScope.launch {
+            postOnboardingUseCase(request.toDomain()).catch { e ->
+                Log.e(tag, "postOnboarding 실패 : ${e.message}")
+            }.collect {
+                onSuccess()
+            }
+        }
+
+    }
+
     fun updatePurpose(selectedPurpose: UserPurpose) {
         purpose = selectedPurpose
     }
 
-    fun updateSelectionForStep(targetStep: OnboardingStep, selectedIndex: Int , selectedValue : String) {
+    fun updateSelectionForStep(
+        targetStep: OnboardingStep,
+        selectedIndex: Int,
+        selectedValue: String
+    ) {
         _onboardingSelections.value = _onboardingSelections.value.toMutableMap().apply {
             this[targetStep] = selectedIndex to selectedValue
         }
@@ -146,22 +173,15 @@ class OnboardingViewModel @Inject constructor(
         Triple(OnboardingStep.STEP4, UserPurpose.GAP_INVESTMENT, "investmentPeriod")
     )
 
-    //todo api 연결
-    fun postOnboardingData(){
-        val result = toOnboardingRequest()
-        Log.d("ONBOARDING_RESULT",result.toString())
 
-
-    }
-
-
-    private fun toOnboardingRequest(): OnboardingRequestModel {
+    private fun toOnboardingRequestModel(): OnboardingRequestModel {
         // STEP1TO4 옵션
         val valueMap = mutableMapOf<String, String?>()
         stepKeyMappings
             .filter { (_, p, _) -> p == null || p == purpose }
             .forEach { (step, _, key) ->
-                val selectedValue =  onboardingSelections.values.map { it.second }.getOrNull(step.ordinal)
+                val selectedValue =
+                    onboardingSelections.values.map { it.second }.getOrNull(step.ordinal)
                 valueMap[key] = selectedValue
 
             }
@@ -172,7 +192,8 @@ class OnboardingViewModel @Inject constructor(
         val secondPriorityStr = priorityStringsByRank[2]?.let { "${it.category},${it.priority}" }
         val thirdPriorityStr = priorityStringsByRank[3]?.let { "${it.category},${it.priority}" }
         //관심동네 3개(STEP6)
-        val interestDistrictStr = preferredAreas.joinToString(separator = ",").takeIf { it.isNotBlank() }
+        val interestDistrictStr =
+            preferredAreas.joinToString(separator = ",").takeIf { it.isNotBlank() }
 
 
         fun getPriorityForCategory(category: String): String? {
@@ -183,8 +204,8 @@ class OnboardingViewModel @Inject constructor(
 
         return OnboardingRequestModel(
             purpose = purpose!!.displayName,
-            budget = valueMap["budget"],
-            monthIncome = valueMap["monthIncome"],
+            budget = valueMap["budget"]!!,
+            monthIncome = valueMap["monthIncome"]!!,
             livingPerson = valueMap["livingPerson"],
             hopeGap = valueMap["hopeGap"],
             childrenPlan = valueMap["childrenPlan"],

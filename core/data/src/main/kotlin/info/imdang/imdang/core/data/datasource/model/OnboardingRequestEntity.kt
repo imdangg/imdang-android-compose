@@ -1,16 +1,15 @@
-package info.imdang.core.presentation.model
+package info.imdang.imdang.core.data.datasource.model
 
 import info.imdang.imdang.core.domain.model.OnboardingRequestData
 
-
-data class OnboardingRequestModel(
+data class OnboardingRequestEntity(
     val purpose: String,
     val budget: String,
     val monthIncome: String,
     val livingPerson: String?,
     val childrenPlan: String?,
     val hopeGap: String?,
-    val investmentPlan: String?, // 여기까지 Step1to4 data
+    val investmentPlan: String?,
     val traffic: String?,
     val schoolDistrict: String?,
     val apartmentSquare: String?,
@@ -25,7 +24,7 @@ data class OnboardingRequestModel(
     val interestDistrict: String?
 )
 
-fun OnboardingRequestModel.toDomain(): OnboardingRequestData = OnboardingRequestData(
+fun OnboardingRequestData.toData() = OnboardingRequestEntity(
     purpose,
     budget,
     monthIncome,
@@ -46,3 +45,4 @@ fun OnboardingRequestModel.toDomain(): OnboardingRequestData = OnboardingRequest
     thirdPriority,
     interestDistrict
 )
+

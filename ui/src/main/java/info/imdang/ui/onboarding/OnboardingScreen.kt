@@ -163,10 +163,12 @@ fun OnboardingRoute(
                     viewModel.clearPreferredAreas()
                     viewModel.backStep()
                 },
-                onFinish = { areas -> // todo api 개발 완료시 전송 메소드 호출
+                onFinish = { areas ->
                     viewModel.updatePreferredAreas(areas)
-                    viewModel.postOnboardingData()
-                    viewModel.nextStep()
+                    //백엔드 전송
+                    viewModel.postOnboardingData{
+                        viewModel.nextStep()
+                    }
                 }
             )
 
@@ -174,7 +176,6 @@ fun OnboardingRoute(
                 FinishedScreen(
                     modifier = modifier,
                 )
-
             }
         }
     }
