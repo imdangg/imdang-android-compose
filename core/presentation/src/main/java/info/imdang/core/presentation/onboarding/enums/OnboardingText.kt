@@ -159,11 +159,11 @@ val Step4Options = listOf(
 )
 
 val Step3GapOptions = listOf(
-    OptionText.RATE_90,
-    OptionText.RATE_80,
-    OptionText.RATE_70,
-    OptionText.RATE_60,
+    OptionText.RATE_20,
+    OptionText.RATE_30,
+    OptionText.RATE_40,
     OptionText.RATE_50,
+    OptionText.RATE_60,
     OptionText.NO_PREFERENCE
 )
 
@@ -195,12 +195,13 @@ enum class OnboardingTextKey : OptionEnumType {
     EMPTY
 }
 
+//Step1To4
 enum class OptionText : OptionEnumType {
     RANGE_1, RANGE_3, RANGE_7, RANGE_9, RANGE_15, RANGE_20, RANGE_30, RANGE_50,
     NO_INCOME, INCOME_200, INCOME_300, INCOME_400, INCOME_500, INCOME_600, INCOME_700, INCOME_800, INCOME_1000,
     NEWLYWEDS, FAMILY_3_PLUS, MID_AGE, SINGLE,
     NO_CHILD, PLAN_CHILD, CHILD_1, CHILD_2, CHILD_3,
-    RATE_90, RATE_80, RATE_70, RATE_60, RATE_50, NO_PREFERENCE,
+    RATE_20, RATE_30, RATE_40, RATE_50, RATE_60, NO_PREFERENCE,
     Y1, Y2, Y3, Y5, Y10, Y20, UNKNOWN
 }
 

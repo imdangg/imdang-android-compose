@@ -145,11 +145,11 @@
     <string name="child_2">2명</string>
     <string name="child_3">3명</string>
 
-    <string name="rate_90">전세가율 90% 이상</string>
-    <string name="rate_80">전세가율 80% 이상</string>
-    <string name="rate_70">전세가율 70% 이상</string>
-    <string name="rate_60">전세가율 60% 이상</string>
-    <string name="rate_50">전세가율 50% 이상</string>
+    <string name="rate_20">갭 20% 이상</string>
+    <string name="rate_30">갭 30% 이상</string>
+    <string name="rate_40">갭 40% 이상</string>
+    <string name="rate_50">갭 50% 이상</string>
+    <string name="rate_60">갭 60% 이상</string>
     <string name="no_preference">상관 없어요</string>
 
     <string name="y1">1년 미만</string>
@@ -159,4 +159,38 @@
     <string name="y10">10년 미만</string>
     <string name="y20">20년 미만</string>
     <string name="unknown">아직 모르겠어요</string>
+
+    <string name="location_gangnam">강남</string>
+    <string name="location_yeouido">여의도</string>
+    <string name="location_gwanghwamun">광화문</string>
+    <string name="location_euljiro">을지로</string>
+    <string name="location_seongsu">성수</string>
+    <string name="location_pangyo">판교</string>
+    <string name="location_mapo">마포</string>
+    <string name="location_magok">마곡</string>
+    <string name="location_guro">구로</string>
+    <string name="location_sangam_dmc">상암DMC</string>
+    <string name="location_gangseo">강서</string>
+    <string name="location_songpa">송파</string>
+
+    <string name="location_gangdong">강동구</string>
+    <string name="location_gangbuk">강북구</string>
+    <string name="location_gwanak">관악구</string>
+    <string name="location_gwangjin">광진구</string>
+    <string name="location_geumcheon">금천구</string>
+    <string name="location_nowon">노원구</string>
+    <string name="location_dobong">도봉구</string>
+    <string name="location_dongdaemun">동대문구</string>
+    <string name="location_dongjak">동작구</string>
+    <string name="location_seodaemun">서대문구</string>
+    <string name="location_seocho">서초구</string>
+    <string name="location_seongdong">성동구</string>
+    <string name="location_seongbuk">성북구</string>
+    <string name="location_yangcheon">양천구</string>
+    <string name="location_yeongdeungpo">영등포구</string>
+    <string name="location_yongsan">용산구</string>
+    <string name="location_eunpyeong">은평구</string>
+    <string name="location_jongno">종로구</string>
+    <string name="location_junggu">중구</string>
+    <string name="location_jungrang">중랑구</string>
 </resources>

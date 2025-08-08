@@ -1,5 +1,9 @@
 package info.imdang.core.presentation.onboarding.enums
 
+enum class CommuteAreaOption {
+    GANGNAM, YEOUIDO, GWANGHWAMUN, EULJIRO, SEONGSU, PANGYO, MAPO, MAGOK, GURO, SANGAMDMC, GANGSEO, SONGPA
+}
+
 enum class TrafficOption {
     NEAR_SUBWAY, BUS_STOP, EASY_PARKING, ELEVATOR_LINK, CAR_COMMUTE
 }

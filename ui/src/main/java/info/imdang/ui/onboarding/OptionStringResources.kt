@@ -7,6 +7,7 @@ import info.imdang.core.presentation.onboarding.enums.OptionText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import info.imdang.core.presentation.onboarding.enums.AptCategoryOption
+import info.imdang.core.presentation.onboarding.enums.CommuteAreaOption
 import info.imdang.core.presentation.onboarding.enums.EnvironmentOption
 import info.imdang.core.presentation.onboarding.enums.InfraOption
 import info.imdang.core.presentation.onboarding.enums.NumOfHouseholdsOption
@@ -37,7 +38,21 @@ fun PreferenceCategoryType.getOptionResId(option: Any?): Int = when (this) {
     PreferenceCategoryType.SQUARE_FOOTAGE -> (option as SquareFootageOption).labelResId()
     PreferenceCategoryType.NUM_OF_HOUSEHOLDS -> (option as NumOfHouseholdsOption).labelResId()
     PreferenceCategoryType.APT_CATEGORY -> (option as AptCategoryOption).labelResId()
-    PreferenceCategoryType.COMMUTE_AREA -> { 0 }
+    PreferenceCategoryType.COMMUTE_AREA -> (option as CommuteAreaOption).labelResId()
+}
+fun CommuteAreaOption.labelResId(): Int = when (this) {
+    CommuteAreaOption.GANGNAM -> R.string.location_gangnam
+    CommuteAreaOption.YEOUIDO -> R.string.location_yeouido
+    CommuteAreaOption.GWANGHWAMUN -> R.string.location_gwanghwamun
+    CommuteAreaOption.EULJIRO -> R.string.location_euljiro
+    CommuteAreaOption.SEONGSU -> R.string.location_seongsu
+    CommuteAreaOption.PANGYO -> R.string.location_pangyo
+    CommuteAreaOption.MAPO -> R.string.location_mapo
+    CommuteAreaOption.MAGOK -> R.string.location_magok
+    CommuteAreaOption.GURO -> R.string.location_guro
+    CommuteAreaOption.SANGAMDMC -> R.string.location_sangam_dmc
+    CommuteAreaOption.GANGSEO -> R.string.location_gangseo
+    CommuteAreaOption.SONGPA -> R.string.location_songpa
 }
 
 fun TrafficOption.labelResId(): Int = when (this) {
@@ -127,11 +142,11 @@ fun OptionEnumType.asString(context: Context): String {
         OptionText.CHILD_2 -> R.string.child_2
         OptionText.CHILD_3 -> R.string.child_3
 
-        OptionText.RATE_90 -> R.string.rate_90
-        OptionText.RATE_80 -> R.string.rate_80
-        OptionText.RATE_70 -> R.string.rate_70
-        OptionText.RATE_60 -> R.string.rate_60
+        OptionText.RATE_20 -> R.string.rate_20
+        OptionText.RATE_30 -> R.string.rate_30
+        OptionText.RATE_40 -> R.string.rate_40
         OptionText.RATE_50 -> R.string.rate_50
+        OptionText.RATE_60 -> R.string.rate_60
         OptionText.NO_PREFERENCE -> R.string.no_preference
 
         OptionText.Y1 -> R.string.y1

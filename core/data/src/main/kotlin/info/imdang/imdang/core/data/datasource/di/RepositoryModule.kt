@@ -6,11 +6,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import info.imdang.imdang.core.data.datasource.impl.AuthRepositoryImpl
 import info.imdang.imdang.core.data.datasource.impl.MemberRepositoryImpl
-import info.imdang.imdang.core.data.datasource.impl.SeoulAreaRepositoryImpl
 import info.imdang.imdang.core.data.datasource.impl.TermRepositoryImpl
 import info.imdang.imdang.core.domain.repository.AuthRepository
 import info.imdang.imdang.core.domain.repository.MemberRepository
-import info.imdang.imdang.core.domain.repository.SeoulAreaRepository
 import info.imdang.imdang.core.domain.repository.TermRepository
 import javax.inject.Singleton
 
@@ -30,7 +28,5 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindTermRepository(termRepositoryImpl: TermRepositoryImpl): TermRepository
 
-    @Binds
-    @Singleton
-    abstract fun bindSeoulAreaRepository(seoulAreaRepositoryImpl: SeoulAreaRepositoryImpl) : SeoulAreaRepository
+
 }

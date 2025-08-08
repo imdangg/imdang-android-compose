@@ -37,9 +37,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -63,7 +61,6 @@ import info.imdang.core.presentation.onboarding.OnboardingViewModel
 import info.imdang.core.presentation.onboarding.enums.OnboardingStep
 import info.imdang.core.presentation.onboarding.enums.PreferenceCategory
 import info.imdang.core.presentation.onboarding.enums.PreferenceCategoryType
-import info.imdang.core.presentation.onboarding.enums.PreferenceSubCategory
 import info.imdang.core.presentation.onboarding.enums.UserPurpose
 import info.imdang.imdang.core.component.buttons.ButtonSize
 import info.imdang.imdang.core.component.buttons.MainButton
@@ -78,6 +75,7 @@ import info.imdang.imdang.core.component.theme.Gray900
 import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
 import info.imdang.imdang.core.component.theme.White
 import info.imdang.ui.R
+import info.imdang.ui.enums.SeoulArea
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -89,7 +87,6 @@ fun OnboardingRoute(
 ) {
     val currentStep = viewModel.step
     val currentPurpose = viewModel.purpose
-    val commuteArea by viewModel.commuteArea.collectAsState()
 
     val currentOnboardingText by remember(currentStep, currentPurpose) {
         mutableStateOf(
@@ -141,7 +138,6 @@ fun OnboardingRoute(
             OnboardingStep.OPT_STEP5 -> OptStep5Screen(
                 modifier = modifier,
                 currentOnboardingText = currentOnboardingText,
-                commuteArea = commuteArea,
                 initialRankedList = viewModel.rankedPriorities,
                 onSkip = { viewModel.nextStep() },
                 onBackClick = {
@@ -157,7 +153,6 @@ fun OnboardingRoute(
             OnboardingStep.OPT_STEP6 -> OptStep6Screen(
                 modifier = modifier,
                 currentOnboardingText = currentOnboardingText,
-                commuteArea = commuteArea,
                 onSkip = { viewModel.nextStep() },
                 onBackClick = {
                     viewModel.clearPreferredAreas()
@@ -166,7 +161,7 @@ fun OnboardingRoute(
                 onFinish = { areas ->
                     viewModel.updatePreferredAreas(areas)
                     //백엔드 전송
-                    viewModel.postOnboardingData{
+                    viewModel.postOnboardingData {
                         viewModel.nextStep()
                     }
                 }
@@ -301,7 +296,6 @@ fun Step1To4Screen(
 fun OptStep5Screen(
     modifier: Modifier = Modifier,
     currentOnboardingText: OnboardingText?,
-    commuteArea: PreferenceCategory<Nothing>?,
     initialRankedList: List<RankedPriority>?,
     onNext: (List<RankedPriority>) -> Unit,
     onSkip: () -> Unit,
@@ -347,9 +341,8 @@ fun OptStep5Screen(
                     .fillMaxWidth()
                     .fillMaxHeight(0.58f),
             ) {
-                if (showBottomSheet && commuteArea != null && selectedPriorityIndex != null) {
+                if (showBottomSheet && selectedPriorityIndex != null) {
                     BottomSheetContent(
-                        commuteArea = commuteArea,
                         tab = tabLabels,
                         priorityIndex = selectedPriorityIndex!!,
                         onFinish = { rank, category, priority ->
@@ -468,17 +461,14 @@ fun OptStep5Screen(
     )
 }
 
-
 @Composable
 fun OptStep6Screen(
     modifier: Modifier = Modifier,
     currentOnboardingText: OnboardingText?,
-    commuteArea: PreferenceCategory<Nothing>?,
     onFinish: (List<String>) -> Unit,
     onSkip: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    val seoul = commuteArea?.subCategories?.map { it.name }.orEmpty()
     val selectedAreasState = remember { mutableStateOf<List<String>>(emptyList()) }
     val selectedAreas = selectedAreasState.value
 
@@ -528,21 +518,22 @@ fun OptStep6Screen(
                     horizontalArrangement = Arrangement.spacedBy(24.dp),
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                 ) {
-                    items(seoul) { name ->
-                        val isSelected = name in selectedAreas
-                        OptText(
-                            text = name,
-                            isSelected = isSelected,
-                            onClick = {
-                                selectedAreasState.value = when {
-                                    isSelected -> selectedAreas - name
-                                    selectedAreas.size < 3 -> selectedAreas + name
-                                    else -> selectedAreas // 3개 넘으면 무시
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                     items(SeoulArea.entries) { seoul ->
+                         val location = stringResource(seoul.resId)
+                         val isSelected = location in selectedAreas
+                         OptText(
+                             text = location,
+                             isSelected = isSelected,
+                             onClick = {
+                                 selectedAreasState.value = when {
+                                     isSelected -> selectedAreas - location
+                                     selectedAreas.size < 3 -> selectedAreas + location
+                                     else -> selectedAreas // 3개 넘으면 무시
+                                 }
+                             },
+                             modifier = Modifier.fillMaxWidth()
+                         )
+                     }
                 }
             }
         }
@@ -629,16 +620,15 @@ fun BottomSheetContent(
     modifier: Modifier = Modifier,
     priorityIndex: Int,
     tab: List<String>,
-    commuteArea: PreferenceCategory<Nothing>?,
     onFinish: (Int, String, String) -> Unit
 ) {
     val context = LocalContext.current
 
     val allCategories = remember {
-        PreferenceCategory.statics + commuteArea
+        PreferenceCategory.statics
     }
     val categoryMap = remember(allCategories, context) {
-        allCategories.filterNotNull().associateBy { category ->
+        allCategories.associateBy { category ->
             context.getString(category.type.labelResId())
         }
     }
@@ -687,82 +677,28 @@ fun BottomSheetContent(
                 val currentCategory: PreferenceCategory<*>? = mappedTabCategories.getOrNull(page)
 
                 if (currentCategory != null) {
-                    when (currentCategory) {
-                        is PreferenceCategory.CommuteArea -> { // CommuteArea 타입인 경우
-                            var selectedSubCategoryIndex by remember { mutableIntStateOf(0) }
-                            Row(modifier = Modifier.fillMaxSize()) {
-                                // 서울 구
-                                Column(
-                                    modifier = Modifier
-                                        .verticalScroll(rememberScrollState())
-                                        .weight(0.5f)
-                                        .padding(end = 8.dp)
-                                ) {
-                                    currentCategory.subCategories.forEachIndexed { index, subCategory ->
-                                        OptText(
-                                            text = subCategory.name,
-                                            isSelected = selectedSubCategoryIndex == index,
-                                            onClick = {
-                                                selectedSubCategoryIndex = index
-                                                selectedOption = null
-                                            },
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                        Spacer(Modifier.height(24.dp))
-                                    }
-                                }
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                            verticalArrangement = Arrangement.spacedBy(24.dp),
+                        ) {
+                            items(currentCategory.options) { option ->
+                                val optionName = stringResource(
+                                    currentCategory.type.getOptionResId(option)
+                                )
 
-                                // 우측 Column: 선택된 subCategory 의 details (동 이름) 목록
-                                Column(
-                                    modifier = Modifier
-                                        .verticalScroll(rememberScrollState())
-                                        .weight(0.5f)
-                                ) {
-                                    val selectedSubCategory =
-                                        currentCategory.subCategories.getOrNull(
-                                            selectedSubCategoryIndex
-                                        )
-
-                                    selectedSubCategory?.options?.forEachIndexed { _, detail ->
-                                        OptText(
-                                            text = detail,
-                                            isSelected = selectedOption == detail,
-                                            onClick = {
-                                                selectedOption = detail
-                                            },
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                        Spacer(Modifier.height(24.dp))
-                                    }
-
-                                }
-                            }
-                        }
-                        // CommuteArea 가 아닌 다른 PreferenceCategory 타입들 (Traffic, School, etc.)
-                        else -> {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                LazyVerticalGrid(
-                                    columns = GridCells.Fixed(2),
-                                    modifier = Modifier.fillMaxSize(),
-                                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                                ) {
-                                    items(currentCategory.options) { option ->
-                                        val optionName = stringResource(
-                                            currentCategory.type.getOptionResId(option)
-                                        )
-
-                                        OptText(
-                                            text = optionName,
-                                            isSelected = selectedOption == optionName,
-                                            onClick = { selectedOption = optionName },
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                    }
-                                }
+                                OptText(
+                                    text = optionName,
+                                    isSelected = selectedOption == optionName,
+                                    onClick = { selectedOption = optionName },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                             }
                         }
                     }
+
                 } else {
                     // 매칭되는 카테고리가 없는 경우 (tab 리스트 데이터 누락)
                     Text(
@@ -827,20 +763,11 @@ fun PreviewStep1To4() {
 @Composable
 fun PreviewOPTStep5() {
     val rankList: List<RankedPriority> = listOf(RankedPriority(1, "유형", "신축"))
-    val dummyPreferenceCategory = PreferenceCategory.CommuteArea(
-        type = PreferenceCategoryType.COMMUTE_AREA,
-        subCategories = listOf(
-            PreferenceSubCategory("강남구", listOf("역삼동", "삼성동", "청담동")),
-            PreferenceSubCategory("광화문", listOf("종로1가", "종로2가", "종로3가")),
-            PreferenceSubCategory("성수동", listOf("성수1가", "성수2가"))
-        )
-    )
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
         ImdangAppNewTheme {
             OptStep5Screen(
                 Modifier,
                 OnboardingText.STEP5_GAP,
-                dummyPreferenceCategory,
                 rankList,
                 onNext = {},
                 onSkip = {}
@@ -853,21 +780,11 @@ fun PreviewOPTStep5() {
 @Preview
 @Composable
 fun PreviewOPTStep6() {
-    val dummyPreferenceCategory = PreferenceCategory.CommuteArea(
-        type = PreferenceCategoryType.COMMUTE_AREA,
-        subCategories = List(50) { index ->
-            PreferenceSubCategory(
-                name = "구역 $index",
-                options = List(5) { optIndex -> "동 ${index + 1} - 동네 $optIndex" }
-            )
-        }
-    )
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
         ImdangAppNewTheme {
             OptStep6Screen(
                 Modifier,
                 OnboardingText.STEP6_GAP,
-                dummyPreferenceCategory,
                 onBackClick = {},
                 onFinish = {},
                 onSkip = {}

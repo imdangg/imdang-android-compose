@@ -3,16 +3,20 @@ package info.imdang.core.presentation.onboarding.enums
 
 sealed class PreferenceCategory<T>(
     open val type: PreferenceCategoryType,
-    open val subCategories: List<PreferenceSubCategory> = emptyList(),
+  //  open val subCategories: List<PreferenceSubCategory> = emptyList(),
     open val options: List<T> = emptyList()
 ) {
 
-    data class CommuteArea(
+    /*data class CommuteArea(
         override val type: PreferenceCategoryType = PreferenceCategoryType.COMMUTE_AREA,
         override val subCategories: List<PreferenceSubCategory>
     ) : PreferenceCategory<Nothing>(
         type = type,
         subCategories = subCategories
+    )*/
+    data object CommuteArea : PreferenceCategory<CommuteAreaOption>(
+        type = PreferenceCategoryType.COMMUTE_AREA,
+        options = CommuteAreaOption.entries
     )
     data object Traffic : PreferenceCategory<TrafficOption>(
         type = PreferenceCategoryType.TRAFFIC,
@@ -53,7 +57,7 @@ sealed class PreferenceCategory<T>(
     companion object {
 
         val statics: List<PreferenceCategory<*>> = listOf(
-           Traffic, School, Infra, Environment, SquareFootage, NumOfHouseHolds, AptCategory
+           CommuteArea,Traffic, School, Infra, Environment, SquareFootage, NumOfHouseHolds, AptCategory
         )
     }
 

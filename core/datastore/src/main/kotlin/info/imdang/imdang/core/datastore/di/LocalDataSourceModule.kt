@@ -5,9 +5,7 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import info.imdang.imdang.core.data.datasource.local.AuthLocalDataSource
-import info.imdang.imdang.core.data.datasource.local.SeoulAreaDataSource
 import info.imdang.imdang.core.datastore.AuthLocalDataSourceImpl
-import info.imdang.imdang.core.datastore.SeoulAreaDataSourceImpl
 import javax.inject.Singleton
 
 @Module
@@ -21,9 +19,4 @@ internal abstract class LocalDataSourceModule {
     ): AuthLocalDataSource
 
 
-    @Binds
-    @Singleton
-    abstract fun bindSeoulAreaDataSource(
-        seoulAreaDataSourceImpl: SeoulAreaDataSourceImpl
-    ) : SeoulAreaDataSource
 }

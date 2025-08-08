@@ -15,8 +15,6 @@ import info.imdang.core.presentation.onboarding.enums.PreferenceCategory
 import info.imdang.core.presentation.onboarding.enums.PreferenceCategoryType
 import info.imdang.core.presentation.onboarding.enums.PreferenceSubCategory
 import info.imdang.core.presentation.onboarding.enums.UserPurpose
-import info.imdang.imdang.core.domain.usecase.GetSavedSeoulAreaDataUseCase
-import info.imdang.imdang.core.domain.usecase.LoadSeoulAreaFromJsonUseCase
 import info.imdang.imdang.core.domain.usecase.PostOnboardingUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -26,8 +24,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val loadSeoulAreaFromJsonUseCase: LoadSeoulAreaFromJsonUseCase,
-    private val getSavedSeoulAreaDataUseCase: GetSavedSeoulAreaDataUseCase,
     private val postOnboardingUseCase: PostOnboardingUseCase
 
 ) : ViewModel() {
@@ -54,12 +50,12 @@ class OnboardingViewModel @Inject constructor(
     private val preferredAreas: List<String>
         get() = _preferredAreas.value
 
-    init {
+    /*init {
         viewModelScope.launch {
-            loadSeoulAreaData()
-            setCommuteData()
+           // loadSeoulAreaData()
+           // setCommuteData()
         }
-    }
+    }*/
 
     fun postOnboardingData(
         onSuccess: () -> Unit
@@ -146,7 +142,7 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
-    private fun loadSeoulAreaData() {
+   /* private fun loadSeoulAreaData() {
         loadSeoulAreaFromJsonUseCase.invoke()
     }
 
@@ -161,7 +157,7 @@ class OnboardingViewModel @Inject constructor(
                 subCategories = subCategories
             )
         }
-    }
+    }*/
 
 
     private val stepKeyMappings: List<Triple<OnboardingStep, UserPurpose?, String>> = listOf(
