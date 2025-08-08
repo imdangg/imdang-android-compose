@@ -9,7 +9,7 @@ import androidx.navigation.navigation
 import info.imdang.ui.login.BasicProfileInputRoute
 import info.imdang.ui.login.JoinCompletedRoute
 import info.imdang.ui.login.LoginRoute
-import info.imdang.ui.onboarding.OnboardingRoute
+import info.imdang.ui.onboarding.OnboardingUIRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -81,9 +81,10 @@ fun NavController.navigateToOnboarding(navOptions: NavOptionsBuilder.() -> Unit 
     navigate(route = OnboardingRoute, navOptions)
 
 fun NavGraphBuilder.onboardingScreen(
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     onBoardingFinished: () -> Unit,
 ) {
     composable<OnboardingRoute> {
-        OnboardingRoute(onOnboardingFinished = onBoardingFinished)
+        OnboardingUIRoute(onOnboardingFinished = onBoardingFinished,onShowSnackbar = onShowSnackbar)
     }
 }

@@ -31,6 +31,7 @@ import kotlin.reflect.KClass
 fun ImdangNavHost(
     appState: ImdangAppSate,
     startDestination: KClass<*>,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier
 ) {
     val navController = appState.navController
@@ -52,7 +53,10 @@ fun ImdangNavHost(
             },
             onBackClick = navController::popBackStack,
         ) {
-            onboardingScreen(onBoardingFinished = navController::navigationToHome)
+            onboardingScreen(
+                onBoardingFinished = navController::navigationToHome,
+                onShowSnackbar = onShowSnackbar,
+            )
         }
 
         // -- home --

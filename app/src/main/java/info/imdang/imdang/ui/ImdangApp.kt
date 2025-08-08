@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration.Short
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -97,7 +99,14 @@ internal fun ImdangApp(
                     )
                 )
                 .statusBarsPadding()
-                .navigationBarsPadding()
+                .navigationBarsPadding(),
+            onShowSnackbar = { message, action ->
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = action,
+                    duration = Short,
+                ) == ActionPerformed
+            }
         )
     }
 }

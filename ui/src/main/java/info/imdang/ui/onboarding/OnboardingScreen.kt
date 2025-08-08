@@ -81,8 +81,9 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun OnboardingRoute(
+fun OnboardingUIRoute(
     viewModel: OnboardingViewModel = hiltViewModel(),
+    onShowSnackbar: suspend (String, String?) -> Boolean,
     onOnboardingFinished: () -> Unit
 ) {
     val currentStep = viewModel.step
@@ -137,6 +138,7 @@ fun OnboardingRoute(
 
             OnboardingStep.OPT_STEP5 -> OptStep5Screen(
                 modifier = modifier,
+                onShowSnackbar = onShowSnackbar,
                 currentOnboardingText = currentOnboardingText,
                 initialRankedList = viewModel.rankedPriorities,
                 onSkip = { viewModel.nextStep() },
@@ -295,6 +297,7 @@ fun Step1To4Screen(
 @Composable
 fun OptStep5Screen(
     modifier: Modifier = Modifier,
+    onShowSnackbar :suspend (String, String?) -> Boolean,
     currentOnboardingText: OnboardingText?,
     initialRankedList: List<RankedPriority>?,
     onNext: (List<RankedPriority>) -> Unit,
@@ -346,16 +349,23 @@ fun OptStep5Screen(
                         tab = tabLabels,
                         priorityIndex = selectedPriorityIndex!!,
                         onFinish = { rank, category, priority ->
-                            coroutineScope.launch { sheetState.hide() }
-                            showBottomSheet = false
-                            selectedPriorityIndex = null // Reset
-                            selectedPriorityList =
-                                selectedPriorityList
-                                    .filterNot { it.rank == rank || it.category == category } //todo category 일치시 snackBar 호출로 수정
-                                    .plus(
-                                        RankedPriority(rank, category, priority)
-                                    )
-                                    .sortedBy { it.rank }
+                            coroutineScope.launch {
+                                val exists = selectedPriorityList.any { it.priority == priority || it.category == category }
+                                if (exists) {
+                                    // 중복된 옵션이 이미 있으므로 스낵바 띄우기
+                                    onShowSnackbar(context.getString(R.string.onboarding_snackber_msg),null)
+                                } else {
+                                    sheetState.hide()
+                                    showBottomSheet = false
+                                    selectedPriorityIndex = null // 리셋
+
+                                    selectedPriorityList =
+                                        selectedPriorityList
+                                            .filterNot { it.rank == rank || it.category == category }
+                                            .plus(RankedPriority(rank, category, priority))
+                                            .sortedBy { it.rank }
+                                }
+                            }
                         })
                 }
             }
@@ -763,10 +773,15 @@ fun PreviewStep1To4() {
 @Composable
 fun PreviewOPTStep5() {
     val rankList: List<RankedPriority> = listOf(RankedPriority(1, "유형", "신축"))
+    val dummyOnShowSnackbar: suspend (String, String?) -> Boolean = { message, action ->
+        println("Show Snackbar: $message, action=$action")
+        true
+    }
     Surface(modifier = Modifier.fillMaxSize(), color = White) {
         ImdangAppNewTheme {
             OptStep5Screen(
                 Modifier,
+                dummyOnShowSnackbar,
                 OnboardingText.STEP5_GAP,
                 rankList,
                 onNext = {},

@@ -38,6 +38,7 @@
     <string name="join_completed_description">조건/우선순위를 알려주시면,\n비슷한 사람들의 임장 인사이트를 보여드릴게요</string>
     <string name="join_completed_hint">금방 끝나요, 30초면 충분!</string>
     <string name="go_to_preference_setting">조건/우선순위 설정하러 가기</string>
+    <string name="onboarding_snackber_msg">동일 항목 선택이 불가합니다.</string>
 
     <!--온보딩 - 우선순위 선택-->
     <string name="priority_rank">%1$d순위</string>
@@ -79,11 +80,11 @@
     <string name="option_env_hangang">한강</string>
 
     <!-- 아파트 평형 -->
-    <string name="option_sqft_very_small">초소형(21~40m2)</string>
-    <string name="option_sqft_small">소형(60m2 이하)</string>
-    <string name="option_sqft_mid_small">중소형(60~82m2)</string>
-    <string name="option_sqft_mid_large">중대형(85~102m2)</string>
-    <string name="option_sqft_large">대형(135m2 이상)</string>
+    <string name="option_sqft_very_small">초소형(21~40㎡)</string>
+    <string name="option_sqft_small">소형(60㎡ 이하)</string>
+    <string name="option_sqft_mid_small">중소형(60~82㎡)</string>
+    <string name="option_sqft_mid_large">중대형(85~102㎡)</string>
+    <string name="option_sqft_large">대형(135㎡ 이상)</string>
 
     <!-- 세대수 -->
     <string name="option_household_100">100세대 이상</string>
@@ -173,24 +174,30 @@
     <string name="location_gangseo">강서</string>
     <string name="location_songpa">송파</string>
 
-    <string name="location_gangdong">강동구</string>
-    <string name="location_gangbuk">강북구</string>
-    <string name="location_gwanak">관악구</string>
-    <string name="location_gwangjin">광진구</string>
-    <string name="location_geumcheon">금천구</string>
-    <string name="location_nowon">노원구</string>
-    <string name="location_dobong">도봉구</string>
-    <string name="location_dongdaemun">동대문구</string>
-    <string name="location_dongjak">동작구</string>
-    <string name="location_seodaemun">서대문구</string>
-    <string name="location_seocho">서초구</string>
-    <string name="location_seongdong">성동구</string>
-    <string name="location_seongbuk">성북구</string>
-    <string name="location_yangcheon">양천구</string>
-    <string name="location_yeongdeungpo">영등포구</string>
-    <string name="location_yongsan">용산구</string>
-    <string name="location_eunpyeong">은평구</string>
-    <string name="location_jongno">종로구</string>
-    <string name="location_junggu">중구</string>
-    <string name="location_jungrang">중랑구</string>
+
+    <string name="location_gangnam_gu">강남구</string>
+    <string name="location_gangdong_gu">강동구</string>
+    <string name="location_gangbuk_gu">강북구</string>
+    <string name="location_gangseo_gu">강서구</string>
+    <string name="location_gwanak_gu">관악구</string>
+    <string name="location_gwangjin_gu">광진구</string>
+    <string name="location_guro_gu">구로구</string>
+    <string name="location_geumcheon_gu">금천구</string>
+    <string name="location_nowon_gu">노원구</string>
+    <string name="location_dobong_gu">도봉구</string>
+    <string name="location_dongdaemun_gu">동대문구</string>
+    <string name="location_dongjak_gu">동작구</string>
+    <string name="location_mapo_gu">마포구</string>
+    <string name="location_seodaemun_gu">서대문구</string>
+    <string name="location_seocho_gu">서초구</string>
+    <string name="location_seongdong_gu">성동구</string>
+    <string name="location_seongbuk_gu">성북구</string>
+    <string name="location_songpa_gu">송파구</string>
+    <string name="location_yangcheon_gu">양천구</string>
+    <string name="location_yeongdeungpo_gu">영등포구</string>
+    <string name="location_yongsan_gu">용산구</string>
+    <string name="location_eunpyeong_gu">은평구</string>
+    <string name="location_jongno_gu">종로구</string>
+    <string name="location_junggu_gu">중구</string>
+    <string name="location_jungrang_gu">중랑구</string>
 </resources>
