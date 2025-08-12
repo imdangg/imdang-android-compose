@@ -110,7 +110,7 @@
     <string name="step6_subtitle">*최대 3개까지 고를 수 있어요</string>
     <string name="step3_gap_title">얼마 정도의 갭을 희망하시나요?</string>
     <string name="step4_gap_title">얼마 동안 투자하실 계획이신가요?</string>
-    <string name="empty"/>
+    <string name="empty" />
     <string name="seoul">서울</string>
     <string name="step_finished_title">내 취향설정 완료!</string>
     <string name="step_finished_subtitle">아파트임당이 취향에 맞는 정보를\n큐레이션 해드릴게요!</string>
@@ -200,4 +200,15 @@
     <string name="location_jongno_gu">종로구</string>
     <string name="location_junggu_gu">중구</string>
     <string name="location_jungrang_gu">중랑구</string>
+
+    <!-- 인사이트 작성 -->
+    <string name="btn_cancel">취소</string>
+    <string name="btn_submit">등록</string>
+    <string name="btn_delete">삭제</string>
+    <string name="interest_district">관심 동네</string>
+    <string name="district">지역구</string>
+    <string name="apartment">아파트</string>
+    <string name="search_apartment_complex_name">아파트 단지명을 검색해보세요.</string>
+    <string name="writing_add">추가하기</string>
+
 </resources>

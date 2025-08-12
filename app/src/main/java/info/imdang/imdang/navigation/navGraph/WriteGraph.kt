@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import info.imdang.ui.main.write.WriteScreen
+import info.imdang.ui.main.write.WriteRoute
 import kotlinx.serialization.Serializable
 
 //  Write
@@ -25,7 +25,7 @@ fun NavGraphBuilder.writeSection(
 ) {
     navigation<WriteBaseRoute>(startDestination = WriteRoute) {
         composable<WriteRoute> {
-            WriteScreen(onBackClick)
+            WriteRoute(onBackClick)
         }
     }
     additionalDestination()

@@ -17,8 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import info.imdang.core.component.R
-import info.imdang.imdang.core.component.theme.Gray100
-import info.imdang.imdang.core.component.theme.Gray500
+import info.imdang.imdang.core.component.theme.GrayScale200
+import info.imdang.imdang.core.component.theme.GrayScale500
+import info.imdang.imdang.core.component.theme.GrayScale600
 import info.imdang.imdang.core.component.theme.ImdangPreview
 import info.imdang.imdang.core.component.theme.Orange500
 
@@ -53,8 +54,8 @@ fun CustomMaterialChip(
         shape = RoundedCornerShape(100),
         colors = FilterChipDefaults.filterChipColors(
             containerColor = Color.White,
-            labelColor = Gray500,
-            iconColor = Gray500,
+            labelColor = GrayScale600,
+            iconColor = GrayScale500,
             selectedContainerColor = Orange500,
             selectedLabelColor = Color.White,
             selectedTrailingIconColor = Color.White,
@@ -62,7 +63,7 @@ fun CustomMaterialChip(
         border = FilterChipDefaults.filterChipBorder(
             enabled = true,
             selected = isSelected,
-            borderColor = Gray100,
+            borderColor = GrayScale200,
         ),
         modifier = modifier
     )

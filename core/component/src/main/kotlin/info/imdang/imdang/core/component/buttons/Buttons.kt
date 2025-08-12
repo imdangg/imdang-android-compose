@@ -20,6 +20,7 @@ import info.imdang.imdang.core.component.theme.Gray25
 import info.imdang.imdang.core.component.theme.Gray400
 import info.imdang.imdang.core.component.theme.Gray500
 import info.imdang.imdang.core.component.theme.Gray700
+import info.imdang.imdang.core.component.theme.GrayScale600
 import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
 import info.imdang.imdang.core.component.theme.ImdangPreview
 import info.imdang.imdang.core.component.theme.Orange200
@@ -136,7 +137,7 @@ fun GhostButton(
         isPressed = isPressed,
         defaultColors = ButtonColors(
             containerColor = White,
-            contentColor = Gray700,
+            contentColor = GrayScale600,
             disabledContainerColor = White,
             disabledContentColor = Gray400
         ),
