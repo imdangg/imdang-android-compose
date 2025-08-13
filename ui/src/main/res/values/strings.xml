@@ -210,5 +210,7 @@
     <string name="apartment">아파트</string>
     <string name="search_apartment_complex_name">아파트 단지명을 검색해보세요.</string>
     <string name="writing_add">추가하기</string>
+    <string name="visit_date">임장 날짜</string>
+
 
 </resources>

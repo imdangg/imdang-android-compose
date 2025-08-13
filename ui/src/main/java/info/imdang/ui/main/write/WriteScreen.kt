@@ -177,6 +177,8 @@ internal fun WriteScreen(
             onRemoveSlot = onRemoveSlot,
             onClickAddSlot = onClickAddSlot
         )
+
+        VisitDate()
     }
 }
 
@@ -322,6 +324,23 @@ private fun ApartmentSlot(
             )
         }
     }
+}
+
+@Composable
+private fun VisitDate(
+
+) {
+    Text(
+        modifier = Modifier
+            .padding(top = 20.dp),
+        text = stringResource(R.string.visit_date),
+        style = MaterialTheme.typography.titleMedium.copy(GrayScale900)
+    )
+
+    DateSelector(
+        modifier = Modifier
+            .padding(top = 12.dp)
+    )
 }
 
 @Composable
