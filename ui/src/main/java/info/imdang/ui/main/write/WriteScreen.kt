@@ -1,5 +1,6 @@
 package info.imdang.ui.main.write
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -119,12 +120,22 @@ fun WriteRoute(onBackClick: () -> Unit) {
                 SheetMode.DistrictSelect -> {
                     DistrictSelectSheetContent(
                         selected = selectedDistrict,
-                        onSelect = { selectedDistrict = it }
+                        onSelect = {
+                            selectedDistrict = it
+                            isSheetVisible = false
+                        }
                     )
                 }
 
                 is SheetMode.AddressSearch -> {
-                    AddressSearchSheetContent()
+                    AddressSearchSheetContent(
+                        onAddressSelected = {
+                            Log.d("KakaoAddressSearch", "Selected address: $it")
+                        },
+                        onDismiss = {
+                            isSheetVisible = false
+                        }
+                    )
                 }
             }
         }
@@ -362,11 +373,22 @@ private fun DistrictSelectSheetContent(
 }
 
 @Composable
-private fun AddressSearchSheetContent() {
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(Color.Red)
+private fun AddressSearchSheetContent(
+    onAddressSelected: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    KakaoAddressSearchWebView(
+        onAddressSelected = { result ->
+            val addressText = if (!result.isEmpty) {
+                result.fullAddress
+            } else {
+                "주소 정보 없음"
+            }
+            onAddressSelected(addressText)
+        },
+        onCloseCallback = {
+            onDismiss()
+        }
     )
 }
 
@@ -405,6 +427,9 @@ private fun DistrictSelectSheetContentPreview() {
 @Composable
 private fun AddressSearchSheetContentPreview() {
     ImdangAppNewTheme {
-        AddressSearchSheetContent()
+        AddressSearchSheetContent(
+            onAddressSelected = {},
+            onDismiss = {},
+        )
     }
 }
