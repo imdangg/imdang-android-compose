@@ -122,7 +122,8 @@ fun WriteRoute(onBackClick: () -> Unit) {
     if (isSheetVisible) {
         ModalBottomSheet(
             onDismissRequest = { isSheetVisible = false },
-            sheetState = sheetState
+            sheetState = sheetState,
+            containerColor = White
         ) {
             when (sheetMode) {
                 SheetMode.DistrictSelect -> {
@@ -377,7 +378,7 @@ private fun DistrictSelectSheetContent(
         modifier = Modifier
             .fillMaxWidth()
             .background(White),
-        contentPadding = PaddingValues(top = 32.dp, bottom = 40.dp, start = 20.dp, end = 20.dp),
+        contentPadding = PaddingValues(top = 10.dp, bottom = 40.dp, start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {

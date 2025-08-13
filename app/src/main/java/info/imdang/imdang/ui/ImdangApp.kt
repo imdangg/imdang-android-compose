@@ -34,6 +34,7 @@ import info.imdang.imdang.core.component.bottombar.NavigationCircleItem
 import info.imdang.imdang.core.component.bottombar.NavigationDefaultItem
 import info.imdang.imdang.navigation.ImdangNavHost
 import info.imdang.imdang.navigation.TopLevelDestination
+import info.imdang.imdang.navigation.navGraph.WriteBaseRoute
 import kotlin.reflect.KClass
 
 
@@ -66,10 +67,12 @@ internal fun ImdangApp(
     val currentDestination = navBackStackEntry?.destination
 
     // 현재 destination이 TopLevelDestination의 baseRoute 중 하나에 속하면 BottomBar 표시, 내부 상세페이지 바텀바 x
+    // WriteBaseRoute를 제외하고 바텀바 표시 (더 좋은 방법이 있을것같다. 추후 수정 필요)
     val showBottomBar = TopLevelDestination.entries.any { topLevel ->
-        currentDestination?.hierarchy?.any { destination ->
-            destination.route?.contains(topLevel.baseRoute.simpleName ?: "") == true
-        } == true
+        topLevel.baseRoute != WriteBaseRoute::class &&
+                currentDestination?.hierarchy?.any { destination ->
+                    destination.route?.contains(topLevel.baseRoute.simpleName ?: "") == true
+                } == true
     }
 
     Scaffold(
