@@ -1,10 +1,13 @@
 package info.imdang.ui.main.write
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,22 +15,32 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import info.imdang.imdang.core.component.buttons.ButtonSize
 import info.imdang.imdang.core.component.buttons.GhostButton
@@ -36,26 +49,51 @@ import info.imdang.imdang.core.component.theme.Gray900
 import info.imdang.imdang.core.component.theme.GrayScale100
 import info.imdang.imdang.core.component.theme.GrayScale200
 import info.imdang.imdang.core.component.theme.GrayScale400
+import info.imdang.imdang.core.component.theme.GrayScale600
 import info.imdang.imdang.core.component.theme.GrayScale900
 import info.imdang.imdang.core.component.theme.ImdangAppNewTheme
 import info.imdang.imdang.core.component.theme.ImdangPreview
 import info.imdang.imdang.core.component.theme.Orange500
+import info.imdang.imdang.core.component.theme.White
 import info.imdang.ui.R
 import info.imdang.ui.enums.SeoulArea
 import info.imdang.core.component.R as ComponentR
 
+sealed interface SheetMode {
+    data object DistrictSelect : SheetMode
+    data class AddressSearch(val slotIndex: Int) : SheetMode
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WriteRoute(onBackClick: () -> Unit) {
     val isSubmitEnabled by remember { mutableStateOf(true) }
-    val selectedDistrict by remember { mutableStateOf<SeoulArea?>(null) }
+    var selectedDistrict by remember { mutableStateOf<SeoulArea?>(null) }
     val slots = remember { mutableStateListOf<String?>(null) }
     val maxSlots = 3
+
+    var isSheetVisible by remember { mutableStateOf(false) }
+    var sheetMode by remember { mutableStateOf<SheetMode>(SheetMode.DistrictSelect) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+
+    LaunchedEffect(sheetMode) {
+        when (sheetMode) {
+            is SheetMode.DistrictSelect -> sheetState.partialExpand()
+            is SheetMode.AddressSearch -> sheetState.expand()
+        }
+    }
 
     WriteScreen(
         onClickedCancel = onBackClick,
         onClickedSubmit = {},
-        onClickedDistrict = {},
-        onClickSlot = {},
+        onClickedDistrict = {
+            sheetMode = SheetMode.DistrictSelect
+            isSheetVisible = true
+        },
+        onClickSlot = { index ->
+            sheetMode = SheetMode.AddressSearch(slotIndex = index)
+            isSheetVisible = true
+        },
         onRemoveSlot = { index ->
             if (index in slots.indices) {
                 slots.removeAt(index)
@@ -71,6 +109,26 @@ fun WriteRoute(onBackClick: () -> Unit) {
         selectedDistrict = selectedDistrict,
         slots = slots
     )
+
+    if (isSheetVisible) {
+        ModalBottomSheet(
+            onDismissRequest = { isSheetVisible = false },
+            sheetState = sheetState
+        ) {
+            when (sheetMode) {
+                SheetMode.DistrictSelect -> {
+                    DistrictSelectSheetContent(
+                        selected = selectedDistrict,
+                        onSelect = { selectedDistrict = it }
+                    )
+                }
+
+                is SheetMode.AddressSearch -> {
+                    AddressSearchSheetContent()
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -255,6 +313,63 @@ private fun ApartmentSlot(
     }
 }
 
+@Composable
+private fun DistrictSelectSheetContent(
+    selected: SeoulArea?,
+    onSelect: (SeoulArea) -> Unit,
+) {
+    val districts = SeoulArea.entries.toList()
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(White),
+        contentPadding = PaddingValues(top = 32.dp, bottom = 40.dp, start = 20.dp, end = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items(
+            items = districts,
+            key = { district -> district.name }
+        ) { district ->
+            val isSelected = district == selected
+            Box(
+                modifier = Modifier
+                    .height(44.dp)
+                    .background(
+                        color = if (isSelected) Orange500 else White,
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = if (isSelected) Color.Transparent else GrayScale200,
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .clickable { onSelect(district) },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(id = district.resId),
+                    color = if (isSelected) White else GrayScale600,
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AddressSearchSheetContent() {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Red)
+    )
+}
+
 @ImdangPreview
 @Composable
 private fun WriteScreenPreview() {
@@ -272,5 +387,24 @@ private fun WriteScreenPreview() {
             selectedDistrict = null,
             slots = slots,
         )
+    }
+}
+
+@ImdangPreview
+@Composable
+private fun DistrictSelectSheetContentPreview() {
+    ImdangAppNewTheme {
+        DistrictSelectSheetContent(
+            selected = SeoulArea.GANGNAM,
+            onSelect = {}
+        )
+    }
+}
+
+@ImdangPreview
+@Composable
+private fun AddressSearchSheetContentPreview() {
+    ImdangAppNewTheme {
+        AddressSearchSheetContent()
     }
 }
