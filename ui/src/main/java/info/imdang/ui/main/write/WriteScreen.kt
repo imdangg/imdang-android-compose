@@ -58,6 +58,7 @@ import info.imdang.imdang.core.component.theme.Orange500
 import info.imdang.imdang.core.component.theme.White
 import info.imdang.ui.R
 import info.imdang.ui.enums.SeoulArea
+import java.time.LocalDate
 import info.imdang.core.component.R as ComponentR
 
 sealed interface SheetMode {
@@ -72,6 +73,9 @@ fun WriteRoute(onBackClick: () -> Unit) {
     var selectedDistrict by remember { mutableStateOf<SeoulArea?>(null) }
     val slots = remember { mutableStateListOf<String?>(null) }
     val maxSlots = 3
+
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    var isDateSelectorExpanded by remember { mutableStateOf(false) }
 
     var isSheetVisible by remember { mutableStateOf(false) }
     var sheetMode by remember { mutableStateOf<SheetMode>(SheetMode.DistrictSelect) }
@@ -108,7 +112,11 @@ fun WriteRoute(onBackClick: () -> Unit) {
         },
         isSubmitEnabled = isSubmitEnabled,
         selectedDistrict = selectedDistrict,
-        slots = slots
+        slots = slots,
+        selectedDate = selectedDate,
+        isDateSelectorExpanded = isDateSelectorExpanded,
+        onDateSelected = { selectedDate = it },
+        onDateSelectorToggle = { isDateSelectorExpanded = !isDateSelectorExpanded },
     )
 
     if (isSheetVisible) {
@@ -153,6 +161,10 @@ internal fun WriteScreen(
     isSubmitEnabled: Boolean,
     selectedDistrict: SeoulArea?,
     slots: List<String?>,
+    selectedDate: LocalDate,
+    isDateSelectorExpanded: Boolean,
+    onDateSelected: (LocalDate) -> Unit,
+    onDateSelectorToggle: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -178,7 +190,12 @@ internal fun WriteScreen(
             onClickAddSlot = onClickAddSlot
         )
 
-        VisitDate()
+        VisitDate(
+            selectedDate = selectedDate,
+            isExpanded = isDateSelectorExpanded,
+            onDateSelected = onDateSelected,
+            onExpandToggle = onDateSelectorToggle
+        )
     }
 }
 
@@ -328,18 +345,23 @@ private fun ApartmentSlot(
 
 @Composable
 private fun VisitDate(
-
+    selectedDate: LocalDate,
+    isExpanded: Boolean,
+    onDateSelected: (LocalDate) -> Unit,
+    onExpandToggle: () -> Unit,
 ) {
     Text(
-        modifier = Modifier
-            .padding(top = 20.dp),
+        modifier = Modifier.padding(top = 20.dp),
         text = stringResource(R.string.visit_date),
         style = MaterialTheme.typography.titleMedium.copy(GrayScale900)
     )
 
     DateSelector(
-        modifier = Modifier
-            .padding(top = 12.dp)
+        modifier = Modifier.padding(top = 12.dp),
+        selectedDate = selectedDate,
+        isExpanded = isExpanded,
+        onDateSelected = onDateSelected,
+        onExpandToggle = onExpandToggle
     )
 }
 
@@ -416,6 +438,8 @@ private fun AddressSearchSheetContent(
 private fun WriteScreenPreview() {
     ImdangAppNewTheme {
         val slots = remember { mutableStateListOf<String?>(null) }
+        var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+        var isDateSelectorExpanded by remember { mutableStateOf(false) }
 
         WriteScreen(
             onClickedCancel = {},
@@ -427,6 +451,10 @@ private fun WriteScreenPreview() {
             isSubmitEnabled = true,
             selectedDistrict = null,
             slots = slots,
+            selectedDate = selectedDate,
+            isDateSelectorExpanded = isDateSelectorExpanded,
+            onDateSelected = { selectedDate = it },
+            onDateSelectorToggle = { isDateSelectorExpanded = !isDateSelectorExpanded }
         )
     }
 }

@@ -54,3 +54,5 @@ val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
 val Error = Color(0xFFE93528)
 val KakaoYellow = Color(0xFFFAE64D)
+
+val SystemRedLight = Color(0xFFFF3B30)
