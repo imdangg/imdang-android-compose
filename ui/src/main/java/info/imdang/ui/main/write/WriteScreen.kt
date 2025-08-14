@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BottomSheetDefaults.DragHandle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,7 +36,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -88,14 +89,7 @@ fun WriteRoute(onBackClick: () -> Unit) {
 
     var isSheetVisible by remember { mutableStateOf(false) }
     var sheetMode by remember { mutableStateOf<SheetMode>(SheetMode.DistrictSelect) }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
-
-    LaunchedEffect(sheetMode) {
-        when (sheetMode) {
-            is SheetMode.DistrictSelect -> sheetState.partialExpand()
-            is SheetMode.AddressSearch -> sheetState.expand()
-        }
-    }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     WriteScreen(
         onClickedCancel = onBackClick,
@@ -138,11 +132,20 @@ fun WriteRoute(onBackClick: () -> Unit) {
         ModalBottomSheet(
             onDismissRequest = { isSheetVisible = false },
             sheetState = sheetState,
-            containerColor = White
+            containerColor = White,
+            dragHandle = when (sheetMode) {
+                is SheetMode.AddressSearch -> null
+                SheetMode.DistrictSelect -> {
+                    { DragHandle() }
+                }
+            }
         ) {
             when (sheetMode) {
                 SheetMode.DistrictSelect -> {
                     DistrictSelectSheetContent(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(White),
                         selected = selectedDistrict,
                         onSelect = {
                             selectedDistrict = it
@@ -154,9 +157,13 @@ fun WriteRoute(onBackClick: () -> Unit) {
                 is SheetMode.AddressSearch -> {
                     val slotIndex = (sheetMode as SheetMode.AddressSearch).slotIndex
                     AddressSearchSheetContent(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.9f)
+                            .padding(top = 17.dp),
                         onAddressSelected = { postcodeResult ->
-                            slots[slotIndex] = postcodeResult.fullAddress
                             Log.d("KakaoAddressSearch", postcodeResult.toString())
+                            slots[slotIndex] = postcodeResult.fullAddress
                             isSheetVisible = false
                         },
                         onDismiss = {
@@ -507,6 +514,7 @@ private fun VisitDate(
 
 @Composable
 private fun DistrictSelectSheetContent(
+    modifier: Modifier = Modifier,
     selected: SeoulArea?,
     onSelect: (SeoulArea) -> Unit,
 ) {
@@ -514,9 +522,7 @@ private fun DistrictSelectSheetContent(
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(White),
+        modifier = modifier,
         contentPadding = PaddingValues(top = 10.dp, bottom = 40.dp, start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -555,12 +561,12 @@ private fun DistrictSelectSheetContent(
 
 @Composable
 private fun AddressSearchSheetContent(
+    modifier: Modifier = Modifier,
     onAddressSelected: (PostcodeResultModel) -> Unit,
     onDismiss: () -> Unit,
 ) {
     KakaoAddressSearchWebView(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = modifier,
         onAddressSelected = onAddressSelected,
         onCloseCallback = onDismiss
     )
@@ -606,6 +612,9 @@ private fun WriteScreenPreview() {
 private fun DistrictSelectSheetContentPreview() {
     ImdangAppNewTheme {
         DistrictSelectSheetContent(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(White),
             selected = SeoulArea.GANGNAM,
             onSelect = {}
         )
@@ -617,6 +626,8 @@ private fun DistrictSelectSheetContentPreview() {
 private fun AddressSearchSheetContentPreview() {
     ImdangAppNewTheme {
         AddressSearchSheetContent(
+            modifier = Modifier
+                .fillMaxSize(),
             onAddressSelected = {},
             onDismiss = {},
         )
