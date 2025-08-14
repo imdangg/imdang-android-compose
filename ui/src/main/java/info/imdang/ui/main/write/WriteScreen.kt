@@ -183,6 +183,7 @@ internal fun WriteScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(White)
     ) {
         Column(
             modifier = Modifier
@@ -232,6 +233,7 @@ internal fun WriteScreen(
 @Composable
 private fun BottomSaveBar(
     modifier: Modifier = Modifier,
+    draftCount: Int = 10,
     onClickedGallery: () -> Unit,
     onClickSaveDraft: () -> Unit,
 ) {
@@ -268,7 +270,7 @@ private fun BottomSaveBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "임시 저장",
+                    text = stringResource(R.string.draft_save),
                     style = MaterialTheme.typography.labelLarge.copy(GrayScale400)
                 )
 
@@ -280,7 +282,7 @@ private fun BottomSaveBar(
                 )
 
                 Text(
-                    text = "10개",
+                    text = "$draftCount${stringResource(R.string.count_unit)}",
                     style = MaterialTheme.typography.labelLarge.copy(GrayScale400)
                 )
             }
