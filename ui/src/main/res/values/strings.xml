@@ -214,4 +214,7 @@
     <string name="draft_save">임시 저장</string>
     <string name="count_unit">개</string>
 
+    <string name="enter_title_placeholder">제목을 입력해주세요.</string>
+    <string name="share_visit_review_placeholder">임장 손품 또는 발품 후기를 자유롭게 공유해주세요.</string>
+
 </resources>

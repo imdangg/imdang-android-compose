@@ -83,6 +83,9 @@ fun WriteRoute(onBackClick: () -> Unit) {
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var isDateSelectorExpanded by remember { mutableStateOf(false) }
 
+    var title by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
+
     var isSheetVisible by remember { mutableStateOf(false) }
     var sheetMode by remember { mutableStateOf<SheetMode>(SheetMode.DistrictSelect) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
@@ -125,6 +128,10 @@ fun WriteRoute(onBackClick: () -> Unit) {
         onDateSelectorToggle = { isDateSelectorExpanded = !isDateSelectorExpanded },
         onClickedGallery = {},
         onClickSaveDraft = {},
+        title = title,
+        onTitleChange = { title = it },
+        content = content,
+        onContentChange = { content = it },
     )
 
     if (isSheetVisible) {
@@ -179,6 +186,10 @@ internal fun WriteScreen(
     onDateSelectorToggle: () -> Unit,
     onClickedGallery: () -> Unit,
     onClickSaveDraft: () -> Unit,
+    title: String,
+    onTitleChange: (String) -> Unit,
+    content: String,
+    onContentChange: (String) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -189,21 +200,30 @@ internal fun WriteScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
                 .padding(bottom = 57.dp),
         ) {
             TopArea(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(65.dp)
+                    .padding(horizontal = 20.dp),
                 onClickedCancel = onClickedCancel,
                 onClickedSubmit = onClickedSubmit,
                 isSubmitEnabled = isSubmitEnabled,
             )
 
             InterestDistrict(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .padding(horizontal = 20.dp),
                 onClickedDistrict = onClickedDistrict,
                 selectedDistrict = selectedDistrict
             )
 
             ApartmentArea(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .padding(horizontal = 20.dp),
                 slots = slots,
                 onClickSlot = onClickSlot,
                 onRemoveSlot = onRemoveSlot,
@@ -211,10 +231,29 @@ internal fun WriteScreen(
             )
 
             VisitDate(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .padding(horizontal = 20.dp),
                 selectedDate = selectedDate,
                 isExpanded = isDateSelectorExpanded,
                 onDateSelected = onDateSelected,
                 onExpandToggle = onDateSelectorToggle
+            )
+
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                thickness = 6.dp,
+                color = GrayScale100
+            )
+
+            ContentDescriptionSection(
+                modifier = Modifier.fillMaxWidth(),
+                title = title,
+                onTitleChange = onTitleChange,
+                content = content,
+                onContentChange = onContentChange,
             )
         }
 
@@ -292,14 +331,13 @@ private fun BottomSaveBar(
 
 @Composable
 private fun TopArea(
+    modifier: Modifier = Modifier,
     onClickedCancel: () -> Unit,
     onClickedSubmit: () -> Unit,
     isSubmitEnabled: Boolean,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(65.dp),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -323,76 +361,83 @@ private fun TopArea(
 
 @Composable
 private fun InterestDistrict(
+    modifier: Modifier = Modifier,
     onClickedDistrict: () -> Unit,
     selectedDistrict: SeoulArea?,
 ) {
-    Row(
-        modifier = Modifier
-            .padding(top = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    Column(
+        modifier = modifier,
     ) {
-        Text(
-            text = stringResource(R.string.interest_district),
-            style = MaterialTheme.typography.titleMedium.copy(GrayScale900)
-        )
-        Text(
-            text = "*",
-            style = MaterialTheme.typography.titleSmall.copy(Orange500)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.interest_district),
+                style = MaterialTheme.typography.titleMedium.copy(GrayScale900)
+            )
+            Text(
+                text = "*",
+                style = MaterialTheme.typography.titleSmall.copy(Orange500)
+            )
+        }
+
+        CustomMaterialChip(
+            modifier = Modifier
+                .padding(top = 12.dp),
+            text = stringResource(selectedDistrict?.resId ?: R.string.district),
+            isSelected = false,
+            iconResId = ComponentR.drawable.down,
+            onClick = onClickedDistrict,
         )
     }
-
-    CustomMaterialChip(
-        modifier = Modifier
-            .padding(top = 12.dp),
-        text = stringResource(selectedDistrict?.resId ?: R.string.district),
-        isSelected = false,
-        iconResId = ComponentR.drawable.down,
-        onClick = onClickedDistrict,
-    )
 }
 
 @Composable
 private fun ApartmentArea(
+    modifier: Modifier = Modifier,
     slots: List<String?>,
     onClickSlot: (Int) -> Unit,
     onRemoveSlot: (Int) -> Unit,
     onClickAddSlot: () -> Unit,
 ) {
-    Text(
-        modifier = Modifier.padding(top = 20.dp),
-        text = stringResource(R.string.apartment),
-        style = MaterialTheme.typography.titleSmall.copy(GrayScale900)
-    )
-
-    Spacer(Modifier.height(12.dp))
-
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        slots.forEachIndexed { index, value ->
-            ApartmentSlot(
-                text = value,
-                onClickSlot = { onClickSlot(index) },
-                onRemoveSlot = { onRemoveSlot(index) }
-            )
-        }
-    }
-
-    Button(
-        modifier = Modifier
-            .padding(top = 8.dp)
-            .fillMaxWidth()
-            .height(42.dp),
-        onClick = onClickAddSlot,
-        shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = GrayScale100
-        )
+        modifier = modifier,
     ) {
         Text(
-            text = stringResource(R.string.writing_add),
+            text = stringResource(R.string.apartment),
             style = MaterialTheme.typography.titleSmall.copy(GrayScale900)
         )
+
+        Spacer(Modifier.height(12.dp))
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            slots.forEachIndexed { index, value ->
+                ApartmentSlot(
+                    text = value,
+                    onClickSlot = { onClickSlot(index) },
+                    onRemoveSlot = { onRemoveSlot(index) }
+                )
+            }
+        }
+
+        Button(
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+                .height(42.dp),
+            onClick = onClickAddSlot,
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = GrayScale100
+            )
+        ) {
+            Text(
+                text = stringResource(R.string.writing_add),
+                style = MaterialTheme.typography.titleSmall.copy(GrayScale900)
+            )
+        }
     }
 }
 
@@ -436,24 +481,28 @@ private fun ApartmentSlot(
 
 @Composable
 private fun VisitDate(
+    modifier: Modifier = Modifier,
     selectedDate: LocalDate,
     isExpanded: Boolean,
     onDateSelected: (LocalDate) -> Unit,
     onExpandToggle: () -> Unit,
 ) {
-    Text(
-        modifier = Modifier.padding(top = 20.dp),
-        text = stringResource(R.string.visit_date),
-        style = MaterialTheme.typography.titleMedium.copy(GrayScale900)
-    )
+    Column(
+        modifier = modifier,
+    ) {
+        Text(
+            text = stringResource(R.string.visit_date),
+            style = MaterialTheme.typography.titleMedium.copy(GrayScale900)
+        )
 
-    DateSelector(
-        modifier = Modifier.padding(top = 12.dp),
-        selectedDate = selectedDate,
-        isExpanded = isExpanded,
-        onDateSelected = onDateSelected,
-        onExpandToggle = onExpandToggle
-    )
+        DateSelector(
+            modifier = Modifier.padding(top = 12.dp),
+            selectedDate = selectedDate,
+            isExpanded = isExpanded,
+            onDateSelected = onDateSelected,
+            onExpandToggle = onExpandToggle
+        )
+    }
 }
 
 @Composable
@@ -525,6 +574,9 @@ private fun WriteScreenPreview() {
         var selectedDate by remember { mutableStateOf(LocalDate.now()) }
         var isDateSelectorExpanded by remember { mutableStateOf(false) }
 
+        var title by remember { mutableStateOf("") }
+        var content by remember { mutableStateOf("") }
+
         WriteScreen(
             onClickedCancel = {},
             onClickedSubmit = {},
@@ -541,6 +593,10 @@ private fun WriteScreenPreview() {
             onDateSelectorToggle = { isDateSelectorExpanded = !isDateSelectorExpanded },
             onClickedGallery = {},
             onClickSaveDraft = {},
+            title = title,
+            onTitleChange = { title = it },
+            content = content,
+            onContentChange = { content = it },
         )
     }
 }
