@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -25,9 +26,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,9 +44,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import info.imdang.core.presentation.model.PostcodeResultModel
 import info.imdang.imdang.core.component.buttons.ButtonSize
 import info.imdang.imdang.core.component.buttons.GhostButton
 import info.imdang.imdang.core.component.chip.CustomMaterialChip
@@ -117,6 +123,8 @@ fun WriteRoute(onBackClick: () -> Unit) {
         isDateSelectorExpanded = isDateSelectorExpanded,
         onDateSelected = { selectedDate = it },
         onDateSelectorToggle = { isDateSelectorExpanded = !isDateSelectorExpanded },
+        onClickedGallery = {},
+        onClickSaveDraft = {},
     )
 
     if (isSheetVisible) {
@@ -137,9 +145,12 @@ fun WriteRoute(onBackClick: () -> Unit) {
                 }
 
                 is SheetMode.AddressSearch -> {
+                    val slotIndex = (sheetMode as SheetMode.AddressSearch).slotIndex
                     AddressSearchSheetContent(
-                        onAddressSelected = {
-                            Log.d("KakaoAddressSearch", "Selected address: $it")
+                        onAddressSelected = { postcodeResult ->
+                            slots[slotIndex] = postcodeResult.fullAddress
+                            Log.d("KakaoAddressSearch", postcodeResult.fullAddress)
+                            isSheetVisible = false
                         },
                         onDismiss = {
                             isSheetVisible = false
@@ -166,37 +177,114 @@ internal fun WriteScreen(
     isDateSelectorExpanded: Boolean,
     onDateSelected: (LocalDate) -> Unit,
     onDateSelectorToggle: () -> Unit,
+    onClickedGallery: () -> Unit,
+    onClickSaveDraft: () -> Unit,
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp),
     ) {
-        TopArea(
-            onClickedCancel = onClickedCancel,
-            onClickedSubmit = onClickedSubmit,
-            isSubmitEnabled = isSubmitEnabled,
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 57.dp),
+        ) {
+            TopArea(
+                onClickedCancel = onClickedCancel,
+                onClickedSubmit = onClickedSubmit,
+                isSubmitEnabled = isSubmitEnabled,
+            )
 
-        InterestDistrict(
-            onClickedDistrict = onClickedDistrict,
-            selectedDistrict = selectedDistrict
-        )
+            InterestDistrict(
+                onClickedDistrict = onClickedDistrict,
+                selectedDistrict = selectedDistrict
+            )
 
-        ApartmentArea(
-            slots = slots,
-            onClickSlot = onClickSlot,
-            onRemoveSlot = onRemoveSlot,
-            onClickAddSlot = onClickAddSlot
-        )
+            ApartmentArea(
+                slots = slots,
+                onClickSlot = onClickSlot,
+                onRemoveSlot = onRemoveSlot,
+                onClickAddSlot = onClickAddSlot
+            )
 
-        VisitDate(
-            selectedDate = selectedDate,
-            isExpanded = isDateSelectorExpanded,
-            onDateSelected = onDateSelected,
-            onExpandToggle = onDateSelectorToggle
+            VisitDate(
+                selectedDate = selectedDate,
+                isExpanded = isDateSelectorExpanded,
+                onDateSelected = onDateSelected,
+                onExpandToggle = onDateSelectorToggle
+            )
+        }
+
+        BottomSaveBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(57.dp)
+                .background(White)
+                .align(Alignment.BottomCenter),
+            onClickedGallery = onClickedGallery,
+            onClickSaveDraft = onClickSaveDraft,
         )
+    }
+}
+
+@Composable
+private fun BottomSaveBar(
+    modifier: Modifier = Modifier,
+    onClickedGallery: () -> Unit,
+    onClickSaveDraft: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+    ) {
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth(),
+            thickness = 1.dp,
+            color = GrayScale200
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(ComponentR.drawable.image),
+                contentDescription = "Gallery Icon",
+                tint = GrayScale600,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { onClickedGallery() }
+            )
+
+            Row(
+                modifier = Modifier
+                    .clickable { onClickSaveDraft() },
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "임시 저장",
+                    style = MaterialTheme.typography.labelLarge.copy(GrayScale400)
+                )
+
+                VerticalDivider(
+                    modifier = Modifier
+                        .height(14.dp),
+                    thickness = 1.dp,
+                    color = GrayScale200,
+                )
+
+                Text(
+                    text = "10개",
+                    style = MaterialTheme.typography.labelLarge.copy(GrayScale400)
+                )
+            }
+        }
     }
 }
 
@@ -416,21 +504,14 @@ private fun DistrictSelectSheetContent(
 
 @Composable
 private fun AddressSearchSheetContent(
-    onAddressSelected: (String) -> Unit,
+    onAddressSelected: (PostcodeResultModel) -> Unit,
     onDismiss: () -> Unit,
 ) {
     KakaoAddressSearchWebView(
-        onAddressSelected = { result ->
-            val addressText = if (!result.isEmpty) {
-                result.fullAddress
-            } else {
-                "주소 정보 없음"
-            }
-            onAddressSelected(addressText)
-        },
-        onCloseCallback = {
-            onDismiss()
-        }
+        modifier = Modifier
+            .fillMaxSize(),
+        onAddressSelected = onAddressSelected,
+        onCloseCallback = onDismiss
     )
 }
 
@@ -455,7 +536,9 @@ private fun WriteScreenPreview() {
             selectedDate = selectedDate,
             isDateSelectorExpanded = isDateSelectorExpanded,
             onDateSelected = { selectedDate = it },
-            onDateSelectorToggle = { isDateSelectorExpanded = !isDateSelectorExpanded }
+            onDateSelectorToggle = { isDateSelectorExpanded = !isDateSelectorExpanded },
+            onClickedGallery = {},
+            onClickSaveDraft = {},
         )
     }
 }
