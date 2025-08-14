@@ -156,7 +156,7 @@ fun WriteRoute(onBackClick: () -> Unit) {
                     AddressSearchSheetContent(
                         onAddressSelected = { postcodeResult ->
                             slots[slotIndex] = postcodeResult.fullAddress
-                            Log.d("KakaoAddressSearch", postcodeResult.fullAddress)
+                            Log.d("KakaoAddressSearch", postcodeResult.toString())
                             isSheetVisible = false
                         },
                         onDismiss = {
